@@ -1,0 +1,74 @@
+<?php
+
+namespace SwagPaymentSezzle;
+
+use Shopware\Components\Plugin;
+use Shopware\Components\Plugin\Context\ActivateContext;
+use Shopware\Components\Plugin\Context\DeactivateContext;
+use Shopware\Components\Plugin\Context\InstallContext;
+use Shopware\Components\Plugin\Context\UninstallContext;
+use SwagPaymentSezzle\Components\PaymentMethodProvider;
+use SwagPaymentSezzle\Setup\Installer;
+use SwagPaymentSezzle\Setup\Uninstaller;
+
+class SwagPaymentSezzle extends Plugin
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function install(InstallContext $context)
+    {
+        $translation = $this->container->has('translation')
+            ? $this->container->get('translation')
+            : new \Shopware_Components_Translation();
+
+        $installer = new Installer(
+            $this->container->get('models'),
+            $this->container->get('dbal_connection'),
+            $this->container->get('shopware_attribute.crud_service'),
+            $translation,
+            $this->getPath()
+        );
+        $installer->install();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function uninstall(UninstallContext $context)
+    {
+        $uninstaller = new Uninstaller(
+            $this->container->get('shopware_attribute.crud_service'),
+            $this->container->get('models'),
+            $this->container->get('dbal_connection')
+        );
+        $uninstaller->uninstall($context->keepUserData());
+
+        $context->scheduleClearCache(UninstallContext::CACHE_LIST_ALL);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function activate(ActivateContext $context)
+    {
+        $paymentMethodProvider = new PaymentMethodProvider($this->container->get('models'));
+        $paymentMethodProvider->setPaymentMethodActiveFlag(true);
+        $paymentMethodProvider->setPaymentMethodActiveFlag(true);
+
+        $context->scheduleClearCache(ActivateContext::CACHE_LIST_ALL);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deactivate(DeactivateContext $context)
+    {
+        $paymentMethodProvider = new PaymentMethodProvider($this->container->get('models'));
+        $paymentMethodProvider->setPaymentMethodActiveFlag(false);
+        $paymentMethodProvider->setPaymentMethodActiveFlag(false);
+
+        $context->scheduleClearCache(DeactivateContext::CACHE_LIST_ALL);
+    }
+
+}
