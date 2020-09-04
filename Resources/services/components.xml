@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="sezzle.dependency_provider"
+                 class="SwagPaymentSezzle\Components\DependencyProvider"
+                 public="true">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="sezzle.session_builder_service"
+                 class="SwagPaymentSezzle\Components\Services\SessionBuilderService"
+                 public="true">
+            <argument type="service" id="router"/>
+            <argument type="service" id="sezzle.settings_service"/>
+            <argument type="service" id="snippets"/>
+            <argument type="service" id="sezzle.dependency_provider"/>
+        </service>
+
+        <service id="sezzle.settings_service"
+                 class="SwagPaymentSezzle\Components\Services\SettingsService"
+                 public="true">
+            <argument type="service" id="models"/>
+            <argument type="service" id="sezzle.dependency_provider"/>
+        </service>
+    </services>
+</container>

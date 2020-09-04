@@ -135,12 +135,31 @@ class Installer
         $payment->setActive(false);
         $payment->setPosition(-100);
         $payment->setName(PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME);
-        $payment->setDescription('Sezzle');
-        $payment->setAdditionalDescription('Sezzle');
+        $payment->setDescription($this->getUnifiedPaymentLogo());
+        $payment->setAdditionalDescription($this->getAdditionalDescription());
         $payment->setAction('Sezzle');
 
         $this->modelManager->persist($payment);
         $this->modelManager->flush($payment);
+    }
+
+    /**
+     * @return string
+     */
+    private function getUnifiedPaymentLogo()
+    {
+        return '<!-- Sezzle Logo -->'
+            . '<a href="https://www.sezzle.com" target="_blank" rel="noopener">'
+            . '<img src="https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png" alt="Logo Sezzle">'
+            . '</a><br><!-- Sezzle Logo -->';
+    }
+
+    /**
+     * @return string
+     */
+    private function getAdditionalDescription()
+    {
+        return 'Pay later with 0% interest';
     }
 
     /**

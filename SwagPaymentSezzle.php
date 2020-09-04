@@ -10,9 +10,19 @@ use Shopware\Components\Plugin\Context\UninstallContext;
 use SwagPaymentSezzle\Components\PaymentMethodProvider;
 use SwagPaymentSezzle\Setup\Installer;
 use SwagPaymentSezzle\Setup\Uninstaller;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SwagPaymentSezzle extends Plugin
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->setParameter('sezzle.plugin_dir', $this->getPath());
+        parent::build($container);
+    }
+
     /**
      * {@inheritdoc}
      */
