@@ -1,12 +1,17 @@
 <?php
 
+use Shopware\Components\HttpClient\RequestException;
 use SwagPaymentSezzle\Components\DependencyProvider;
 use SwagPaymentSezzle\Components\ErrorCodes;
-use SwagPaymentSezzle\Components\PaymentBuilderParameters;
 use SwagPaymentSezzle\Components\PaymentMethodProvider;
+use SwagPaymentSezzle\Components\PaymentStatus;
+use SwagPaymentSezzle\Components\Services\OrderDataService;
+use SwagPaymentSezzle\Components\Services\SettingsService;
 use SwagPaymentSezzle\Components\SessionBuilderParameters;
+use SwagPaymentSezzle\SezzleBundle\PaymentAction;
 use SwagPaymentSezzle\SezzleBundle\PaymentType;
-use SwagPaymentSezzle\SezzleBundle\Structs\Payment;
+use SwagPaymentSezzle\SezzleBundle\Resources\CaptureResource;
+use SwagPaymentSezzle\SezzleBundle\Resources\SessionResource;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 
 class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend_Payment
@@ -17,14 +22,29 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
      */
     private $dependencyProvider;
     /**
-     * @var mixed|void
+     * @var Shopware_Components_Config
      */
     private $shopwareConfig;
+    /**
+     * @var SessionResource
+     */
+    private $sessionResource;
+    /**
+     * @var SettingsService
+     */
+    private $settingsService;
+    /**
+     * @var CaptureResource
+     */
+    private $captureResource;
 
     public function preDispatch()
     {
+        $this->sessionResource = $this->get('sezzle.session_resource');
+        $this->captureResource = $this->get('sezzle.capture_resource');
         $this->dependencyProvider = $this->get('sezzle.dependency_provider');
         $this->shopwareConfig = $this->get('config');
+        $this->settingsService = $this->get('sezzle.settings_service');
     }
 
     /**
@@ -44,6 +64,7 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
         $session = $this->dependencyProvider->getSession();
         $orderData = $session->get('sOrderVariables');
 
+
         if ($orderData === null) {
             $this->handleError(ErrorCodes::NO_ORDER_TO_PROCESS);
 
@@ -57,7 +78,7 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
         }
 
         $userData = $orderData['sUserData'];
-        $userData[PaymentBuilderInterface::CUSTOMER_GROUP_USE_GROSS_PRICES] = (bool) $session->get('sUserGroupData', ['tax' => 1])['tax'];
+        //$userData[PaymentBuilderInterface::CUSTOMER_GROUP_USE_GROSS_PRICES] = (bool) $session->get('sUserGroupData', ['tax' => 1])['tax'];
 
         try {
             //Query all information
@@ -84,6 +105,7 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
                 $requestParams->setPaymentType(PaymentType::SEZZLE);
                 $session = $this->get('sezzle.session_builder_service')->getSession($requestParams);
             }
+
 //            if ($selectedPaymentName === PaymentMethodProvider::PAYPAL_UNIFIED_PAYMENT_METHOD_NAME) {
 //                $requestParams->setPaymentType(PaymentType::PAYPAL_CLASSIC);
 //                $payment = $this->get('paypal_unified.payment_builder_service')->getPayment($requestParams);
@@ -93,51 +115,160 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
 //                $payment = $this->get('paypal_unified.installments.payment_builder_service')->getPayment($requestParams);
 //            }
 
-            $response = $this->paymentResource->create($session);
+            $response = $this->sessionResource->create($session);
 
             $responseStruct = Session::fromArray($response);
         } catch (RequestException $requestEx) {
             $this->handleError(ErrorCodes::COMMUNICATION_FAILURE, $requestEx);
 
             return;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->handleError(ErrorCodes::UNKNOWN, $exception);
 
             return;
         }
 
-        //Patch the address data into the payment.
-        //This function is only being called for PayPal classic, therefore,
-        //there is an additional action (patchAddressAction()) for the PayPal plus integration.
-        /** @var PaymentAddressService $addressService */
-        $addressService = $this->get('paypal_unified.payment_address_service');
-        $addressPatch = new PaymentAddressPatch($addressService->getShippingAddress($userData));
-        $payerInfoPatch = new PayerInfoPatch($addressService->getPayerInfo($userData));
+        $this->redirect($responseStruct->getOrder()->getCheckoutUrl());
+    }
 
-        $useInContext = (bool) $this->Request()->getParam('useInContext', false);
-        if ($useInContext) {
-            $this->Front()->Plugins()->Json()->setRenderer();
-            $this->View()->setTemplate();
+    public function completeAction()
+    {
+        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+        $request = $this->Request();
+        $sessionUuid = $request->getParam('sessionUuid');
+        $basketId = $request->getParam('basketId');
+
+        //Basket validation with shopware 5.2 support
+        if (!$this->container->has('basket_signature_generator')
+        ) {
+            //For shopware < 5.3 and for whitelisted basket ids
+            try {
+                $session = $this->sessionResource->get($sessionUuid);
+            } catch (RequestException $exception) {
+                $this->handleError(ErrorCodes::COMMUNICATION_FAILURE, $exception);
+
+                return;
+            }
+
+            $basketValid = $this->validateBasketSimple(Session::fromArray($session));
+        } else {
+            //For shopware > 5.3
+            $basketValid = $this->validateBasketExtended($basketId);
         }
 
+        if (!$basketValid) {
+            $this->handleError(ErrorCodes::BASKET_VALIDATION_ERROR);
+
+            return;
+        }
+
+        $orderNumber = $this->saveOrder($sessionUuid, $sessionUuid, PaymentStatus::PAYMENT_STATUS_OPEN);
+
+        // if the order number should be send to PayPal do it before the execute
+//        if ($sendOrderNumber) {
+//            $orderNumber = $this->saveOrder($paymentId, $paymentId, PaymentStatus::PAYMENT_STATUS_OPEN);
+//            $patchOrderNumber = $this->settingsService->get('order_number_prefix') . $orderNumber;
+//
+//            /** @var PaymentOrderNumberPatch $paymentPatch */
+//            $paymentPatch = new PaymentOrderNumberPatch($patchOrderNumber);
+//
+//            try {
+//                $this->paymentResource->patch($paymentId, [$paymentPatch]);
+//            } catch (RequestException $exception) {
+//                $this->handleError(ErrorCodes::COMMUNICATION_FAILURE, $exception);
+//
+//                return;
+//            }
+//        }
+
+        $payerId = $request->getParam('PayerID');
+        /** @var OrderDataService $orderDataService */
+        $orderDataService = $this->get('sezzle.order_data_service');
         try {
-            $this->paymentResource->patch($responseStruct->getId(), [
-                $addressPatch,
-                $payerInfoPatch,
-            ]);
-        } catch (\Exception $exception) {
-            $this->handleError(ErrorCodes::ADDRESS_VALIDATION_ERROR, $exception);
+            $paymentAction = $this->settingsService->get('payment_action');
+
+            if ($paymentAction === PaymentAction::AUTHORIZE_CAPTURE) {
+                $captureResponse = $this->captureResource->create();
+                if ($captureResponse === null) {
+                    $this->handleError(ErrorCodes::COMMUNICATION_FAILURE);
+                    return;
+                }
+                $this->savePaymentStatus($relatedResourceId, $paymentId, PaymentStatus::PAYMENT_STATUS_PAID);
+                $orderDataService->setClearedDate($orderNumber);
+            }
+        } catch (RequestException $exception) {
+            $orderDataService->setOrderState($orderNumber, PaymentStatus::PAYMENT_STATUS_OPEN);
+            //$orderDataService->removeTransactionId($orderNumber);
+            $errorCode = ErrorCodes::COMMUNICATION_FAILURE;
+            $this->handleError($errorCode, $exception);
 
             return;
         }
 
-        if ($useInContext) {
-            $this->View()->assign('paymentId', $responseStruct->getId());
+        /** @var Payment $response */
+        $response = Payment::fromArray($executionResponse);
+
+        // if the order number is not sent to PayPal, save the order here
+        if (!$sendOrderNumber) {
+            $orderNumber = $this->saveOrder($paymentId, $paymentId, PaymentStatus::PAYMENT_STATUS_OPEN);
+        }
+
+        /** @var RelatedResource $relatedResource */
+        $relatedResource = $response->getTransactions()->getRelatedResources()->getResources()[0];
+
+        //Use TXN-ID instead of the PaymentId
+        $relatedResourceId = $relatedResource->getId();
+        if (!$orderDataService->applyTransactionId($orderNumber, $relatedResourceId)) {
+            $this->handleError(ErrorCodes::NO_ORDER_TO_PROCESS);
 
             return;
         }
 
-        $this->redirect($responseStruct->getLinks()[1]->getHref());
+        // apply the payment status if its completed by PayPal
+        $paymentState = $relatedResource->getState();
+        if ($paymentState === PaymentStatus::PAYMENT_COMPLETED) {
+            $this->savePaymentStatus($relatedResourceId, $paymentId, PaymentStatus::PAYMENT_STATUS_PAID);
+            $orderDataService->setClearedDate($orderNumber);
+        }
+
+        // Save payment instructions from PayPal to database.
+        // if the instruction is of type MANUAL_BANK_TRANSFER the instructions are not required,
+        // since they don't have to be displayed on the invoice document
+        $instructions = $response->getPaymentInstruction();
+        if ($instructions && $instructions->getType() === PaymentInstructionType::INVOICE) {
+            /** @var PaymentInstructionService $instructionService */
+            $instructionService = $this->get('paypal_unified.payment_instruction_service');
+            $instructionService->createInstructions($orderNumber, $instructions);
+        }
+
+        $orderDataService->applyPaymentTypeAttribute($orderNumber, $response, $isExpressCheckout, $isSpbCheckout);
+
+        $redirectParameter = [
+            'module' => 'frontend',
+            'controller' => 'checkout',
+            'action' => 'finish',
+            'sUniqueID' => $paymentId,
+        ];
+
+        if ($isExpressCheckout) {
+            $redirectParameter['expressCheckout'] = true;
+        }
+
+        $this->dependencyProvider->getSession()->offsetUnset('sComment');
+
+        // Done, redirect to the finish page
+        $this->redirect($redirectParameter);
+
+    }
+
+    /**
+     * This action will be executed if the user cancels the payment on the PayPal page.
+     * It will redirect to the payment selection.
+     * @throws Exception
+     */
+    public function cancelAction()
+    {
+        $this->handleError(ErrorCodes::CANCELED_BY_USER);
     }
 
     /**

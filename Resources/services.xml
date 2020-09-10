@@ -8,8 +8,8 @@
 <!--        <import resource="services/backend.xml"/>-->
         <import resource="services/components.xml"/>
 <!--        <import resource="services/decorators.xml"/>-->
-<!--        <import resource="services/paypal_bundle.xml"/>-->
-<!--        <import resource="services/resources.xml"/>-->
+        <import resource="services/sezzle_bundle.xml"/>
+        <import resource="services/resources.xml"/>
 <!--        <import resource="services/subscribers.xml"/>-->
     </imports>
 </container>

@@ -13,13 +13,11 @@ use SwagPaymentSezzle\SezzleBundle\Components\SettingsTable;
 use SwagPaymentSezzle\SezzleBundle\PaymentType;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\ApplicationContext;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Payer;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\RedirectUrls;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\Amount;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\Amount\Details;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\ItemList;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\ItemList\Item;
+use SwagPaymentSezzle\SezzleBundle\Util;
 
 class SessionBuilderService implements SessionBuilderInterface
 {
@@ -53,6 +51,21 @@ class SessionBuilderService implements SessionBuilderInterface
      */
     private $userData;
 
+    /*
+     * @var array
+     */
+    private $userProfile;
+
+    /*
+     * @var array
+     */
+    private $userBillingAddress;
+
+    /*
+     * @var array
+     */
+    private $userShippingAddress;
+
     /**
      * @var SnippetManager
      */
@@ -79,76 +92,95 @@ class SessionBuilderService implements SessionBuilderInterface
         $this->basketData = $params->getBasketData();
         $this->userData = $params->getUserData();
 
+        $this->userProfile = !empty($this->userData) && isset($this->userData['additional']['user']) ?
+            $this->userData['additional']['user'] : null;
+
+        $this->userBillingAddress = !empty($this->userData) && isset($this->userData['billingaddress']) ?
+            $this->userData['billingaddress'] : null;
+        $this->userShippingAddress = !empty($this->userData) && isset($this->userData['shippingaddress']) ?
+            $this->userData['shippingaddress'] : null;
+
+
         $requestParameters = new Session();
-        $paymentType = $params->getPaymentType();
-
-        $applicationContext = $this->getApplicationContext($paymentType);
-
-        if ($paymentType === PaymentType::SEZZLE) {
-            $requestParameters->setIntent($this->getIntentAsString((int) $this->settings->get('intent', SettingsTable::EXPRESS_CHECKOUT)));
-        }
-//        elseif ($paymentType === PaymentType::PAYPAL_INSTALLMENTS) {
-//            $requestParameters->setIntent($this->getIntentAsString((int) $this->settings->get('intent', SettingsTable::INSTALLMENTS)));
-//        } else {
-//            $requestParameters->setIntent('sale');
-//        }
-
-        $payer = new Payer();
-        $payer->setPaymentMethod('paypal');
 
         $cancelUrl = new Session\Url();
-        $cancelUrl->setHref();
-        $cancelUrl->setMethod();
+        $cancelUrl->setHref($this->getRedirectUrl('cancel'));
 
         $completeUrl = new Session\Url();
-        $completeUrl->setHref();
-        $completeUrl->setMethod();
+        $completeUrl->setHref($this->getRedirectUrl('complete'));
 
-        $redirectUrls = new RedirectUrls();
-        $redirectUrls->setCancelUrl($this->getRedirectUrl('cancel'));
-        $redirectUrls->setReturnUrl($this->getRedirectUrl('return'));
+        $customer = new Session\Customer();
+        $customer->setEmail($this->userProfile['email']);
+        $customer->setFirstName($this->userProfile['firstname']);
+        $customer->setLastName($this->userProfile['lastname']);
+        $customer->setPhone($this->userBillingAddress['phone']);
+        $customer->setDob($this->userProfile['birthday']);
+        $customer->setTokenize(true);
 
-        $amount = new Amount();
-        $amount->setDetails($this->getAmountDetails());
-        $amount->setCurrency($this->basketData['sCurrencyName']);
-        $amount->setTotal(number_format($this->getTotalAmount(), 2));
+        $billingAddress = new Session\Customer\Address();
+        $billingAddress->setName(sprintf('%s %s', $this->userBillingAddress['firstname'], $this->userBillingAddress['lastname']));
+        $billingAddress->setStreet($this->userBillingAddress['street']);
+        $billingAddress->setState($this->userBillingAddress['state']);
+        $billingAddress->setCity($this->userBillingAddress['city']);
+        $billingAddress->setCountryCode($this->userData['additional']['country']['countryiso']);
+        $billingAddress->setPhoneNumber($this->userBillingAddress['phone']);
+        $billingAddress->setPostalCode($this->userBillingAddress['zipcode']);
+        $customer->setBillingAddress($billingAddress);
 
-        $transactions = new Transactions();
-        $transactions->setAmount($amount);
+        $shippingAddress = new Session\Customer\Address();
+        $shippingAddress->setName(sprintf('%s %s', $this->userShippingAddress['firstname'], $this->userShippingAddress['lastname']));
+        $shippingAddress->setStreet($this->userShippingAddress['street']);
+        $shippingAddress->setState($this->userShippingAddress['state']);
+        $shippingAddress->setCity($this->userShippingAddress['city']);
+        $shippingAddress->setCountryCode($this->userData['additional']['countryShipping']['countryiso']);
+        $shippingAddress->setPhoneNumber($this->userShippingAddress['phone']);
+        $shippingAddress->setPostalCode($this->userShippingAddress['zipcode']);
+        $customer->setShippingAddress($shippingAddress);
 
-        $submitCartGeneral = (bool) $this->settings->get('submit_cart');
-        $submitCartEcs = (bool) $this->settings->get('submit_cart', SettingsTable::GENERAL);
-        if ($paymentType !== PaymentType::SEZZLE && $submitCartGeneral) {
-            $this->setItemList($transactions);
-        } elseif ($paymentType === PaymentType::SEZZLE && $submitCartEcs) {
-            $this->setItemList($transactions);
-        }
+        $order = new Session\Order();
+        $order->setIntent("AUTH");
+        $order->setDescription("Shopware Order");
+        $order->setReferenceId($params->getBasketUniqueId());
+        $order->setRequiresShippingInfo(false);
 
-        $requestParameters->setPayer($payer);
-        $requestParameters->setRedirectUrls($redirectUrls);
-        $requestParameters->setTransactions($transactions);
-        $requestParameters->setApplicationContext($applicationContext);
+        $orderAmount = new Session\Order\Amount();
+        $orderAmount->setAmountInCents(Util::formatToCents($this->getTotalAmount()));
+        $orderAmount->setCurreny($this->basketData['sCurrencyName']);
+        $order->setOrderAmount($orderAmount);
+
+        $taxAmount = new Session\Order\Amount();
+        $taxAmount->setAmountInCents(Util::formatToCents($this->basketData['sAmountTax']));
+        $taxAmount->setCurreny($this->basketData['sCurrencyName']);
+        $order->setTaxAmount($taxAmount);
+
+//        $items = [];
+//        if (isset($this->basketData['content'])) {
+//            foreach ($this->basketData['content'] as $item) {
+//                $itemObj = new Session\Order\Item();
+//                $itemObj->setName($item['articlename']);
+//                $itemObj->setSku($item['articleID']);
+//                $itemObj->setQuantity($item['quantity']);
+//                $itemAmount = new Session\Order\Amount();
+//                $itemAmount->setAmountInCents(number_format($item['price'], 2));
+//                $itemAmount->setCurreny($this->basketData['sCurrencyName']);
+//                $itemObj->setPrice($itemAmount);
+//                $items[] = $itemObj->toArray();
+//            }
+//        }
+
+        $order->setItems($this->getItemList());
+
+        $shippingCosts = new Session\Order\Amount();
+        $shippingCosts->setAmountInCents(Util::formatToCents($this->basketData['sShippingcosts']));
+        $shippingCosts->setCurreny($this->basketData['sCurrencyName']);
+        $order->setShippingAmount($shippingCosts);
+
+        $requestParameters->setCancelUrl($cancelUrl);
+        $requestParameters->setCompleteUrl($completeUrl);
+        $requestParameters->setCustomer($customer);
+        $requestParameters->setOrder($order);
 
         return $requestParameters;
-    }
-
-    /**
-     * @param int $intent
-     *
-     * @return string
-     */
-    private function getIntentAsString($intent)
-    {
-        switch ($intent) {
-            case 0:
-                return 'sale';
-            case 1:
-                return 'authorize';
-            case 2:
-                return 'order';
-            default:
-                throw new \RuntimeException('The intent-type ' . $intent . ' is not supported!');
-        }
     }
 
     /**
@@ -170,25 +202,14 @@ class SessionBuilderService implements SessionBuilderInterface
         return $this->formatPrice($this->basketData['AmountNetNumeric']);
     }
 
-    private function setItemList(Transactions $transactions)
-    {
-        $itemList = new ItemList();
-        $itemList->setItems($this->getItemList());
-
-        $transactions->setItemList($itemList);
-    }
-
     /**
-     * @return Item[]
+     * @return Session\Order\Item[]
      */
     private function getItemList()
     {
         $list = [];
         /** @var array $basketContent */
         $basketContent = $this->basketData['content'];
-        $customProductMainLineItemKey = 0;
-        $customProductsHint = $this->snippetManager->getNamespace('frontend/paypal_unified/checkout/item_list')
-            ->get('paymentBuilder/customProductsHint', ' incl. surcharges for Custom Products configuration');
 
         foreach ($basketContent as $key => $basketItem) {
             $sku = $basketItem['ordernumber'];
@@ -199,49 +220,20 @@ class SessionBuilderService implements SessionBuilderInterface
                 ? $this->formatPrice($basketItem['price'])
                 : $this->formatPrice($basketItem['netprice']);
 
-            // In the following part, we modify the CustomProducts positions.
-            // All position prices of the Custom Products configuration are added up, so that no items with 0€ are committed to PayPal
-            if (!empty($basketItem['customProductMode'])) {
-                //A value indicating if the surcharge of this position is only being added once
-                $isSingleSurcharge = $basketItem['customProductIsOncePrice'];
-
-                switch ($basketItem['customProductMode']) {
-                    case 1:
-                        $customProductMainLineItemKey = $key;
-                        $name .= $customProductsHint;
-
-                        if ($quantity !== 1) {
-                            $price *= $quantity;
-                            $name = $quantity . 'x ' . $name;
-                            $quantity = 1;
-                        }
-
-                        break;
-                    case 2: //Option
-                    case 3: //Value
-                        //Calculate the total price
-                        if (!$isSingleSurcharge) {
-                            $price *= $quantity;
-                        }
-
-                        /** @var Item $mainProduct */
-                        $mainProduct = $list[$customProductMainLineItemKey];
-                        $mainProduct->setPrice($mainProduct->getPrice() + $price);
-                        continue 2;
-                }
-            }
-
-            $item = new Item();
-            $item->setCurrency($this->basketData['sCurrencyName']);
+            $item = new Session\Order\Item();
             $item->setName($name);
-            $item->setPrice($price);
             $item->setQuantity($quantity);
 
             if ($sku !== null && $sku !== '') {
                 $item->setSku($sku);
             }
 
-            $list[$key] = $item;
+            $itemAmount = new Session\Order\Amount();
+            $itemAmount->setAmountInCents(Util::formatToCents($price));
+            $itemAmount->setCurreny($this->basketData['sCurrencyName']);
+            $item->setPrice($itemAmount);
+
+            $list[$key] = $item->toArray();
         }
 
         return $list;
@@ -255,7 +247,7 @@ class SessionBuilderService implements SessionBuilderInterface
     private function getRedirectUrl($action)
     {
         $routingParameters = [
-            'controller' => 'PaypalUnified',
+            'controller' => 'Sezzle',
             'action' => $action,
             'forceSecure' => true,
         ];
@@ -272,37 +264,6 @@ class SessionBuilderService implements SessionBuilderInterface
         }
 
         return $this->router->assemble($routingParameters);
-    }
-
-    /**
-     * @return Details
-     */
-    private function getAmountDetails()
-    {
-        $amountDetails = new Details();
-
-        if ($this->showGrossPrices() && !$this->useNetPriceCalculation()) {
-            $amountDetails->setShipping($this->formatPrice($this->basketData['sShippingcostsWithTax']));
-            $amountDetails->setSubTotal($this->formatPrice($this->basketData['Amount']));
-            $amountDetails->setTax(number_format(0, 2));
-
-            return $amountDetails;
-        }
-
-        //Case 2: Show net prices in shopware and don't exclude country tax
-        if (!$this->showGrossPrices() && !$this->useNetPriceCalculation()) {
-            $amountDetails->setShipping($this->formatPrice($this->basketData['sShippingcostsNet']));
-            $amountDetails->setSubTotal($this->formatPrice($this->basketData['AmountNet']));
-            $amountDetails->setTax($this->basketData['sAmountTax']);
-
-            return $amountDetails;
-        }
-
-        //Case 3: No tax handling at all, just use the net amounts.
-        $amountDetails->setShipping($this->formatPrice($this->basketData['sShippingcostsNet']));
-        $amountDetails->setSubTotal($this->formatPrice($this->basketData['AmountNet']));
-
-        return $amountDetails;
     }
 
     /**
@@ -359,45 +320,4 @@ class SessionBuilderService implements SessionBuilderInterface
         return round((float) str_replace(',', '.', $price), 2);
     }
 
-    /**
-     * @param string $paymentType
-     *
-     * @return ApplicationContext
-     */
-    private function getApplicationContext($paymentType)
-    {
-        $applicationContext = new ApplicationContext();
-
-        $applicationContext->setBrandName($this->getBrandName());
-        $applicationContext->setLocale($this->dependencyProvider->getShop()->getLocale()->getLocale());
-        $applicationContext->setLandingPage($this->getLandingPage());
-
-        if ($paymentType === PaymentType::SEZZLE) {
-            $applicationContext->setUserAction('continue');
-        }
-
-        return $applicationContext;
-    }
-
-    /**
-     * @return string
-     */
-    private function getBrandName()
-    {
-        $brandName = (string) $this->settings->get('brand_name');
-
-        if (strlen($brandName) > 127) {
-            $brandName = substr($brandName, 0, 127);
-        }
-
-        return $brandName;
-    }
-
-    /**
-     * @return string
-     */
-    private function getLandingPage()
-    {
-        return (string) $this->settings->get('landing_page_type');
-    }
 }

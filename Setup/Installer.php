@@ -112,8 +112,101 @@ class Installer
      */
     private function createAttributes()
     {
+        $this->createUserAttributes();
+        $this->createOrderAttributes();
+        $this->modelManager->generateAttributeModels(
+            [
+                's_order_attributes',
+                's_user_attributes'
+            ]
+        );
+    }
+
+    /**
+     *
+     */
+    private function createOrderAttributes()
+    {
         $this->attributeCrudService->update('s_order_attributes', 'swag_sezzle_payment_action', 'string');
-        $this->modelManager->generateAttributeModels(['s_order_attributes', 's_core_paymentmeans_attributes']);
+        $this->attributeCrudService->update('s_order_attributes',
+            'swag_sezzle_reference_id',
+            'string',
+            [
+                'position' => -100,
+                'displayInBackend' => true,
+                'label' => 'Sezzle Order Reference ID',
+                'helpText' => 'Sezzle Order Reference ID',
+            ]);
+        $this->attributeCrudService->update('s_order_attributes',
+            'swag_sezzle_order_uuid',
+            'string',
+            [
+                'position' => -100,
+                'displayInBackend' => true,
+                'label' => 'Sezzle Order UUID',
+                'helpText' => 'Sezzle Order UUID',
+            ]);
+        $this->attributeCrudService->update('s_order_attributes',
+            'swag_sezzle_auth_expiry',
+            'datetime',
+            [
+                'position' => -100,
+                'displayInBackend' => true,
+                'label' => 'Sezzle Payment Auth Expiry',
+                'helpText' => 'Sezzle Payment Auth Expiry',
+            ]);
+        $this->attributeCrudService->update('s_order_attributes',
+            'swag_sezzle_customer_uuid',
+            'string',
+            [
+                'position' => -100,
+                'displayInBackend' => false,
+                'label' => 'Sezzle Customer UUID',
+                'helpText' => 'Sezzle Customer UUID',
+            ]);
+        $this->attributeCrudService->update('s_order_attributes',
+            'swag_sezzle_customer_uuid_expiry',
+            'datetime',
+            [
+                'position' => -100,
+                'displayInBackend' => false,
+                'label' => 'Sezzle Customer UUID Expiry',
+                'helpText' => 'Sezzle Customer UUID Expiry',
+            ]);
+    }
+
+    /**
+     *
+     */
+    private function createUserAttributes()
+    {
+        $this->attributeCrudService->update('s_user_attributes',
+            'swag_sezzle_customer_uuid',
+            'string',
+            [
+                'position' => -100,
+                'displayInBackend' => false,
+                'label' => 'Sezzle Customer UUID',
+                'helpText' => 'Sezzle Customer UUID',
+            ]);
+        $this->attributeCrudService->update('s_user_attributes',
+            'swag_sezzle_customer_uuid_expiry',
+            'datetime',
+            [
+                'position' => -100,
+                'displayInBackend' => false,
+                'label' => 'Sezzle Customer UUID Expiry',
+                'helpText' => 'Sezzle Customer UUID Expiry',
+            ]);
+        $this->attributeCrudService->update('s_user_attributes',
+            'swag_sezzle_customer_uuid_status',
+            'boolean',
+            [
+                'position' => -100,
+                'displayInBackend' => false,
+                'label' => 'Sezzle Customer UUID Status',
+                'helpText' => 'Sezzle Customer UUID Status',
+            ]);
     }
 
     /**

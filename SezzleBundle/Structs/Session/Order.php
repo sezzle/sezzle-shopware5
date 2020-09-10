@@ -54,6 +54,16 @@ class Order
     private $orderAmount;
 
     /**
+     * @var string
+     */
+    private $orderUuid;
+
+    /**
+     * @var string
+     */
+    private $checkoutUrl;
+
+    /**
      * @return string
      */
     public function getIntent()
@@ -198,6 +208,38 @@ class Order
     }
 
     /**
+     * @return string
+     */
+    public function getOrderUuid()
+    {
+        return $this->orderUuid;
+    }
+
+    /**
+     * @param string $orderUuid
+     */
+    public function setOrderUuid($orderUuid)
+    {
+        $this->orderUuid = $orderUuid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCheckoutUrl()
+    {
+        return $this->checkoutUrl;
+    }
+
+    /**
+     * @param string $checkoutUrl
+     */
+    public function setCheckoutUrl($checkoutUrl)
+    {
+        $this->checkoutUrl = $checkoutUrl;
+    }
+
+    /**
      * @param array|null $data
      * @return Order
      */
@@ -209,15 +251,18 @@ class Order
             return $result;
         }
 
-        $result->setIntent($data['intent']);
-        $result->setReferenceId($data['reference_id']);
-        $result->setDescription($data['description']);
-        $result->setRequiresShippingInfo($data['requires_shipping_info']);
-        $result->setItems($data['items']);
-        $result->setDiscounts($data['discounts']);
-        $result->setShippingAmount($data['shipping_amount']);
-        $result->setTaxAmount($data['tax_amount']);
-        $result->setOrderAmount($data['order_amount']);
+//        $result->setIntent($data['intent']);
+//        $result->setReferenceId($data['reference_id']);
+//        $result->setDescription($data['description']);
+//        $result->setRequiresShippingInfo($data['requires_shipping_info']);
+//        $result->setItems($data['items']);
+//        $result->setDiscounts($data['discounts']);
+//        $result->setShippingAmount($data['shipping_amount']);
+//        $result->setTaxAmount($data['tax_amount']);
+//        $result->setOrderAmount($data['order_amount']);
+
+        $result->setCheckoutUrl($data['checkout_url']);
+        $result->setOrderUuid($data['order_uuid']);
 
         return $result;
     }

@@ -2,6 +2,7 @@
 
 namespace SwagPaymentSezzle\SezzleBundle\Structs;
 
+use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\PaymentInstruction;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session\Customer;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session\Url;
@@ -85,7 +86,7 @@ class Session
     }
 
     /**
-     * @param mixed $order
+     * @param Order $order
      */
     public function setOrder(Order $order)
     {
@@ -93,16 +94,22 @@ class Session
     }
 
     /**
+     * @param array $data
      * @return Session
      */
     public static function fromArray(array $data = [])
     {
         $result = new self();
 
-        $result->setCancelUrl($data['cancel_url']);
-        $result->setCompleteUrl($data['complete_url']);
-        $result->setCustomer($data['customer']);
-        $result->setOrder($data['order']);
+//        $result->setCancelUrl($data['cancel_url']);
+//        $result->setCompleteUrl($data['complete_url']);
+//        $result->setCustomer($data['customer']);
+
+        if (array_key_exists('order', $data)) {
+            $result->setOrder(Order::fromArray($data['order']));
+        }
+
+
         return $result;
     }
 
