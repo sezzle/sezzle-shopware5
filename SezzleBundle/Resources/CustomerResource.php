@@ -6,9 +6,10 @@ use Shopware\Components\HttpClient\RequestException;
 use SwagPaymentSezzle\SezzleBundle\RequestType;
 use SwagPaymentSezzle\SezzleBundle\RequestUri;
 use SwagPaymentSezzle\SezzleBundle\Services\ClientService;
+use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
 use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
 
-class CaptureResource
+class CustomerResource
 {
     /**
      * @var ClientService
@@ -21,14 +22,14 @@ class CaptureResource
     }
 
     /**
-     * @param string $orderUuid
-     * @param Capture $capturePayload
+     * @param string $customerUuid
+     * @param CustomerOrder $customerOrderPayload
      * @return array
      * @throws RequestException
      */
-    public function create($orderUuid, Capture $capturePayload)
+    public function create($customerUuid, CustomerOrder $customerOrderPayload)
     {
-        $url = sprintf(RequestUri::CAPTURE_RESOURCE, $orderUuid);
-        return $this->clientService->sendRequest(RequestType::POST, $url, $capturePayload->toArray());
+        $url = sprintf(RequestUri::CUSTOMER_ORDER_RESOURCE, $customerUuid);
+        return $this->clientService->sendRequest(RequestType::POST, $url, $customerOrderPayload->toArray());
     }
 }

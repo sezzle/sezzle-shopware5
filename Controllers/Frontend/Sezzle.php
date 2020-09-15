@@ -3,15 +3,23 @@
 use Shopware\Components\HttpClient\RequestException;
 use SwagPaymentSezzle\Components\DependencyProvider;
 use SwagPaymentSezzle\Components\ErrorCodes;
+use SwagPaymentSezzle\Components\OrderStatus;
 use SwagPaymentSezzle\Components\PaymentMethodProvider;
 use SwagPaymentSezzle\Components\PaymentStatus;
+use SwagPaymentSezzle\Components\Services\BasketDataService;
 use SwagPaymentSezzle\Components\Services\OrderDataService;
 use SwagPaymentSezzle\Components\Services\SettingsService;
-use SwagPaymentSezzle\Components\SessionBuilderParameters;
+use SwagPaymentSezzle\Components\Services\UserDataService;
+use SwagPaymentSezzle\Components\Services\Validation\BasketValidatorInterface;
+use SwagPaymentSezzle\Components\ApiBuilderParameters;
 use SwagPaymentSezzle\SezzleBundle\PaymentAction;
 use SwagPaymentSezzle\SezzleBundle\PaymentType;
 use SwagPaymentSezzle\SezzleBundle\Resources\CaptureResource;
+use SwagPaymentSezzle\SezzleBundle\Resources\CustomerResource;
+use SwagPaymentSezzle\SezzleBundle\Resources\OrderResource;
 use SwagPaymentSezzle\SezzleBundle\Resources\SessionResource;
+use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
+use SwagPaymentSezzle\SezzleBundle\Structs\Order;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 
 class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend_Payment
@@ -37,11 +45,21 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
      * @var CaptureResource
      */
     private $captureResource;
+    /**
+     * @var OrderResource
+     */
+    private $orderResource;
+    /**
+     * @var CustomerResource
+     */
+    private $customerResource;
 
     public function preDispatch()
     {
         $this->sessionResource = $this->get('sezzle.session_resource');
         $this->captureResource = $this->get('sezzle.capture_resource');
+        $this->orderResource = $this->get('sezzle.order_resource');
+        $this->customerResource = $this->get('sezzle.customer_resource');
         $this->dependencyProvider = $this->get('sezzle.dependency_provider');
         $this->shopwareConfig = $this->get('config');
         $this->settingsService = $this->get('sezzle.settings_service');
@@ -53,6 +71,16 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
     public function indexAction()
     {
         $this->forward('gateway');
+//        $shopwareSession = $this->dependencyProvider->getSession();
+//        $orderData = $shopwareSession->get('sOrderVariables');
+//        $userData = $orderData['sUserData'];
+//        /** @var UserDataService $userDataService */
+//        $userDataService = $this->get('sezzle.user_data_service');
+//        if ($userDataService->getValueByKey($userData, 'sezzle_token')) {
+//            $shopwareSession->offsetSet('sezzle_token', $userDataService->getValueByKey($userData, 'sezzle_token'));
+//            $shopwareSession->offsetSet('sezzle_token_expiration', $userDataService->getValueByKey($userData, 'sezzle_token_expiration'));
+//        }
+
     }
 
     /**
@@ -61,8 +89,8 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
      */
     public function gatewayAction()
     {
-        $session = $this->dependencyProvider->getSession();
-        $orderData = $session->get('sOrderVariables');
+        $shopwareSession = $this->dependencyProvider->getSession();
+        $orderData = $shopwareSession->get('sOrderVariables');
 
 
         if ($orderData === null) {
@@ -85,10 +113,11 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             $basketData = $orderData['sBasket'];
             $selectedPaymentName = $orderData['sPayment']['name'];
 
-            $requestParams = new SessionBuilderParameters();
+            $requestParams = new ApiBuilderParameters();
             $requestParams->setBasketData($basketData);
             $requestParams->setUserData($userData);
             $requestParams->setPaymentToken($this->dependencyProvider->createPaymentToken());
+            $basketUniqueId = null;
 
             // If supported, add the basket signature feature
             if ($this->container->has('basket_signature_generator')) {
@@ -98,26 +127,56 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
 
             /** @var Session $session */
             $session = null;
+            /** @var CustomerOrder $customerOrder */
+            $customerOrder = null;
+            $customerUuid = null;
 
             // For generic PayPal payments like Sezzle,
             // a different parameter than in installments for the payment creation is needed
             if ($selectedPaymentName === PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME) {
                 $requestParams->setPaymentType(PaymentType::SEZZLE);
-                $session = $this->get('sezzle.session_builder_service')->getSession($requestParams);
+                /** @var UserDataService $userDataService */
+                $userDataService = $this->get('sezzle.user_data_service');
+                if ($customerUuid = $userDataService->getValueByKey($userData, 'customer_uuid')) {
+                    $customerOrder = $this->get('sezzle.api_builder_service')->getCustomerOrderPayload($requestParams);
+                } else {
+                    $session = $this->get('sezzle.api_builder_service')->getSession($requestParams);
+                }
             }
 
-//            if ($selectedPaymentName === PaymentMethodProvider::PAYPAL_UNIFIED_PAYMENT_METHOD_NAME) {
-//                $requestParams->setPaymentType(PaymentType::PAYPAL_CLASSIC);
-//                $payment = $this->get('paypal_unified.payment_builder_service')->getPayment($requestParams);
-//            } elseif ($selectedPaymentName === PaymentMethodProvider::PAYPAL_INSTALLMENTS_PAYMENT_METHOD_NAME) {
-//                $this->client->setPartnerAttributionId(PartnerAttributionId::PAYPAL_INSTALLMENTS);
-//                $requestParams->setPaymentType(PaymentType::PAYPAL_INSTALLMENTS);
-//                $payment = $this->get('paypal_unified.installments.payment_builder_service')->getPayment($requestParams);
-//            }
+            if ($customerOrder) {
+                $response = $this->customerResource->create($customerUuid, $customerOrder);
+                $responseStruct = CustomerOrder::fromArray($response);
+                $orderUuid = $responseStruct->getUuid();
+            } else {
 
-            $response = $this->sessionResource->create($session);
+                $response = $this->sessionResource->create($session);
+                $responseStruct = Session::fromArray($response);
+                $orderUuid = $responseStruct->getOrder()->getUuid();
+            }
 
-            $responseStruct = Session::fromArray($response);
+
+            /** @var BasketDataService $basketDataService */
+            $basketDataService = $this->get('sezzle.basket_data_service');
+            foreach ($this->getBasket()['content'] as $lineItem) {
+                $basketDataService->applyOrderUuidAttribute($lineItem['id'], $orderUuid);
+            }
+
+            if ($customerOrder) {
+                $this->forward(
+                    'complete',
+                    null,
+                    null,
+                    ['basketId' => $basketUniqueId]
+                );
+                return;
+            }
+
+            if ($tokenizeData = $responseStruct->getTokenize()) {
+                $shopwareSession->offsetSet('sezzle_token', $tokenizeData->getToken());
+                $shopwareSession->offsetSet('sezzle_token_expiration', $tokenizeData->getExpiration());
+            }
+
         } catch (RequestException $requestEx) {
             $this->handleError(ErrorCodes::COMMUNICATION_FAILURE, $requestEx);
 
@@ -131,29 +190,57 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
         $this->redirect($responseStruct->getOrder()->getCheckoutUrl());
     }
 
+    public function tokenizeAction()
+    {
+
+    }
+
     public function completeAction()
     {
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         $request = $this->Request();
-        $sessionUuid = $request->getParam('sessionUuid');
-        $basketId = $request->getParam('basketId');
+        $basketUniqueId = $request->getParam('basketId');
+
+        if ($customerUuid = $request->getParam('customer-uuid')) {
+            /** @var UserDataService $userDataService */
+            $userDataService = $this->get('sezzle.user_data_service');
+            $userDataService->applyTokenizeAttributes();
+        }
+
+        /** @var BasketDataService $basketDataService */
+        $basketDataService = $this->get('sezzle.basket_data_service');
+        $orderUuid = $basketDataService->getValueByKey($this->getBasket(), 'order_uuid');
+
+        if (!$orderUuid) {
+            $this->handleError(ErrorCodes::BASKET_VALIDATION_ERROR);
+
+            return;
+        }
+
+        try {
+            $sezzleOrder = $this->orderResource->get($orderUuid);
+        } catch (RequestException $e) {
+            $this->handleError(ErrorCodes::COMMUNICATION_FAILURE, $e);
+
+            return;
+        }
+
+        if (!isset($sezzleOrder['authorization'])) {
+            $this->handleError(ErrorCodes::NO_ORDER_TO_PROCESS);
+
+            return;
+        }
+
 
         //Basket validation with shopware 5.2 support
         if (!$this->container->has('basket_signature_generator')
         ) {
             //For shopware < 5.3 and for whitelisted basket ids
-            try {
-                $session = $this->sessionResource->get($sessionUuid);
-            } catch (RequestException $exception) {
-                $this->handleError(ErrorCodes::COMMUNICATION_FAILURE, $exception);
+            $basketValid = $this->validateBasketSimple(Order::fromArray($sezzleOrder));
 
-                return;
-            }
-
-            $basketValid = $this->validateBasketSimple(Session::fromArray($session));
         } else {
             //For shopware > 5.3
-            $basketValid = $this->validateBasketExtended($basketId);
+            $basketValid = $this->validateBasketExtended($basketUniqueId);
         }
 
         if (!$basketValid) {
@@ -162,42 +249,42 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             return;
         }
 
-        $orderNumber = $this->saveOrder($sessionUuid, $sessionUuid, PaymentStatus::PAYMENT_STATUS_OPEN);
+        $orderNumber = $this->saveOrder($orderUuid, $orderUuid, PaymentStatus::PAYMENT_STATUS_OPEN);
 
-        // if the order number should be send to PayPal do it before the execute
-//        if ($sendOrderNumber) {
-//            $orderNumber = $this->saveOrder($paymentId, $paymentId, PaymentStatus::PAYMENT_STATUS_OPEN);
-//            $patchOrderNumber = $this->settingsService->get('order_number_prefix') . $orderNumber;
-//
-//            /** @var PaymentOrderNumberPatch $paymentPatch */
-//            $paymentPatch = new PaymentOrderNumberPatch($patchOrderNumber);
-//
-//            try {
-//                $this->paymentResource->patch($paymentId, [$paymentPatch]);
-//            } catch (RequestException $exception) {
-//                $this->handleError(ErrorCodes::COMMUNICATION_FAILURE, $exception);
-//
-//                return;
-//            }
-//        }
+        if (!$orderNumber) {
+            $this->handleError(ErrorCodes::UNKNOWN);
 
-        $payerId = $request->getParam('PayerID');
+            return;
+        }
+
+        /** @var Order $sezzleOrderObj */
+        $sezzleOrderObj = Order::fromArray($sezzleOrder);
+        $orderUuid = $sezzleOrderObj->getUuid();
+
         /** @var OrderDataService $orderDataService */
         $orderDataService = $this->get('sezzle.order_data_service');
         try {
             $paymentAction = $this->settingsService->get('payment_action');
 
+            echo $paymentAction;
+
             if ($paymentAction === PaymentAction::AUTHORIZE_CAPTURE) {
-                $captureResponse = $this->captureResource->create();
+                $requestParams = new ApiBuilderParameters();
+                $requestParams->setOrder($orderDataService->getOrder($orderNumber));
+                $capturePayload = $this->get('sezzle.api_builder_service')->getCapturePayload($requestParams);
+                $captureResponse = $this->captureResource->create($orderUuid, $capturePayload);
+                $captureObject = Order\Capture::fromArray($captureResponse);
                 if ($captureResponse === null) {
                     $this->handleError(ErrorCodes::COMMUNICATION_FAILURE);
                     return;
                 }
-                $this->savePaymentStatus($relatedResourceId, $paymentId, PaymentStatus::PAYMENT_STATUS_PAID);
+                $this->savePaymentStatus($orderUuid, $orderUuid, PaymentStatus::PAYMENT_STATUS_PAID);
+                $this->orderResource->update($orderUuid, ['reference_id' => $orderNumber]);
+                $orderDataService->setOrderStatus($orderNumber, OrderStatus::IN_PROGRESS);
                 $orderDataService->setClearedDate($orderNumber);
             }
         } catch (RequestException $exception) {
-            $orderDataService->setOrderState($orderNumber, PaymentStatus::PAYMENT_STATUS_OPEN);
+            $orderDataService->setOrderStatus($orderNumber, OrderStatus::OPEN);
             //$orderDataService->removeTransactionId($orderNumber);
             $errorCode = ErrorCodes::COMMUNICATION_FAILURE;
             $this->handleError($errorCode, $exception);
@@ -205,56 +292,22 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             return;
         }
 
-        /** @var Payment $response */
-        $response = Payment::fromArray($executionResponse);
+        $orderDataService->applyPaymentAttributes($orderNumber, $sezzleOrderObj, true);
 
-        // if the order number is not sent to PayPal, save the order here
-        if (!$sendOrderNumber) {
-            $orderNumber = $this->saveOrder($paymentId, $paymentId, PaymentStatus::PAYMENT_STATUS_OPEN);
-        }
-
-        /** @var RelatedResource $relatedResource */
-        $relatedResource = $response->getTransactions()->getRelatedResources()->getResources()[0];
-
-        //Use TXN-ID instead of the PaymentId
-        $relatedResourceId = $relatedResource->getId();
-        if (!$orderDataService->applyTransactionId($orderNumber, $relatedResourceId)) {
-            $this->handleError(ErrorCodes::NO_ORDER_TO_PROCESS);
-
-            return;
-        }
-
-        // apply the payment status if its completed by PayPal
-        $paymentState = $relatedResource->getState();
-        if ($paymentState === PaymentStatus::PAYMENT_COMPLETED) {
-            $this->savePaymentStatus($relatedResourceId, $paymentId, PaymentStatus::PAYMENT_STATUS_PAID);
-            $orderDataService->setClearedDate($orderNumber);
-        }
-
-        // Save payment instructions from PayPal to database.
-        // if the instruction is of type MANUAL_BANK_TRANSFER the instructions are not required,
-        // since they don't have to be displayed on the invoice document
-        $instructions = $response->getPaymentInstruction();
-        if ($instructions && $instructions->getType() === PaymentInstructionType::INVOICE) {
-            /** @var PaymentInstructionService $instructionService */
-            $instructionService = $this->get('paypal_unified.payment_instruction_service');
-            $instructionService->createInstructions($orderNumber, $instructions);
-        }
-
-        $orderDataService->applyPaymentTypeAttribute($orderNumber, $response, $isExpressCheckout, $isSpbCheckout);
+//        if ($customerUuid) {
+//            $orderDataService->applyTokenizeAttributes($orderNumber);
+//        }
 
         $redirectParameter = [
             'module' => 'frontend',
             'controller' => 'checkout',
             'action' => 'finish',
-            'sUniqueID' => $paymentId,
+            'sUniqueID' => $orderUuid,
         ];
 
-        if ($isExpressCheckout) {
-            $redirectParameter['expressCheckout'] = true;
-        }
-
         $this->dependencyProvider->getSession()->offsetUnset('sComment');
+
+        $orderDataService->clearSezzleSessionData();
 
         // Done, redirect to the finish page
         $this->redirect($redirectParameter);
@@ -269,6 +322,47 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
     public function cancelAction()
     {
         $this->handleError(ErrorCodes::CANCELED_BY_USER);
+    }
+
+    /**
+     * @param string|null $basketId
+     *
+     * @return bool
+     */
+    private function validateBasketExtended($basketId = null)
+    {
+        //Shopware 5.3 installed but no basket id that can be validated.
+        if ($basketId === null) {
+            return false;
+        }
+
+        //New validation for Shopware 5.3.X
+        try {
+            $basket = $this->loadBasketFromSignature($basketId);
+            $this->verifyBasketSignature($basketId, $basket);
+
+            return true;
+        } catch (RuntimeException $ex) {
+            return false;
+        }
+    }
+
+    /**
+     * @param Order $order
+     * @return bool
+     */
+    private function validateBasketSimple(Order $order)
+    {
+        /** @var BasketValidatorInterface $legacyValidator */
+        $legacyValidator = $this->get('sezzle.simple_basket_validator');
+
+        $basket = $this->getBasket();
+        $customer = $this->getUser();
+        if ($basket === null || $customer === null) {
+            return false;
+        }
+
+        return $legacyValidator->validate($this->getBasket(), $this->getUser(), $order);
     }
 
     /**

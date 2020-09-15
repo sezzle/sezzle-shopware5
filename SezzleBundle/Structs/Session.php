@@ -2,9 +2,9 @@
 
 namespace SwagPaymentSezzle\SezzleBundle\Structs;
 
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\PaymentInstruction;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session\Customer;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order;
+use SwagPaymentSezzle\SezzleBundle\Structs\Session\Tokenize;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session\Url;
 
 class Session
@@ -28,6 +28,11 @@ class Session
      * @var Order
      */
     private $order;
+
+    /**
+     * @var Tokenize
+     */
+    private $tokenize;
 
     /**
      * @return Url
@@ -94,6 +99,22 @@ class Session
     }
 
     /**
+     * @return Tokenize
+     */
+    public function getTokenize()
+    {
+        return $this->tokenize;
+    }
+
+    /**
+     * @param Tokenize $tokenize
+     */
+    public function setTokenize(Tokenize $tokenize)
+    {
+        $this->tokenize = $tokenize;
+    }
+
+    /**
      * @param array $data
      * @return Session
      */
@@ -107,6 +128,10 @@ class Session
 
         if (array_key_exists('order', $data)) {
             $result->setOrder(Order::fromArray($data['order']));
+        }
+
+        if (array_key_exists('tokenize', $data)) {
+            $result->setTokenize(Tokenize::fromArray($data['tokenize']));
         }
 
 

@@ -4,15 +4,18 @@ namespace SwagPaymentSezzle\Components;
 
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 
-interface SessionBuilderInterface
+interface ApiBuilderInterface
 {
     const CUSTOMER_GROUP_USE_GROSS_PRICES = 'customerGroupUseGrossPrices';
 
     /**
      * The function returns an array with all parameters that are expected by the Sezzle API.
      *
-     * @param SessionBuilderParameters $params
+     * @param ApiBuilderParameters $params
      * @return Session
      */
-    public function getSession(SessionBuilderParameters $params);
+    public function getSession(ApiBuilderParameters $params);
+
+    public function getCapturePayload(ApiBuilderParameters $params);
+    public function getCustomerOrderPayload(ApiBuilderParameters $params);
 }

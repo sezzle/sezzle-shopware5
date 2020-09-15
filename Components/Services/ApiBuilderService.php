@@ -6,11 +6,13 @@ use Shopware\Components\Cart\PaymentTokenService;
 use Shopware\Components\Routing\RouterInterface;
 use Shopware_Components_Snippet_Manager as SnippetManager;
 use SwagPaymentSezzle\Components\DependencyProvider;
-use SwagPaymentSezzle\Components\SessionBuilderInterface;
-use SwagPaymentSezzle\Components\SessionBuilderParameters;
+use SwagPaymentSezzle\Components\ApiBuilderInterface;
+use SwagPaymentSezzle\Components\ApiBuilderParameters;
 use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
 use SwagPaymentSezzle\SezzleBundle\Components\SettingsTable;
 use SwagPaymentSezzle\SezzleBundle\PaymentType;
+use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
+use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\ApplicationContext;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions;
@@ -19,7 +21,7 @@ use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\ItemList;
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\ItemList\Item;
 use SwagPaymentSezzle\SezzleBundle\Util;
 
-class SessionBuilderService implements SessionBuilderInterface
+class ApiBuilderService implements ApiBuilderInterface
 {
     /**
      * @var RouterInterface
@@ -32,7 +34,7 @@ class SessionBuilderService implements SessionBuilderInterface
     protected $settings;
 
     /**
-     * @var SessionBuilderParameters
+     * @var ApiBuilderParameters
      */
     protected $requestParams;
 
@@ -45,6 +47,11 @@ class SessionBuilderService implements SessionBuilderInterface
      * @var array
      */
     private $basketData;
+
+    /**
+     * @var array
+     */
+    private $order;
 
     /*
      * @var array
@@ -86,19 +93,26 @@ class SessionBuilderService implements SessionBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getSession(SessionBuilderParameters $params)
+    public function getSession(ApiBuilderParameters $params)
     {
         $this->requestParams = $params;
         $this->basketData = $params->getBasketData();
+
         $this->userData = $params->getUserData();
+
+
 
         $this->userProfile = !empty($this->userData) && isset($this->userData['additional']['user']) ?
             $this->userData['additional']['user'] : null;
+
+
 
         $this->userBillingAddress = !empty($this->userData) && isset($this->userData['billingaddress']) ?
             $this->userData['billingaddress'] : null;
         $this->userShippingAddress = !empty($this->userData) && isset($this->userData['shippingaddress']) ?
             $this->userData['shippingaddress'] : null;
+
+
 
 
         $requestParameters = new Session();
@@ -143,14 +157,17 @@ class SessionBuilderService implements SessionBuilderInterface
         $order->setReferenceId($params->getBasketUniqueId());
         $order->setRequiresShippingInfo(false);
 
+
+
+
         $orderAmount = new Session\Order\Amount();
         $orderAmount->setAmountInCents(Util::formatToCents($this->getTotalAmount()));
-        $orderAmount->setCurreny($this->basketData['sCurrencyName']);
+        $orderAmount->setCurrency($this->basketData['sCurrencyName']);
         $order->setOrderAmount($orderAmount);
 
         $taxAmount = new Session\Order\Amount();
         $taxAmount->setAmountInCents(Util::formatToCents($this->basketData['sAmountTax']));
-        $taxAmount->setCurreny($this->basketData['sCurrencyName']);
+        $taxAmount->setCurrency($this->basketData['sCurrencyName']);
         $order->setTaxAmount($taxAmount);
 
 //        $items = [];
@@ -172,13 +189,46 @@ class SessionBuilderService implements SessionBuilderInterface
 
         $shippingCosts = new Session\Order\Amount();
         $shippingCosts->setAmountInCents(Util::formatToCents($this->basketData['sShippingcosts']));
-        $shippingCosts->setCurreny($this->basketData['sCurrencyName']);
+        $shippingCosts->setCurrency($this->basketData['sCurrencyName']);
         $order->setShippingAmount($shippingCosts);
 
         $requestParameters->setCancelUrl($cancelUrl);
         $requestParameters->setCompleteUrl($completeUrl);
         $requestParameters->setCustomer($customer);
         $requestParameters->setOrder($order);
+
+        return $requestParameters;
+    }
+
+    public function getCapturePayload(ApiBuilderParameters $params)
+    {
+        $this->order = $params->getOrder();
+
+        $requestParameters = new Capture();
+
+        $amount = new Session\Order\Amount();
+        $amount->setAmountInCents(Util::formatToCents($this->order['invoice_amount']));
+        $amount->setCurrency($this->order['currency']);
+        $requestParameters->setCaptureAmount($amount);
+        $requestParameters->setPartialCapture(false);
+
+        return $requestParameters;
+    }
+
+    public function getCustomerOrderPayload(ApiBuilderParameters $params)
+    {
+        $this->basketData = $params->getBasketData();
+        $this->userData = $params->getUserData();
+
+        $requestParameters = new CustomerOrder();
+
+        $requestParameters->setIntent("AUTH");
+        $requestParameters->setReferenceId($params->getBasketUniqueId());
+
+        $amount = new Session\Order\Amount();
+        $amount->setAmountInCents(Util::formatToCents($this->getTotalAmount()));
+        $amount->setCurrency($this->basketData['sCurrencyName']);
+        $requestParameters->setOrderAmount($amount);
 
         return $requestParameters;
     }
@@ -230,7 +280,7 @@ class SessionBuilderService implements SessionBuilderInterface
 
             $itemAmount = new Session\Order\Amount();
             $itemAmount->setAmountInCents(Util::formatToCents($price));
-            $itemAmount->setCurreny($this->basketData['sCurrencyName']);
+            $itemAmount->setCurrency($this->basketData['sCurrencyName']);
             $item->setPrice($itemAmount);
 
             $list[$key] = $item->toArray();

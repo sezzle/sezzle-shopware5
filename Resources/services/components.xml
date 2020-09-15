@@ -12,8 +12,8 @@
             <argument type="service" id="service_container"/>
         </service>
 
-        <service id="sezzle.session_builder_service"
-                 class="SwagPaymentSezzle\Components\Services\SessionBuilderService"
+        <service id="sezzle.api_builder_service"
+                 class="SwagPaymentSezzle\Components\Services\ApiBuilderService"
                  public="true">
             <argument type="service" id="router"/>
             <argument type="service" id="sezzle.settings_service"/>
@@ -26,6 +26,7 @@
                  public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="sezzle.settings_service"/>
+            <argument type="service" id="sezzle.tokenize_resource"/>
         </service>
 
         <service id="sezzle.logger_service"
@@ -40,6 +41,20 @@
                  public="true">
             <argument type="service" id="models"/>
             <argument type="service" id="sezzle.dependency_provider"/>
+        </service>
+
+        <service id="sezzle.basket_data_service"
+                 class="SwagPaymentSezzle\Components\Services\BasketDataService"
+                 public="true">
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="sezzle.settings_service"/>
+        </service>
+        <service id="sezzle.user_data_service"
+                 class="SwagPaymentSezzle\Components\Services\UserDataService"
+                 public="true">
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="sezzle.settings_service"/>
+            <argument type="service" id="sezzle.tokenize_resource"/>
         </service>
     </services>
 </container>

@@ -2,7 +2,11 @@
 
 namespace SwagPaymentSezzle\Components;
 
-class SessionBuilderParameters
+/**
+ * Class ApiBuilderParameters
+ * @package SwagPaymentSezzle\Components
+ */
+class ApiBuilderParameters
 {
     /**
      * @var array
@@ -28,6 +32,11 @@ class SessionBuilderParameters
      * @var string
      */
     private $paymentToken;
+
+    /**
+     * @var array
+     */
+    private $order;
 
     /**
      * @return array
@@ -99,6 +108,22 @@ class SessionBuilderParameters
     public function getPaymentToken()
     {
         return $this->paymentToken;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param array $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
     }
 
     /**

@@ -8,7 +8,7 @@ use SwagPaymentSezzle\SezzleBundle\RequestUri;
 use SwagPaymentSezzle\SezzleBundle\Services\ClientService;
 use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
 
-class CaptureResource
+class TokenizeResource
 {
     /**
      * @var ClientService
@@ -21,14 +21,13 @@ class CaptureResource
     }
 
     /**
-     * @param string $orderUuid
-     * @param Capture $capturePayload
+     * @param string $token
      * @return array
      * @throws RequestException
      */
-    public function create($orderUuid, Capture $capturePayload)
+    public function get($token)
     {
-        $url = sprintf(RequestUri::CAPTURE_RESOURCE, $orderUuid);
-        return $this->clientService->sendRequest(RequestType::POST, $url, $capturePayload->toArray());
+        $url = sprintf(RequestUri::TOKENIZE_RESOURCE, $token);
+        return $this->clientService->sendRequest(RequestType::GET, $url);
     }
 }

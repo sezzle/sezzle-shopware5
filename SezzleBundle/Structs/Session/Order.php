@@ -56,7 +56,7 @@ class Order
     /**
      * @var string
      */
-    private $orderUuid;
+    private $uuid;
 
     /**
      * @var string
@@ -210,17 +210,17 @@ class Order
     /**
      * @return string
      */
-    public function getOrderUuid()
+    public function getUuid()
     {
-        return $this->orderUuid;
+        return $this->uuid;
     }
 
     /**
-     * @param string $orderUuid
+     * @param string $uuid
      */
-    public function setOrderUuid($orderUuid)
+    public function setUuid($uuid)
     {
-        $this->orderUuid = $orderUuid;
+        $this->uuid = $uuid;
     }
 
     /**
@@ -262,7 +262,7 @@ class Order
 //        $result->setOrderAmount($data['order_amount']);
 
         $result->setCheckoutUrl($data['checkout_url']);
-        $result->setOrderUuid($data['order_uuid']);
+        $result->setUuid($data['uuid']);
 
         return $result;
     }

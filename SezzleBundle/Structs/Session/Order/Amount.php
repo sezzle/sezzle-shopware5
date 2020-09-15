@@ -12,7 +12,7 @@ class Amount
     /**
      * @var string
      */
-    private $curreny;
+    private $currency;
 
     /**
      * @return int
@@ -33,17 +33,17 @@ class Amount
     /**
      * @return string
      */
-    public function getCurreny()
+    public function getCurrency()
     {
-        return $this->curreny;
+        return $this->currency;
     }
 
     /**
-     * @param string $curreny
+     * @param string $currency
      */
-    public function setCurreny($curreny)
+    public function setCurrency($currency)
     {
-        $this->curreny = $curreny;
+        $this->currency = $currency;
     }
 
     /**
@@ -59,7 +59,7 @@ class Amount
         }
 
         $result->setAmountInCents($data['amount_in_cents']);
-        $result->setCurreny($data['currency']);
+        $result->setCurrency($data['currency']);
 
         return $result;
     }
@@ -71,7 +71,7 @@ class Amount
     {
         return [
             'amount_in_cents' => $this->getAmountInCents(),
-            'currency' => $this->getCurreny(),
+            'currency' => $this->getCurrency(),
         ];
     }
 }

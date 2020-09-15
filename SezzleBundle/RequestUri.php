@@ -11,6 +11,8 @@ class RequestUri
     const REFUND_RESOURCE = 'payments/refund';
     const AUTHORIZATION_RESOURCE = 'payments/authorization';
     const CAPTURE_RESOURCE = 'order/%s/capture';
-    const ORDER_RESOURCE = 'payments/orders';
+    const CUSTOMER_ORDER_RESOURCE = 'customer/%s/order';
+    const TOKENIZE_RESOURCE = 'token/%s/session';
+    const ORDER_RESOURCE = 'order';
     const FINANCING_RESOURCE = 'credit/calculated-financing-options';
 }
