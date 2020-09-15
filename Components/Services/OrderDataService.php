@@ -25,16 +25,22 @@ class OrderDataService
      * @var TokenizeResource
      */
     private $tokenizeResource;
+    /**
+     * @var UserDataService
+     */
+    private $userDataService;
 
     public function __construct(
         Connection $dbalConnection,
         SettingsServiceInterface $settingsService,
-        TokenizeResource $tokenizeResource
+        TokenizeResource $tokenizeResource,
+        UserDataService $userDataService
     )
     {
         $this->dbalConnection = $dbalConnection;
         $this->settingsService = $settingsService;
         $this->tokenizeResource = $tokenizeResource;
+        $this->userDataService = $userDataService;
     }
 
     /**
@@ -78,11 +84,15 @@ class OrderDataService
 
     /**
      * @param string $orderNumber
-     * @param Order $order
+     * @param array $data
      * @see PaymentType
      */
-    public function applyPaymentAttributes($orderNumber, Order $order, $isFullCaptured = true)
+    public function applyPaymentAttributes($orderNumber, $data)
     {
+
+        if (empty($data)) {
+            return;
+        }
 
         $builder = $this->dbalConnection->createQueryBuilder();
 
@@ -92,59 +102,85 @@ class OrderDataService
             ->from('s_order', 'o')
             ->where('o.ordernumber = :orderNumber')
             ->getSQL();
-
-        $capturedAmount = $isFullCaptured ? $order->getAuthorization()->getAuthorizationAmount()->getAmountInCents() : 0;
-//        foreach ($order->getAuthorization()->getCaptures() as $item) {
-//            $capturedAmount += $item->getAmount()->getAmountInCents();
-//        }
-
-
         $parameters = [
-            ':orderNumber' => $orderNumber,
-            ':referenceId' => $order->getReferenceId(),
-            ':orderUuid' => $order->getUuid(),
-            ':authAmount' => $order->getAuthorization()->getAuthorizationAmount()->getAmountInCents()
+            ':orderNumber' => $orderNumber
         ];
 
 
-        $builder->update('s_order_attributes', 'oa')
-            ->set('oa.swag_sezzle_reference_id', ':referenceId')
-            ->set('oa.swag_sezzle_order_uuid', ':orderUuid')
-            ->set('oa.swag_sezzle_auth_amount', ':authAmount')
-            ->where('oa.orderID = (' . $subQuery . ')');
+        $builder->update('s_order_attributes', 'oa');
 
+        foreach ($data as $key => $value) {
+            if ($value) {
+                switch ($key) {
+                    case 'referenceId':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_reference_id', ':referenceId');
+                        break;
+                    case 'orderUuid':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_order_uuid', ':orderUuid');
+                        break;
+                    case 'authAmount':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_auth_amount', ':authAmount');
+                        break;
+                    case 'capturedAmount':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_captured_amount', ':capturedAmount');
+                        break;
+                    case 'paymentAction':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_payment_action', ':paymentAction');
+                        break;
+                    case 'authExpiry':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_auth_expiry', ':authExpiry');
+                        break;
+                }
 
-        if ($capturedAmount > 0) {
-            $builder->set('oa.swag_sezzle_captured_amount', ':capturedAmount');
-            $parameters[':capturedAmount'] = $capturedAmount;
-
+            }
         }
 
-        $builder->setParameters($parameters)
+        $builder->where('oa.orderID = (' . $subQuery . ')')
+            ->setParameters($parameters)
             ->execute();
+
     }
 
     public function applyTokenizeAttributes($orderNumber)
     {
-        $shopwareSession = Shopware()->Session();
-
-        if ($token = $shopwareSession->offsetGet('sezzle_token')
-            && $tokenExpiration = $shopwareSession->offsetGet('sezzle_token_expiration')) {
-            $tokenizeDetails = $this->tokenizeResource->get($token);
-            /** @var Tokenize $tokenizeDetailsObj */
-            $tokenizeDetailsObj = Tokenize::fromArray($tokenizeDetails);
-            $builder = $this->dbalConnection->createQueryBuilder();
-
-            $builder->update('s_order_attributes', 'oa')
-                ->set('oa.swag_sezzle_customer_uuid', ':customerUuid')
-                ->set('oa.swag_sezzle_customer_uuid_expiry', ':customerUuidExpiry')
-                ->where('oa.orderNumber = :orderNumber')
-                ->setParameters([
-                    ':orderNumber' => $orderNumber,
-                    ':customerUuid' => $tokenizeDetailsObj->getCustomer()->getUuid(),
-                    ':customerUuidExpiry' => $tokenizeDetailsObj->getCustomer()->getExpiration()
-                ])->execute();
+        $userId = $this->dbalConnection->createQueryBuilder()
+            ->select('o.userID')
+            ->from('s_order', 'o')
+            ->where('o.ordernumber = :orderNumber')
+            ->setParameter(':orderNumber', $orderNumber)
+            ->execute()->fetchColumn(0);
+        if (!$userId) {
+            return;
         }
+
+        $customerUuid = $this->userDataService->getValueByKey($userId, 'customer_uuid');
+        $customerUuidExpiry = $this->userDataService->getValueByKey($userId, 'customer_uuid_expiry');
+        if (!$customerUuid || !$customerUuidExpiry) {
+            return;
+        }
+        $builder = $this->dbalConnection->createQueryBuilder();
+
+        $subQuery = $this->dbalConnection->createQueryBuilder()
+            ->select('o.id')
+            ->from('s_order', 'o')
+            ->where('o.ordernumber = :orderNumber')
+            ->getSQL();
+
+        $builder->update('s_order_attributes', 'oa')
+            ->set('oa.swag_sezzle_customer_uuid', ':customerUuid')
+            ->set('oa.swag_sezzle_customer_uuid_expiry', ':customerUuidExpiry')
+            ->where('oa.orderID = (' . $subQuery . ')')
+            ->setParameters([
+                ':orderNumber' => $orderNumber,
+                ':customerUuid' => $customerUuid,
+                ':customerUuidExpiry' => $customerUuidExpiry
+            ])->execute();
     }
 
     public function clearSezzleSessionData()

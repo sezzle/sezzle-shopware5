@@ -18,7 +18,7 @@ class Token
      * The access token issued by PayPal. After the access token
      * expires (see $expiresIn), you must request a new access token.
      *
-     * @var DateTime
+     * @var string
      */
     private $expirationDate;
 
@@ -47,7 +47,7 @@ class Token
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
     public function getExpirationDate()
     {
@@ -55,7 +55,7 @@ class Token
     }
 
     /**
-     * @param DateTime $expirationDate
+     * @param string $expirationDate
      */
     public function setExpirationDate($expirationDate)
     {

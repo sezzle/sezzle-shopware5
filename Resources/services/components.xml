@@ -27,6 +27,7 @@
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="sezzle.settings_service"/>
             <argument type="service" id="sezzle.tokenize_resource"/>
+            <argument type="service" id="sezzle.user_data_service"/>
         </service>
 
         <service id="sezzle.logger_service"

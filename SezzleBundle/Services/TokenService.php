@@ -67,11 +67,11 @@ class TokenService
      */
     private function isTokenValid(Token $token)
     {
-        return true;
         $dateTimeNow = new \DateTime();
-        $dateTimeExpire = $token->getExpirationDate();
+        $dateTimeExpire = new \DateTime(substr($token->getExpirationDate(), 0, 19));
+        $dateTimeExpire = $dateTimeExpire->format('Y-m-d H:i:s');
         //Decrease expire date by one hour just to make sure, we don't run into an unauthorized exception.
-        $dateTimeExpire = $dateTimeExpire->sub(new \DateInterval('PT1H'));
+        //$dateTimeExpire = $dateTimeExpire->sub(new \DateInterval('PT1H'));
 
         if ($dateTimeExpire < $dateTimeNow) {
             return false;

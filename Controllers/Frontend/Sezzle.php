@@ -129,15 +129,16 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             $session = null;
             /** @var CustomerOrder $customerOrder */
             $customerOrder = null;
-            $customerUuid = null;
+
+            $userId = !empty($userData['additional']['user']['id']) ? $userData['additional']['user']['id'] : null;
+            /** @var UserDataService $userDataService */
+            $userDataService = $this->get('sezzle.user_data_service');
 
             // For generic PayPal payments like Sezzle,
             // a different parameter than in installments for the payment creation is needed
             if ($selectedPaymentName === PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME) {
                 $requestParams->setPaymentType(PaymentType::SEZZLE);
-                /** @var UserDataService $userDataService */
-                $userDataService = $this->get('sezzle.user_data_service');
-                if ($customerUuid = $userDataService->getValueByKey($userData, 'customer_uuid')) {
+                if ($userDataService->isCustomerUuidValid($userId)) {
                     $customerOrder = $this->get('sezzle.api_builder_service')->getCustomerOrderPayload($requestParams);
                 } else {
                     $session = $this->get('sezzle.api_builder_service')->getSession($requestParams);
@@ -145,11 +146,11 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             }
 
             if ($customerOrder) {
+                $customerUuid = $userDataService->getValueByKey($userId, 'customer_uuid');
                 $response = $this->customerResource->create($customerUuid, $customerOrder);
                 $responseStruct = CustomerOrder::fromArray($response);
                 $orderUuid = $responseStruct->getUuid();
             } else {
-
                 $response = $this->sessionResource->create($session);
                 $responseStruct = Session::fromArray($response);
                 $orderUuid = $responseStruct->getOrder()->getUuid();
@@ -261,27 +262,38 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
         $sezzleOrderObj = Order::fromArray($sezzleOrder);
         $orderUuid = $sezzleOrderObj->getUuid();
 
+        $paymentAction = $this->settingsService->get('payment_action');
+
+        $attributesToUpdate = [
+            'referenceId' => $sezzleOrderObj->getReferenceId(),
+            'orderUuid' => $sezzleOrderObj->getUuid(),
+            'authAmount' => $sezzleOrderObj->getAuthorization()->getAuthorizationAmount()->getAmountInCents(),
+            'paymentAction' => $paymentAction
+        ];
+
         /** @var OrderDataService $orderDataService */
         $orderDataService = $this->get('sezzle.order_data_service');
         try {
-            $paymentAction = $this->settingsService->get('payment_action');
 
-            echo $paymentAction;
 
             if ($paymentAction === PaymentAction::AUTHORIZE_CAPTURE) {
                 $requestParams = new ApiBuilderParameters();
                 $requestParams->setOrder($orderDataService->getOrder($orderNumber));
+                /** @var Order\Capture $capturePayload */
                 $capturePayload = $this->get('sezzle.api_builder_service')->getCapturePayload($requestParams);
                 $captureResponse = $this->captureResource->create($orderUuid, $capturePayload);
-                $captureObject = Order\Capture::fromArray($captureResponse);
                 if ($captureResponse === null) {
                     $this->handleError(ErrorCodes::COMMUNICATION_FAILURE);
                     return;
                 }
+                $attributesToUpdate['capturedAmount'] = $capturePayload->getCaptureAmount()->getAmountInCents();
+                $attributesToUpdate['fullCapture'] = true;
                 $this->savePaymentStatus($orderUuid, $orderUuid, PaymentStatus::PAYMENT_STATUS_PAID);
                 $this->orderResource->update($orderUuid, ['reference_id' => $orderNumber]);
                 $orderDataService->setOrderStatus($orderNumber, OrderStatus::IN_PROGRESS);
                 $orderDataService->setClearedDate($orderNumber);
+            } else {
+                $attributesToUpdate['authExpiry'] = $sezzleOrderObj->getAuthorization()->getExpiration();
             }
         } catch (RequestException $exception) {
             $orderDataService->setOrderStatus($orderNumber, OrderStatus::OPEN);
@@ -292,11 +304,10 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             return;
         }
 
-        $orderDataService->applyPaymentAttributes($orderNumber, $sezzleOrderObj, true);
 
-//        if ($customerUuid) {
-//            $orderDataService->applyTokenizeAttributes($orderNumber);
-//        }
+
+        $orderDataService->applyPaymentAttributes($orderNumber, $attributesToUpdate);
+        $orderDataService->applyTokenizeAttributes($orderNumber);
 
         $redirectParameter = [
             'module' => 'frontend',

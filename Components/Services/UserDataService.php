@@ -75,10 +75,37 @@ class UserDataService
 
     }
 
-    public function getValueByKey($userData, $key)
+    public function isCustomerUuidValid($userId)
+    {
+        $dateTimeNow = new \DateTime();
+
+
+        $customerUuidExpiry = $this->getValueByKey($userId, 'customer_uuid_expiry');
+        $customerUuidExpiry = new \DateTime($customerUuidExpiry);
+
+        if ($customerUuidExpiry->getTimestamp() < $dateTimeNow->getTimestamp()) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public function getValueByKey($userId, $key)
     {
         $attribute = sprintf("swag_sezzle_%s", $key);
-        return !empty($userData['additional']['user'][$attribute]) ? $userData['additional']['user'][$attribute] : null;
+        //return !empty($userData['additional']['user'][$attribute]) ? $userData['additional']['user'][$attribute] : null;
+
+
+        //Since joins are being stripped out, we have to select the correct orderId by a sub query.
+        return $this->dbalConnection->createQueryBuilder()
+            ->select('ua.'.$attribute)
+            ->from('s_user_attributes', 'ua')
+            ->where('ua.userID = :userId')
+            ->setParameters([
+                ':userId' => $userId
+            ])
+            ->execute()->fetchColumn(0);
     }
 
 }
