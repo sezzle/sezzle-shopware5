@@ -10,6 +10,6 @@
 <!--        <import resource="services/decorators.xml"/>-->
         <import resource="services/sezzle_bundle.xml"/>
         <import resource="services/resources.xml"/>
-<!--        <import resource="services/subscribers.xml"/>-->
+        <import resource="services/subscribers.xml"/>
     </imports>
 </container>
