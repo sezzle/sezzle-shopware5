@@ -177,8 +177,8 @@ class Installer
             'swag_sezzle_customer_uuid',
             'string',
             [
-                'position' => -100,
-                'displayInBackend' => false,
+                'position' => -400,
+                'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID',
                 'helpText' => 'Sezzle Customer UUID',
             ]);
@@ -186,15 +186,15 @@ class Installer
             'swag_sezzle_customer_uuid_expiry',
             'datetime',
             [
-                'position' => -100,
-                'displayInBackend' => false,
+                'position' => -500,
+                'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID Expiry',
                 'helpText' => 'Sezzle Customer UUID Expiry',
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_auth_amount',
-            'int',
+            'string',
             [
                 'position' => -400,
                 'displayInBackend' => true,
@@ -204,7 +204,7 @@ class Installer
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_captured_amount',
-            'int',
+            'string',
             [
                 'position' => -500,
                 'displayInBackend' => true,
@@ -214,7 +214,7 @@ class Installer
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_refunded_amount',
-            'int',
+            'string',
             [
                 'position' => -600,
                 'displayInBackend' => true,
@@ -224,7 +224,7 @@ class Installer
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_released_amount',
-            'int',
+            'string',
             [
                 'position' => -700,
                 'displayInBackend' => true,

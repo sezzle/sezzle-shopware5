@@ -20,5 +20,10 @@
             <argument>%sezzle.plugin_dir%</argument>
             <tag name="shopware.event_subscriber"/>
         </service>
+
+        <service id="sezzle.subscriber.templates" class="SwagPaymentSezzle\Subscriber\BackendOrder">
+            <argument>%sezzle.plugin_dir%</argument>
+            <tag name="shopware.event_subscriber"/>
+        </service>
     </services>
 </container>
