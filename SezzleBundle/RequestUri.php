@@ -8,7 +8,8 @@ class RequestUri
     const WEBHOOK_RESOURCE = 'notifications/webhooks';
     const TOKEN_RESOURCE = 'authentication';
     const SALE_RESOURCE = 'payments/sale';
-    const REFUND_RESOURCE = 'payments/refund';
+    const REFUND_RESOURCE = 'order/%s/refund';
+    const RELEASE_RESOURCE = 'order/%s/release';
     const AUTHORIZATION_RESOURCE = 'payments/authorization';
     const CAPTURE_RESOURCE = 'order/%s/capture';
     const CUSTOMER_ORDER_RESOURCE = 'customer/%s/order';

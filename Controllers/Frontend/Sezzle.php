@@ -1,6 +1,7 @@
 <?php
 
 use Shopware\Components\HttpClient\RequestException;
+use SwagPaymentSezzle\Components\Backend\CaptureService;
 use SwagPaymentSezzle\Components\DependencyProvider;
 use SwagPaymentSezzle\Components\ErrorCodes;
 use SwagPaymentSezzle\Components\OrderStatus;
@@ -21,6 +22,7 @@ use SwagPaymentSezzle\SezzleBundle\Resources\SessionResource;
 use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
 use SwagPaymentSezzle\SezzleBundle\Structs\Order;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
+use SwagPaymentSezzle\SezzleBundle\Util;
 
 class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend_Payment
 {
@@ -157,6 +159,8 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             }
 
 
+
+
             /** @var BasketDataService $basketDataService */
             $basketDataService = $this->get('sezzle.basket_data_service');
             foreach ($this->getBasket()['content'] as $lineItem) {
@@ -263,31 +267,32 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
         $orderUuid = $sezzleOrderObj->getUuid();
 
         $paymentAction = $this->settingsService->get('payment_action');
+        $authAmount = Util::formatToCurrency($sezzleOrderObj->getAuthorization()->getAuthorizationAmount()->getAmountInCents());
+        $currency = $sezzleOrderObj->getAuthorization()->getAuthorizationAmount()->getCurrency();
 
         $attributesToUpdate = [
             'referenceId' => $sezzleOrderObj->getReferenceId(),
             'orderUuid' => $sezzleOrderObj->getUuid(),
-            'authAmount' => $sezzleOrderObj->getAuthorization()->getAuthorizationAmount()->getAmountInCents(),
+            'authAmount' => Util::formatToCurrency($sezzleOrderObj->getAuthorization()->getAuthorizationAmount()->getAmountInCents()),
             'paymentAction' => $paymentAction
         ];
 
         /** @var OrderDataService $orderDataService */
         $orderDataService = $this->get('sezzle.order_data_service');
         try {
-
-
             if ($paymentAction === PaymentAction::AUTHORIZE_CAPTURE) {
-                $requestParams = new ApiBuilderParameters();
-                $requestParams->setOrder($orderDataService->getOrder($orderNumber));
-                /** @var Order\Capture $capturePayload */
-                $capturePayload = $this->get('sezzle.api_builder_service')->getCapturePayload($requestParams);
-                $captureResponse = $this->captureResource->create($orderUuid, $capturePayload);
-                if ($captureResponse === null) {
+                /** @var CaptureService $captureService */
+                $captureService = $this->get('sezzle.backend.capture_service');
+                $response = $captureService->captureOrder(
+                    $orderUuid,
+                    $authAmount,
+                    $currency,
+                    false
+                );
+                if (isset($response['success']) && $response['success'] === true) {
                     $this->handleError(ErrorCodes::COMMUNICATION_FAILURE);
                     return;
                 }
-                $attributesToUpdate['capturedAmount'] = $capturePayload->getCaptureAmount()->getAmountInCents();
-                $attributesToUpdate['fullCapture'] = true;
                 $this->savePaymentStatus($orderUuid, $orderUuid, PaymentStatus::PAYMENT_STATUS_PAID);
                 $this->orderResource->update($orderUuid, ['reference_id' => $orderNumber]);
                 $orderDataService->setOrderStatus($orderNumber, OrderStatus::IN_PROGRESS);

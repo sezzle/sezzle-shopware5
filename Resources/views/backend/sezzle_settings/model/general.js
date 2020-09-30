@@ -17,6 +17,7 @@ Ext.define('Shopware.apps.SezzleSettings.model.General', {
         { name: 'publicKey', type: 'string' },
         { name: 'privateKey', type: 'string' },
         { name: 'sandbox', type: 'bool' },
+        { name: 'tokenize', type: 'bool'},
         { name: 'paymentAction', type: 'string', defaultValue: 'authorize_capture' },
         { name: 'logLevel', type: 'int', defaultValue: 0 },
         { name: 'displayErrors', type: 'bool' },

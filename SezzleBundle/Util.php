@@ -12,6 +12,10 @@ class Util
      */
     const MONEY_FORMAT = "%.2f";
 
+    public static function formatToCurrency($centsAmount = 0) {
+        return (float)number_format(($centsAmount /100), 2, '.', ' ');
+    }
+
     /**
      * Format to cents
      *

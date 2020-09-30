@@ -7,7 +7,6 @@ use SwagPaymentSezzle\SezzleBundle\RequestType;
 use SwagPaymentSezzle\SezzleBundle\RequestUri;
 use SwagPaymentSezzle\SezzleBundle\Services\ClientService;
 use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
 
 class CustomerResource
 {

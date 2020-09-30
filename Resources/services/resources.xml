@@ -34,5 +34,17 @@
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>
+
+        <service id="sezzle.refund_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\RefundResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+
+        <service id="sezzle.release_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\ReleaseResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
     </services>
 </container>

@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS swag_payment_sezzle_settings_general (
     `public_key`                VARCHAR(255),
     `private_key`               VARCHAR(255),
     `sandbox`                   TINYINT(1),
+    `tokenize`                  TINYINT(1),
     `payment_action`            VARCHAR(255),
     `log_level`                 INT(11)      NOT NULL,
     `display_errors`            TINYINT(1)   NOT NULL,

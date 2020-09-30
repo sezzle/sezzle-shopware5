@@ -60,6 +60,12 @@ class General extends ModelEntity
     private $sandbox;
 
     /**
+     * @var bool
+     * @ORM\Column(name="tokenize", type="boolean")
+     */
+    private $tokenize;
+
+    /**
      * @var string
      * @ORM\Column(name="payment_action", type="string")
      */
@@ -193,6 +199,22 @@ class General extends ModelEntity
     public function setSandbox($sandbox)
     {
         $this->sandbox = $sandbox;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getTokenize()
+    {
+        return $this->tokenize;
+    }
+
+    /**
+     * @param bool $tokenize
+     */
+    public function setTokenize($tokenize)
+    {
+        $this->tokenize = $tokenize;
     }
 
     /**

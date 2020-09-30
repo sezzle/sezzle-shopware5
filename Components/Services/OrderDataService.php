@@ -128,6 +128,14 @@ class OrderDataService
                         $parameters[':' . $key] = $value;
                         $builder->set('oa.swag_sezzle_captured_amount', ':capturedAmount');
                         break;
+                    case 'refundedAmount':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_refunded_amount', ':refundedAmount');
+                        break;
+                    case 'releasedAmount':
+                        $parameters[':' . $key] = $value;
+                        $builder->set('oa.swag_sezzle_released_amount', ':releasedAmount');
+                        break;
                     case 'paymentAction':
                         $parameters[':' . $key] = $value;
                         $builder->set('oa.swag_sezzle_payment_action', ':paymentAction');

@@ -69,7 +69,7 @@ class Capture
     /**
      * @param bool $partialCapture
      */
-    public function setPartialCapture(bool $partialCapture)
+    public function setPartialCapture($partialCapture)
     {
         $this->partialCapture = $partialCapture;
     }

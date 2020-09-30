@@ -195,6 +195,14 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
                     allowBlank: false
                 },
                 {
+                    xtype: 'checkbox',
+                    name: 'tokenize',
+                    inputValue: true,
+                    uncheckedValue: false,
+                    fieldLabel: '{s name="fieldset/rest/enableTokenize"}Enable Tokenization{/s}',
+                    boxLabel: '{s name="fieldset/rest/enableTokenize/help"}Enable this option to tokenize customer.{/s}'
+                },
+                {
                     xtype: 'combobox',
                     name: 'merchantLocation',
                     fieldLabel: '{s name="fieldset/behaviour/merchantLocation"}Merchant location{/s}',

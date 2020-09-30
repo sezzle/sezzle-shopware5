@@ -5,8 +5,6 @@ namespace SwagPaymentSezzle\Components\Services;
 use Doctrine\DBAL\Connection;
 use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
 use SwagPaymentSezzle\SezzleBundle\PaymentType;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 
 class BasketDataService
 {

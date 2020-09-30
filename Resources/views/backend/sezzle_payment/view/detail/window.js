@@ -4,77 +4,54 @@ Ext.define('Shopware.apps.SezzlePayment.view.detail.Window', {
     override: 'Shopware.apps.Order.view.detail.Window',
     alias:'widget.sezzle-window',
 
-    // getTabs: function() {
-    //     var me = this,
-    //         result = me.callParent();
-    //
-    //     result.push(Ext.create('Shopware.apps.SezzlePayment.view.detail.MyOwnTab'));
-    //
-    //     return result;
-    // },
-
     createTabPanel: function() {
-        var me = this,
+        var me = this, paymentMethod,
             result = me.callParent(arguments);
 
-        //console.log(result);
+        if (!me.isSezzle()) {
+            return result;
+        }
 
-        // console.log(me.record.get('id'));
+        Ext.Ajax.request({
+            url: '{url controller=AttributeData action=loadData}',
+            params: {
+                _foreignKey: me.record.get('id'),
+                _table: 's_order_attributes'
+            },
+            success: function (responseData, request) {
+                var response = Ext.JSON.decode(responseData.responseText);
+                var sezzleRecord = {};
 
+                sezzleRecord.sezzleOrderUUID = response.data['__attribute_swag_sezzle_order_uuid'] || null;
 
-        result.insert(6, Ext.create('Shopware.apps.Order.view.detail.tabs.Sezzle',{
-            title: 'Sezzle',
-            record: me.record
-        }));
+                sezzleRecord.authAmount = parseFloat(response.data['__attribute_swag_sezzle_auth_amount']) || 0.00;
+                sezzleRecord.capturedAmount = parseFloat(response.data['__attribute_swag_sezzle_captured_amount']) || 0.00;
+                sezzleRecord.refundedAmount = parseFloat(response.data['__attribute_swag_sezzle_refunded_amount']) || 0.00;
+                sezzleRecord.releasedAmount = parseFloat(response.data['__attribute_swag_sezzle_released_amount']) || 0.00;
 
-        // console.log(result);
+                sezzleRecord.paymentAction = response.data['__attribute_swag_sezzle_payment_action'];
+                sezzleRecord.authExpiry = response.data['__attribute_swag_sezzle_auth_expiry'];
+                sezzleRecord.currency = me.record.get('currency');
+
+                result.insert(6, Ext.create('Shopware.apps.Order.view.detail.tabs.Sezzle',{
+                    title: 'Sezzle',
+                    record: me.record,
+                    sezzleRecord: sezzleRecord
+                }));
+            }
+        });
 
         return result;
-    }
+    },
 
-    /**
-     * Replace the textBox for field "title" with a comboBox
-     *
-     * @returns { Ext.form.FieldSet }
-     */
-    // createPersonalFieldSet: function() {
-    //     var me = this,
-    //         fieldSet = me.callParent(arguments),
-    //         titelField = fieldSet.down('[name="title"]'),
-    //         titleContainer = titelField.up('container');
-    //
-    //     titelField.destroy();
-    //
-    //     titleContainer.insert(0, Ext.create('Ext.form.field.ComboBox', {
-    //         labelWidth: 155,
-    //         anchor: '95%',
-    //         name: 'title',
-    //         displayField: 'name',
-    //         valueField: 'name',
-    //         store: me.createTitleStore(),
-    //         fieldLabel: 'Title'
-    //     }));
-    //
-    //     return fieldSet;
-    // },
-    //
-    // /**
-    //  * @returns { Ext.data.Store }
-    //  */
-    // createTitleStore: function() {
-    //     return Ext.create('Ext.data.Store', {
-    //         fields: [
-    //             { name: 'name' }
-    //         ],
-    //         data: [
-    //             { name: 'Sir' },
-    //             { name: 'Madame' },
-    //             { name: 'Lord' },
-    //             { name: 'Dr.' },
-    //             { name: 'Prof.' },
-    //             { name: 'Prof. Dr.' }
-    //         ]
-    //     })
-    // }
+    isSezzle: function () {
+        var me = this;
+        if (me.record && me.record.getPayment() instanceof Ext.data.Store && me.record.getPayment().first() instanceof Ext.data.Model) {
+            if (me.record.getPayment().first().raw.description === 'Sezzle') {
+                return true;
+            }
+        }
+        return false;
+    }
 });
 //{/block}

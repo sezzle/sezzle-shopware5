@@ -12,6 +12,18 @@
             <argument type="service" id="service_container"/>
         </service>
 
+        <service id="sezzle.exception_handler_service"
+                 class="SwagPaymentSezzle\Components\Services\ExceptionHandlerService"
+                 public="true">
+            <argument id="sezzle.logger_service" type="service"/>
+        </service>
+
+        <service id="sezzle.payment_status_service"
+                 class="SwagPaymentSezzle\Components\Services\PaymentStatusService"
+                 public="true">
+            <argument type="service" id="models"/>
+        </service>
+
         <service id="sezzle.api_builder_service"
                  class="SwagPaymentSezzle\Components\Services\ApiBuilderService"
                  public="true">

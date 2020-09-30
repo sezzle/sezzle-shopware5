@@ -194,7 +194,7 @@ class Installer
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_auth_amount',
-            'string',
+            'float',
             [
                 'position' => -400,
                 'displayInBackend' => true,
@@ -204,7 +204,7 @@ class Installer
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_captured_amount',
-            'string',
+            'float',
             [
                 'position' => -500,
                 'displayInBackend' => true,
@@ -214,7 +214,7 @@ class Installer
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_refunded_amount',
-            'string',
+            'float',
             [
                 'position' => -600,
                 'displayInBackend' => true,
@@ -224,7 +224,7 @@ class Installer
 
         $this->attributeCrudService->update('s_order_attributes',
             'swag_sezzle_released_amount',
-            'string',
+            'float',
             [
                 'position' => -700,
                 'displayInBackend' => true,

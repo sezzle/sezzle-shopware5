@@ -1,32 +1,3 @@
-/**
- * Shopware 5
- * Copyright (c) shopware AG
- *
- * According to our dual licensing model, this program can be used either
- * under the terms of the GNU Affero General Public License, version 3,
- * or under a proprietary license.
- *
- * The texts of the GNU Affero General Public License with an additional
- * permission and of our proprietary license can be found at and
- * in the LICENSE file you have received along with this program.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * "Shopware" is a registered trademark of shopware AG.
- * The licensing of the program under the AGPLv3 does not imply a
- * trademark license. Therefore any rights, title and interest in
- * our trademarks remain entirely with us.
- *
- * @category   Shopware
- * @package    Order
- * @subpackage View
- * @version    $Id$
- * @author shopware AG
- */
-
 //{namespace name=backend/order/main}
 
 /**
@@ -41,13 +12,13 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
      * Define that the additional information is an Ext.panel.Panel extension
      * @string
      */
-    extend:'Ext.form.Panel',
+    extend: 'Ext.form.Panel',
 
     /**
      * List of short aliases for class names. Most useful for defining xtypes for widgets.
      * @string
      */
-    alias:'widget.order-sezzle-panel',
+    alias: 'widget.order-sezzle-panel',
 
     /**
      * An optional extra CSS class that will be added to this component's Element.
@@ -64,13 +35,13 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
      */
     autoScroll: true,
 
-    paymentData: {},
+
 
     /**
      * Contains all snippets for the view component
      * @object
      */
-    snippets:{
+    snippets: {
         title: '{s name=communication/window_title}Communication{/s}',
         paymentPanel: {
             title: '{s name=sezzle/payment_panel/title}Payment Information{/s}',
@@ -80,22 +51,19 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
             text: '{s name=sezzle/payment_action_panel/text}Input a valid amount to capture/refund/release{/s}',
         },
         capture: {
-            title: '{s name=communication/internal/title}Capture{/s}',
-            text: '{s name=communication/internal/text}This comment box is for internal communication. The field is not visible in the frontend and for the customer at any given time.{/s}',
-            label: '{s name=communication/internal/label}Internal comment{/s}',
             button: 'Capture'
         },
         refund: {
-            title: '{s name=communication/external/title}Refund{/s}',
-            text: '{s name=communication/external/text}This comment box is for internal communication. The field is not visible in the frontend and for the customer at any given time.{/s}',
-            customerLabel: '{s name=communication/external/customer_label}Customer comment{/s}',
-            externalLabel: '{s name=communication/external/external_label}Your comment{/s}',
             button: 'Refund'
         },
         release: {
             button: 'Release'
         }
     },
+
+    canCapture: false,
+    canRefund: false,
+    canRelease: false,
 
     /**
      * The initComponent template method is an important initialization step for a Component.
@@ -107,32 +75,50 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
      *
      * @return void
      */
-    initComponent:function () {
+    initComponent: function () {
         var me = this;
 
         me.registerEvents();
-        me.savePaymentPanelData();
+        me.determinePaymentAction();
+
+        me.sezzleRecord.authStatus = me.isAuthValid() ? 'Not Expired' : 'Expired';
+
         me.items = [
             me.createPanel(),
             me.createPaymentActionFieldSet()
         ];
-        me.title = 'Sezzle';
         me.callParent(arguments);
-        me.paymentActionTextArea.setValue(5);
         me.loadRecord(me.record);
+
+
     },
 
-    savePaymentPanelData: function () {
+    determinePaymentAction: function () {
         var me = this;
-        me.paymentData = {
-            authAmount : 1,
-            capturedAmount : 2,
-            refundedAmount : 3,
-            releasedAmount : 5,
-        };
+
+        if (me.sezzleRecord.authAmount > me.sezzleRecord.capturedAmount) {
+            me.canCapture = true;
+            me.canRelease = true;
+        }
+
+        if (me.sezzleRecord.paymentAction === 'authorize' && !me.isAuthValid()) {
+            me.canCapture = false;
+        }
+
+        if (me.sezzleRecord.capturedAmount > me.sezzleRecord.refundedAmount) {
+            me.canRefund = true;
+        }
     },
 
-    createPanel:function () {
+    isAuthValid: function () {
+        var me = this,
+            authExpiry = new Date(me.sezzleRecord.authExpiry),
+            currentDate = new Date();
+
+        return currentDate < authExpiry;
+    },
+
+    createPanel: function () {
         var me = this;
 
         return Ext.create('Ext.form.FieldSet', {
@@ -142,31 +128,15 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                 labelStyle: 'font-weight: 700;'
             },
             layout: 'anchor',
-            minWidth:250,
+            minWidth: 250,
             items: [
                 {
                     xtype: 'container',
                     renderTpl: me.createPaymentTemplate(),
-                    renderData: me.paymentData
+                    renderData: me.sezzleRecord
                 }
             ]
         });
-
-        // var me = this;
-        //
-        // return Ext.create('Ext.panel.Panel', {
-        //     title: me.snippets.title,
-        //     bodyPadding: 10,
-        //     flex: 1,
-        //     margin: 0,
-        //     items: [
-        //         {
-        //             xtype: 'container',
-        //             renderTpl: me.createPaymentTemplate(),
-        //             renderData: pData
-        //         }
-        //     ]
-        // });
     },
 
     createPaymentTemplate: function () {
@@ -178,22 +148,32 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                         <table>
                             <tr>
                                 <td>Auth Amount : </td>
-                                <td>{authAmount}</td>
+                                <td>{currency} <div id="auth_amount" style="float: right">&nbsp;{authAmount}</div></td>
                             </tr>
                             <tr>
                                 <td>Captured Amount : </td>
-                                <td>{capturedAmount}</td>
+                                <td>{currency} <div id="capture_amount" style="float: right">&nbsp;{capturedAmount}</div></td>
                             </tr>
                             <tr>
                                 <td>Refunded Amount : </td>
-                                <td>{refundedAmount}</td>
+                                <td>{currency} <div id="refund_amount" style="float: right">&nbsp;{refundedAmount}</div></td>
                             </tr>
                             <tr>
                                 <td>Released Amount : </td>
-                                <td>{releasedAmount}</td>
+                                <td>{currency} <div id="release_amount" style="float: right">&nbsp;{releasedAmount}</div></td>
                             </tr>
                         </table>
                     </div>
+                    <tpl if="paymentAction == \'authorize\'">
+                        <div>
+                            <table>
+                                <tr>
+                                    <td>Auth Expiry : </td>
+                                    <td>{authExpiry} ({authStatus})</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </tpl>
                 </div>
             </tpl>
             {/literal}`
@@ -204,28 +184,10 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
      * Registers the custom component events.
      * @return void
      */
-    registerEvents: function() {
+    registerEvents: function () {
         this.addEvents(
-            /**
-             * Event will be fired when the user clicks the "Save internal comment" button
-             * which is placed in the communication panel at the bottom of the internal field set.
-             *
-             * @event
-             * @param [Ext.data.Model] record - The current form record
-             * @param [Ext.form.Panel] form - The communication form panel
-             */
             'capture',
-
-            /**
-             * Event will be fired when the user clicks the "Save external comment" button
-             * which is placed in the communication panel at the bottom of the external field set.
-             *
-             * @event
-             * @param [Ext.data.Model] record - The current form record
-             * @param [Ext.form.Panel] form - The communication form panel
-             */
             'refund',
-
             'release'
         );
     },
@@ -234,7 +196,7 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
      * Creates the container for the internal communication fields
      * @return Ext.form.FieldSet
      */
-    createPaymentActionFieldSet: function() {
+    createPaymentActionFieldSet: function () {
         var me = this;
 
         return Ext.create('Ext.form.FieldSet', {
@@ -244,7 +206,7 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                 labelStyle: 'font-weight: 700;'
             },
             layout: 'anchor',
-            minWidth:250,
+            minWidth: 250,
             items: me.createPaymentActionElements()
         });
     },
@@ -254,27 +216,13 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
      * top of the communication tab panel.
      * @return Array - Contains the description container, the text area for the internal comment and the save button.
      */
-    createPaymentActionElements: function() {
+    createPaymentActionElements: function () {
         var me = this;
 
         me.paymentActionDescriptionContainer = Ext.create('Ext.container.Container', {
             style: 'color: #999; font-style: italic; margin: 0 0 15px 0;',
             html: me.snippets.paymentActionPanel.text
         });
-
-        // me.paymentActionTextArea = Ext.create('Ext.container.Container', {
-        //     columnWidth: 0.5,
-        //     layout: 'anchor',
-        //     padding: 10,
-        //     defaults: me.formDefaults,
-        //     items: [
-        //         {
-        //             xtype: 'textfield',
-        //             fieldLabel: 'Amount',
-        //             name: 'amount'
-        //         }
-        //     ]
-        // });
 
         me.paymentActionTextArea = Ext.create('Ext.form.field.Text', {
             columnWidth: 0.5,
@@ -286,59 +234,56 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
             fieldLabel: 'Amount'
         });
 
-        // me.attributeForm = Ext.create('Shopware.attribute.Form', {
-        //     table: 's_order_attributes',
-        //     name: 'order-attributes',
-        //     title: '{s name="attribute_title"}{/s}',
-        //     border: true,
-        //     margin: '10 0',
-        //     bodyPadding: 10,
-        //     listeners: {
-        //         'hide-attribute-field-set': function () {
-        //             me.attributeForm.hide();
-        //         }
-        //     }
-        // });
+        if (me.canCapture) {
+            me.captureButton = Ext.create('Ext.button.Button', {
+                cls: 'primary',
+                text: me.snippets.capture.button,
+                handler: function () {
+                    me.record.set('amount', me.paymentActionTextArea.getValue());
+                    me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
+                    me.record.set('authAmount', me.sezzleRecord.authAmount);
+                    me.fireEvent('capture', me.record, me, {
+                        callback: function (order) {
+                            me.fireEvent('updateForms', order, me.up('window'));
+                        },
+                    });
+                }
+            });
+        }
 
+        if (me.canRefund) {
+            me.refundButton = Ext.create('Ext.button.Button', {
+                cls: 'primary',
+                text: me.snippets.refund.button,
+                handler: function () {
+                    me.record.set('amount', me.paymentActionTextArea.getValue());
+                    me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
+                    me.record.set('authAmount', me.sezzleRecord.authAmount);
+                    me.fireEvent('refund', me.record, me, {
+                        callback: function (order) {
+                            me.fireEvent('updateForms', order, me.up('window'));
+                        },
+                    });
+                }
+            });
+        }
 
-        me.captureButton = Ext.create('Ext.button.Button', {
-            cls: 'primary',
-            text: me.snippets.capture.button,
-            handler: function() {
-                me.record.set('captureAmount', me.paymentActionTextArea.getValue());
-                me.fireEvent('capture', me.record, me, {
-                    callback: function (order) {
-                        me.fireEvent('updateForms', order, me.up('window'));
-                    },
-                });
-            }
-        });
-
-        me.refundButton = Ext.create('Ext.button.Button', {
-            cls: 'primary',
-            text: me.snippets.refund.button,
-            handler: function() {
-                me.record.set('refundAmount', me.getValues());
-                me.fireEvent('refund', me.record, me, {
-                    callback: function (order) {
-                        me.fireEvent('updateForms', order, me.up('window'));
-                    },
-                });
-            }
-        });
-
-        me.releaseButton = Ext.create('Ext.button.Button', {
-            cls: 'primary',
-            text: me.snippets.release.button,
-            handler: function() {
-                me.record.set('releaseAmount', me.getValues());
-                me.fireEvent('release', me.record, me, {
-                    callback: function (order) {
-                        me.fireEvent('updateForms', order, me.up('window'));
-                    },
-                });
-            }
-        });
+        if (me.canRelease) {
+            me.releaseButton = Ext.create('Ext.button.Button', {
+                cls: 'primary',
+                text: me.snippets.release.button,
+                handler: function () {
+                    me.record.set('amount', me.paymentActionTextArea.getValue());
+                    me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
+                    me.record.set('authAmount', me.sezzleRecord.authAmount);
+                    me.fireEvent('release', me.record, me, {
+                        callback: function (order) {
+                            me.fireEvent('updateForms', order, me.up('window'));
+                        },
+                    });
+                }
+            });
+        }
 
         return [
             me.paymentActionDescriptionContainer,

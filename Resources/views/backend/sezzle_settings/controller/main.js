@@ -333,30 +333,12 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         }
 
         var generalTab = me.getGeneralTab(),
-            plusTab = me.getPlusTab(),
-            installmentsTab = me.getInstallmentsTab(),
-            ecTab = me.getEcTab(),
             settings = Ext.JSON.decode(response.responseText);
 
         if (settings.general) {
             me.generalRecord = Ext.create('Shopware.apps.SezzleSettings.model.General', settings.general);
             generalTab.loadRecord(me.generalRecord);
             me.applyActivationState(me.generalRecord.get('active'));
-            if (me.generalRecord.get('merchantLocation') === 'other') {
-                plusTab.setDisabled(true);
-                installmentsTab.setDisabled(true);
-            } else {
-                generalTab.smartPaymentButtonsCheckbox.setVisible(false);
-            }
-        } else if (settings.installments) {
-            me.installmentsRecord = Ext.create('Shopware.apps.SezzleSettings.model.Installments', settings.installments);
-            installmentsTab.loadRecord(me.installmentsRecord);
-        } else if (settings.express) {
-            me.expressCheckoutRecord = Ext.create('Shopware.apps.SezzleSettings.model.ExpressCheckout', settings.express);
-            ecTab.loadRecord(me.expressCheckoutRecord);
-        } else if (settings.plus) {
-            me.plusRecord = Ext.create('Shopware.apps.SezzleSettings.model.Plus', settings.plus);
-            plusTab.loadRecord(me.plusRecord);
         }
 
         me.settingsSaved = false;
@@ -371,15 +353,10 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         var me = this,
             generalTab = me.getGeneralTab();
 
-        //me.applyMerchantLocationState(generalTab.smartPaymentButtonsCheckbox);
 
         generalTab.restContainer.setDisabled(!active);
         generalTab.behaviourContainer.setDisabled(!active);
         generalTab.errorHandlingContainer.setDisabled(!active);
-
-        // me.getPlusTab().setDisabled(!active);
-        // me.getInstallmentsTab().setDisabled(!active);
-        // me.getEcTab().setDisabled(!active);
     },
 
     applyMerchantLocationState: function(combobox) {

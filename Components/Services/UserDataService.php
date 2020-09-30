@@ -3,12 +3,9 @@
 namespace SwagPaymentSezzle\Components\Services;
 
 use Doctrine\DBAL\Connection;
-use SwagPaymentSezzle\Components\DependencyProvider;
 use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
 use SwagPaymentSezzle\SezzleBundle\PaymentType;
 use SwagPaymentSezzle\SezzleBundle\Resources\TokenizeResource;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 use SwagPaymentSezzle\SezzleBundle\Structs\Tokenize;
 
 class UserDataService
@@ -81,6 +78,11 @@ class UserDataService
 
 
         $customerUuidExpiry = $this->getValueByKey($userId, 'customer_uuid_expiry');
+
+        if (!$customerUuidExpiry) {
+            return false;
+        }
+
         $customerUuidExpiry = new \DateTime($customerUuidExpiry);
 
         if ($customerUuidExpiry->getTimestamp() < $dateTimeNow->getTimestamp()) {

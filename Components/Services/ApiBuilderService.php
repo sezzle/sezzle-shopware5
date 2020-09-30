@@ -9,16 +9,9 @@ use SwagPaymentSezzle\Components\DependencyProvider;
 use SwagPaymentSezzle\Components\ApiBuilderInterface;
 use SwagPaymentSezzle\Components\ApiBuilderParameters;
 use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsTable;
-use SwagPaymentSezzle\SezzleBundle\PaymentType;
 use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
 use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\ApplicationContext;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\Amount\Details;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\ItemList;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\Payment\Transactions\ItemList\Item;
 use SwagPaymentSezzle\SezzleBundle\Util;
 
 class ApiBuilderService implements ApiBuilderInterface
@@ -123,13 +116,15 @@ class ApiBuilderService implements ApiBuilderInterface
         $completeUrl = new Session\Url();
         $completeUrl->setHref($this->getRedirectUrl('complete'));
 
+        $isTokenizationAllowed = (bool) $this->settings->get('tokenize');
+
         $customer = new Session\Customer();
         $customer->setEmail($this->userProfile['email']);
         $customer->setFirstName($this->userProfile['firstname']);
         $customer->setLastName($this->userProfile['lastname']);
         $customer->setPhone($this->userBillingAddress['phone']);
         $customer->setDob($this->userProfile['birthday']);
-        $customer->setTokenize(true);
+        $customer->setTokenize($isTokenizationAllowed);
 
         $billingAddress = new Session\Customer\Address();
         $billingAddress->setName(sprintf('%s %s', $this->userBillingAddress['firstname'], $this->userBillingAddress['lastname']));

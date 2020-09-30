@@ -6,8 +6,9 @@ use Shopware\Components\HttpClient\RequestException;
 use SwagPaymentSezzle\SezzleBundle\RequestType;
 use SwagPaymentSezzle\SezzleBundle\RequestUri;
 use SwagPaymentSezzle\SezzleBundle\Services\ClientService;
+use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
 
-class TokenizeResource
+class ReleaseResource
 {
     /**
      * @var ClientService
@@ -20,13 +21,14 @@ class TokenizeResource
     }
 
     /**
-     * @param string $token
+     * @param string $orderUuid
+     * @param Amount $releasePayload
      * @return array
      * @throws RequestException
      */
-    public function get($token)
+    public function create($orderUuid, Amount $releasePayload)
     {
-        $url = sprintf(RequestUri::TOKENIZE_RESOURCE, $token);
-        return $this->clientService->sendRequest(RequestType::GET, $url);
+        $url = sprintf(RequestUri::RELEASE_RESOURCE, $orderUuid);
+        return $this->clientService->sendRequest(RequestType::POST, $url, $releasePayload->toArray());
     }
 }

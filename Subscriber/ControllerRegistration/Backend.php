@@ -32,9 +32,23 @@ class Backend implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_Sezzle' => 'onGetBackendControllerPath',
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleSettings' => 'onGetBackendSettingsControllerPath',
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleGeneralSettings' => 'onGetBackendGeneralSettingsControllerPath'
         ];
+    }
+
+    /**
+     * Handles the Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleSettings event.
+     * Returns the path to the backend application controller.
+     *
+     * @return string
+     */
+    public function onGetBackendControllerPath()
+    {
+        $this->template->addTemplateDir($this->pluginDirectory . '/Resources/views/');
+
+        return $this->pluginDirectory . '/Controllers/Backend/Sezzle.php';
     }
 
     /**
