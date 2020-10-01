@@ -28,6 +28,9 @@ class BackendOrder implements SubscriberInterface
         ];
     }
 
+    /**
+     * @param \Enlight_Event_EventArgs $args
+     */
     public function onOrderPostDispatch(\Enlight_Event_EventArgs $args)
     {
         /** @var \Shopware_Controllers_Backend_Order $controller */

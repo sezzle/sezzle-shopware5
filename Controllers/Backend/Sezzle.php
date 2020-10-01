@@ -20,63 +20,63 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
     protected $alias = 'sOrder';
 
     /**
-     * {@inheritdoc}
+     * @throws Exception
      */
-    public function preDispatch()
-    {
-        //$this->exceptionHandler = $this->get('paypal_unified.exception_handler_service');
-
-        parent::preDispatch();
-    }
-
     public function captureOrderAction()
     {
         $this->registerShopResource();
 
-        $orderId = $this->Request()->getParam('id');
+        $orderUUID = $this->Request()->getParam('id');
         $amountToCapture = $this->Request()->getParam('amount');
         $currency = $this->Request()->getParam('currency');
         $isPartial = $this->Request()->getParam('isPartial') === '1';
 
         /** @var CaptureService $captureService */
         $captureService = $this->get('sezzle.backend.capture_service');
-        $viewParameter = $captureService->captureOrder($orderId, $amountToCapture, $currency, $isPartial);
+        $viewParameter = $captureService->captureOrder($orderUUID, $amountToCapture, $currency, $isPartial);
 
         $this->View()->assign($viewParameter);
     }
 
+    /**
+     * @throws Exception
+     */
     public function refundOrderAction()
     {
         $this->registerShopResource();
 
-        $orderId = $this->Request()->getParam('id');
+        $orderUUID = $this->Request()->getParam('id');
         $amountToCapture = $this->Request()->getParam('amount');
         $currency = $this->Request()->getParam('currency');
 
-
-
         /** @var RefundService $refundService */
         $refundService = $this->get('sezzle.backend.refund_service');
-        $viewParameter = $refundService->refundOrder($orderId, $amountToCapture, $currency);
+        $viewParameter = $refundService->refundOrder($orderUUID, $amountToCapture, $currency);
 
         $this->View()->assign($viewParameter);
     }
 
+    /**
+     * @throws Exception
+     */
     public function releaseOrderAction()
     {
         $this->registerShopResource();
 
-        $orderId = $this->Request()->getParam('id');
+        $orderUUID = $this->Request()->getParam('id');
         $amountToCapture = $this->Request()->getParam('amount');
         $currency = $this->Request()->getParam('currency');
 
         /** @var ReleaseService $releaseService */
         $releaseService = $this->get('sezzle.backend.release_service');
-        $viewParameter = $releaseService->releaseOrder($orderId, $amountToCapture, $currency);
+        $viewParameter = $releaseService->releaseOrder($orderUUID, $amountToCapture, $currency);
 
         $this->View()->assign($viewParameter);
     }
 
+    /**
+     * @throws Exception
+     */
     private function registerShopResource()
     {
         $shopId = (int) $this->Request()->getParam('shopId');
@@ -94,6 +94,6 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
             $shop->registerResources();
         }
 
-        $this->get('paypal_unified.settings_service')->refreshDependencies();
+        $this->get('sezzle.settings_service')->refreshDependencies();
     }
 }

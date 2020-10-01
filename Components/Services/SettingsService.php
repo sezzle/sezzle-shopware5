@@ -32,6 +32,11 @@ class SettingsService implements SettingsServiceInterface
      */
     private $dependencyProvider;
 
+    /**
+     * SettingsService constructor.
+     * @param ModelManager $modelManager
+     * @param DependencyProvider $dependencyProvider
+     */
     public function __construct(
         ModelManager $modelManager,
         DependencyProvider $dependencyProvider

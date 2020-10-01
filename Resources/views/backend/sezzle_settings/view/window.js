@@ -31,21 +31,6 @@ Ext.define('Shopware.apps.SezzleSettings.view.Window', {
     generalTab: null,
 
     /**
-     * @type { Shopware.apps.SezzleSettings.view.tabs.Plus }
-     */
-    sezzlePlusTab: null,
-
-    /**
-     * @type { Shopware.apps.SezzleSettings.view.tabs.Installments }
-     */
-    sezzleInstallmentsTab: null,
-
-    /**
-     * @type { Shopware.apps.SezzleSettings.view.tabs.ExpressCheckout }
-     */
-    sezzleEcTab: null,
-
-    /**
      * @type { Shopware.data.Model }
      */
     record: null,

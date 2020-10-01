@@ -26,32 +26,7 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
     /**
      * @type { String }
      */
-    installmentsDetailUrl: '{url controller=SezzleInstallmentsSettings action=detail}',
-
-    /**
-     * @type { String }
-     */
-    expressDetailUrl: '{url controller=SezzleExpressSettings action=detail}',
-
-    /**
-     * @type { String }
-     */
-    plusDetailUrl: '{url controller=SezzlePlusSettings action=detail}',
-
-    /**
-     * @type { String }
-     */
-    registerWebhookUrl: '{url controller=SezzleSettings action=registerWebhook}',
-
-    /**
-     * @type { String }
-     */
     validateAPIUrl: '{url controller=SezzleSettings action=validateAPI}',
-
-    /**
-     * @type { string }
-     */
-    testInstallmentsAvailabilityUrl: '{url controller=SezzleSettings action=testInstallmentsAvailability}',
 
     /**
      * @type { Shopware.apps.SezzleSettings.model.General }
@@ -59,30 +34,12 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
     generalRecord: null,
 
     /**
-     * @type { Shopware.apps.SezzleSettings.model.Installments }
-     */
-    installmentsRecord: null,
-
-    /**
-     * @type { Shopware.apps.SezzleSettings.model.ExpressCheckout }
-     */
-    expressCheckoutRecord: null,
-
-    /**
-     * @type { Shopware.apps.SezzleSettings.model.Plus }
-     */
-    plusRecord: null,
-
-    /**
      * @type { Number }
      */
     shopId: null,
 
     refs: [
-        { ref: 'generalTab', selector: 'sezzle-settings-tabs-general' },
-        { ref: 'plusTab', selector: 'sezzle-settings-tabs-sezzle-plus' },
-        { ref: 'installmentsTab', selector: 'sezzle-settings-tabs-installments' },
-        { ref: 'ecTab', selector: 'sezzle-settings-tabs-express-checkout' }
+        { ref: 'generalTab', selector: 'sezzle-settings-tabs-general' }
     ],
 
     init: function() {
@@ -105,13 +62,8 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
                 saveSettings: me.onSaveSettings
             },
             'sezzle-settings-tabs-general': {
-                registerWebhook: me.onRegisterWebhook,
                 validateAPI: me.onValidateAPISettings,
                 onChangeShopActivation: me.applyActivationState,
-                onChangeMerchantLocation: me.applyMerchantLocationState
-            },
-            'sezzle-settings-tabs-installments': {
-                testInstallmentsAvailability: me.onTestInstallmentsAvailability
             }
         });
     },
@@ -128,13 +80,8 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         var me = this;
 
         me.shopId = shopId;
-
         me.prepareRecords();
-
         me.loadSetting(me.generalDetailUrl);
-        // me.loadSetting(me.expressDetailUrl);
-        // me.loadSetting(me.installmentsDetailUrl);
-        // me.loadSetting(me.plusDetailUrl);
     },
 
     loadSetting: function(detailUrl) {
@@ -155,32 +102,15 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         var me = this;
 
         me.generalRecord.save();
-        // me.expressCheckoutRecord.save();
-        // me.installmentsRecord.save();
-        // me.plusRecord.save();
     },
 
     prepareRecords: function() {
         var me = this,
             generalTab = me.getGeneralTab();
-            // plusTab = me.getPlusTab(),
-            // installmentsTab = me.getInstallmentsTab(),
-            // ecTab = me.getEcTab();
 
         me.generalRecord = Ext.create('Shopware.apps.SezzleSettings.model.General');
-        // me.expressCheckoutRecord = Ext.create('Shopware.apps.SezzleSettings.model.ExpressCheckout');
-        // me.installmentsRecord = Ext.create('Shopware.apps.SezzleSettings.model.Installments');
-        // me.plusRecord = Ext.create('Shopware.apps.SezzleSettings.model.Plus');
-
         me.generalRecord.set('shopId', me.shopId);
-        // me.expressCheckoutRecord.set('shopId', me.shopId);
-        // me.installmentsRecord.set('shopId', me.shopId);
-        // me.plusRecord.set('shopId', me.shopId);
-
-        // installmentsTab.loadRecord(me.installmentsRecord);
         generalTab.loadRecord(me.generalRecord);
-        // plusTab.loadRecord(me.plusRecord);
-        // ecTab.loadRecord(me.expressCheckoutRecord);
     },
 
     /**
@@ -197,10 +127,6 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         var me = this,
             generalTabForm = me.getGeneralTab().getForm(),
             generalSettings = generalTabForm.getValues();
-            // plusSettings = me.getPlusTab().getForm().getValues(),
-            // installmentsSettings = me.getInstallmentsTab().getForm().getValues(),
-            // ecTabForm = me.getEcTab().getForm(),
-            // ecSettings = ecTabForm.getValues();
 
         if (!generalTabForm.isValid()) {
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/formValidationError}Please fill out all fields marked in red.{/s}', me.window.title);
@@ -208,36 +134,10 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         }
 
         me.window.setLoading('{s name="loading/saveSettings"}Saving settings...{/s}');
-
         me.generalRecord.set(generalSettings);
-        // me.expressCheckoutRecord.set(ecSettings);
-        // me.installmentsRecord.set(installmentsSettings);
-        // me.plusRecord.set(plusSettings);
-
         me.saveRecords();
-
         Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/saveSettings}The settings have been saved!{/s}', me.window.title);
-
         me.window.setLoading(false);
-        //me.onRegisterWebhook();
-    },
-
-    onRegisterWebhook: function() {
-        var me = this,
-            generalSettings = me.getGeneralTab().getForm().getValues();
-
-        me.window.setLoading('{s name="loading/registeringWebhook"}Registering webhook...{/s}');
-
-        Ext.Ajax.request({
-            url: me.registerWebhookUrl,
-            params: {
-                shopId: me.shopId,
-                clientId: generalSettings['clientId'],
-                clientSecret: generalSettings['clientSecret'],
-                sandbox: generalSettings['sandbox']
-            },
-            callback: Ext.bind(me.onRegisterWebhookAjaxCallback, me)
-        });
     },
 
     onValidateAPISettings: function() {
@@ -256,36 +156,6 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
             },
             callback: Ext.bind(me.onValidateAPIAjaxCallback, me)
         });
-    },
-
-    /**
-     * @param { Object } options
-     * @param { Boolean } success
-     * @param { Object } response
-     */
-    onRegisterWebhookAjaxCallback: function(options, success, response) {
-        var me = this,
-            responseObject = Ext.JSON.decode(response.responseText),
-            message = '';
-
-        me.window.setLoading(false);
-
-        if (Ext.isDefined(responseObject) && responseObject.success) {
-            Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/registerWebhookSuccess}The webhook has been successfully registered to:{/s} ' + responseObject.url, me.window.title);
-            return;
-        }
-
-        if (Ext.isDefined(responseObject)) {
-            message = responseObject.message;
-        }
-
-        Shopware.Notification.createStickyGrowlMessage(
-            {
-                title: '{s name=growl/title}Sezzle{/s}',
-                text: '{s name=growl/registerWebhookError}Could not register webhook due this error:{/s}' + '<br><u>' + message + '</u>'
-            },
-            me.window.title
-        );
     },
 
     /**
@@ -358,67 +228,5 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         generalTab.behaviourContainer.setDisabled(!active);
         generalTab.errorHandlingContainer.setDisabled(!active);
     },
-
-    applyMerchantLocationState: function(combobox) {
-        var me = this,
-            generalTab = me.getGeneralTab();
-            // plusTab = me.getPlusTab(),
-            // installmentsTab = me.getInstallmentsTab();
-
-        generalTab.smartPaymentButtonsCheckbox.setVisible(true);
-
-        // if (combobox.value === 'other') {
-        //     // plusTab.setDisabled(true);
-        //     // installmentsTab.setDisabled(true);
-        //     me.plusRecord.set('active', false);
-        //     me.installmentsRecord.set('active', false);
-        //     generalTab.smartPaymentButtonsCheckbox.setVisible(true);
-        // } else {
-        //     // plusTab.setDisabled(false);
-        //     // installmentsTab.setDisabled(false);
-        //     generalTab.smartPaymentButtonsCheckbox.setVisible(false);
-        // }
-    },
-
-    onTestInstallmentsAvailability: function() {
-        var me = this,
-            generalSettings = me.getGeneralTab().getForm().getValues();
-
-        me.window.setLoading('{s name=loading/testInstallments}Test installments availability...{/s}');
-
-        Ext.Ajax.request({
-            url: me.testInstallmentsAvailabilityUrl,
-            params: {
-                shopId: me.shopId,
-                clientId: generalSettings['clientId'],
-                clientSecret: generalSettings['clientSecret'],
-                sandbox: generalSettings['sandbox']
-            },
-            callback: Ext.bind(me.onTestInstallmentsAvailabilityCallback, me)
-        });
-    },
-
-    /**
-     * @param { Object } options
-     * @param { Boolean } success
-     * @param { Object } response
-     */
-    onTestInstallmentsAvailabilityCallback: function(options, success, response) {
-        var me = this,
-            responseObject = Ext.JSON.decode(response.responseText),
-            errorMessageText = '{s name=growl/testInstallmentsAvailabilitySuccessError}Sezzle installments integration is currently not available for you. Please contact the Sezzle support.{/s} ';
-
-        if (Ext.isDefined(responseObject) && responseObject.success) {
-            Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/testInstallmentsAvailabilitySuccess}Sezzle installments integration is working correct.{/s}', me.window.title);
-        } else {
-            if (Ext.isDefined(responseObject) && responseObject.message) {
-                errorMessageText += '<br>ErrorMessage:<br><u>' + responseObject.message + '</u>';
-            }
-
-            Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', errorMessageText, me.window.title);
-        }
-
-        me.window.setLoading(false);
-    }
 });
 // {/block}

@@ -12,8 +12,10 @@
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.capture_resource"/>
             <argument type="service" id="sezzle.payment_status_service"/>
+            <argument type="service" id="sezzle.order_status_service"/>
             <argument type="service" id="sezzle.order_data_service"/>
             <argument type="service" id="models"/>
+            <argument type="service" id="sezzle.payment_validator"/>
         </service>
 
         <service id="sezzle.backend.refund_service"
@@ -22,8 +24,10 @@
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.refund_resource"/>
             <argument type="service" id="sezzle.payment_status_service"/>
+            <argument type="service" id="sezzle.order_status_service"/>
             <argument type="service" id="sezzle.order_data_service"/>
             <argument type="service" id="models"/>
+            <argument type="service" id="sezzle.payment_validator"/>
         </service>
 
         <service id="sezzle.backend.release_service"
@@ -32,8 +36,10 @@
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.release_resource"/>
             <argument type="service" id="sezzle.payment_status_service"/>
+            <argument type="service" id="sezzle.order_status_service"/>
             <argument type="service" id="sezzle.order_data_service"/>
             <argument type="service" id="models"/>
+            <argument type="service" id="sezzle.payment_validator"/>
         </service>
     </services>
 </container>

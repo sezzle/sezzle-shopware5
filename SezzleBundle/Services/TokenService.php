@@ -17,6 +17,10 @@ class TokenService
      */
     private $cacheManager;
 
+    /**
+     * TokenService constructor.
+     * @param CacheManager $cacheManager
+     */
     public function __construct(CacheManager $cacheManager)
     {
         $this->cacheManager = $cacheManager;
@@ -28,7 +32,7 @@ class TokenService
      * @param int $shopId
      *
      * @return Token
-     * @throws RequestException
+     * @throws RequestException|\Zend_Cache_Exception
      */
     public function getToken(ClientService $client, AuthCredentials $credentials, $shopId)
     {
@@ -55,6 +59,7 @@ class TokenService
 
     /**
      * @param int $shopId
+     * @throws \Zend_Cache_Exception
      */
     private function setToken(Token $token, $shopId)
     {
@@ -64,6 +69,7 @@ class TokenService
     /**
      * @param Token $token
      * @return bool
+     * @throws \Exception
      */
     private function isTokenValid(Token $token)
     {

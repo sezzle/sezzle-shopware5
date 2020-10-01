@@ -4,6 +4,9 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <imports>
+        <import resource="components/validation.xml"/>
+    </imports>
     <services>
 
         <service id="sezzle.dependency_provider"
@@ -20,6 +23,12 @@
 
         <service id="sezzle.payment_status_service"
                  class="SwagPaymentSezzle\Components\Services\PaymentStatusService"
+                 public="true">
+            <argument type="service" id="models"/>
+        </service>
+
+        <service id="sezzle.order_status_service"
+                 class="SwagPaymentSezzle\Components\Services\OrderStatusService"
                  public="true">
             <argument type="service" id="models"/>
         </service>

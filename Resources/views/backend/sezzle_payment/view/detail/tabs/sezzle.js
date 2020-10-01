@@ -211,6 +211,25 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
         });
     },
 
+    isInputValid: function (amount, cap, method) {
+        var me = this,
+            paymentAction = me.sezzleRecord.paymentAction;
+        if (method === 'DoCapture' && paymentAction === 'authorize' && !me.isAuthValid()) {
+            Shopware.Notification.createStickyGrowlMessage({
+                title: '{s name=growl/title}Sezzle{/s}',
+                text: 'Auth expired. Cannot capture.'
+            }, '{s name=title}Sezzle - Payment{/s}');
+            return false;
+        } else if (amount > cap) {
+            Shopware.Notification.createStickyGrowlMessage({
+                title: '{s name=growl/title}Sezzle{/s}',
+                text: 'Invaild amount'
+            }, '{s name=title}Sezzle - Payment{/s}');
+            return false;
+        }
+        return true;
+    },
+
     /**
      * Creates the elements for the internal communication field set which is displayed on
      * top of the communication tab panel.
@@ -242,11 +261,14 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                     me.record.set('amount', me.paymentActionTextArea.getValue());
                     me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
                     me.record.set('authAmount', me.sezzleRecord.authAmount);
-                    me.fireEvent('capture', me.record, me, {
-                        callback: function (order) {
-                            me.fireEvent('updateForms', order, me.up('window'));
-                        },
-                    });
+                    var amountAvailableForCapture = me.sezzleRecord.authAmount-me.sezzleRecord.capturedAmount;
+                    if (me.isInputValid(me.paymentActionTextArea.getValue(), amountAvailableForCapture, 'DoCapture')) {
+                        me.fireEvent('capture', me.record, me, {
+                            callback: function (order) {
+                                me.fireEvent('updateForms', order, me.up('window'));
+                            },
+                        });
+                    }
                 }
             });
         }
@@ -259,11 +281,14 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                     me.record.set('amount', me.paymentActionTextArea.getValue());
                     me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
                     me.record.set('authAmount', me.sezzleRecord.authAmount);
-                    me.fireEvent('refund', me.record, me, {
-                        callback: function (order) {
-                            me.fireEvent('updateForms', order, me.up('window'));
-                        },
-                    });
+                    var amountAvailableForRefund = me.sezzleRecord.capturedAmount-me.sezzleRecord.refundedAmount;
+                    if (me.isInputValid(me.paymentActionTextArea.getValue(), amountAvailableForRefund)) {
+                        me.fireEvent('refund', me.record, me, {
+                            callback: function (order) {
+                                me.fireEvent('updateForms', order, me.up('window'));
+                            },
+                        });
+                    }
                 }
             });
         }
@@ -276,11 +301,14 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                     me.record.set('amount', me.paymentActionTextArea.getValue());
                     me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
                     me.record.set('authAmount', me.sezzleRecord.authAmount);
-                    me.fireEvent('release', me.record, me, {
-                        callback: function (order) {
-                            me.fireEvent('updateForms', order, me.up('window'));
-                        },
-                    });
+                    var amountAvailableForRelease = me.sezzleRecord.authAmount-me.sezzleRecord.capturedAmount;
+                    if (me.isInputValid(me.paymentActionTextArea.getValue(), amountAvailableForRelease)) {
+                        me.fireEvent('release', me.record, me, {
+                            callback: function (order) {
+                                me.fireEvent('updateForms', order, me.up('window'));
+                            },
+                        });
+                    }
                 }
             });
         }

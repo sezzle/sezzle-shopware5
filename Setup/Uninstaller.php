@@ -30,6 +30,12 @@ class Uninstaller
      */
     private $connection;
 
+    /**
+     * Uninstaller constructor.
+     * @param CrudService $attributeCrudService
+     * @param ModelManager $modelManager
+     * @param Connection $connection
+     */
     public function __construct(CrudService $attributeCrudService, ModelManager $modelManager, Connection $connection)
     {
         $this->attributeCrudService = $attributeCrudService;
@@ -50,6 +56,10 @@ class Uninstaller
         }
     }
 
+    /**
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function deactivatePayments()
     {
         $paymentMethodProvider = new PaymentMethodProvider($this->modelManager);
@@ -59,6 +69,9 @@ class Uninstaller
         );
     }
 
+    /**
+     *
+     */
     private function removeAttributes()
     {
         if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'swag_sezzle_display_in_plus_iframe') !== null) {
@@ -76,6 +89,9 @@ class Uninstaller
         $this->modelManager->generateAttributeModels(['s_core_paymentmeans_attributes']);
     }
 
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     */
     private function removeSettingsTables()
     {
         $sql = 'DROP TABLE IF EXISTS `swag_payment_sezzle_settings_express`;';

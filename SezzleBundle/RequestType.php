@@ -8,6 +8,4 @@ class RequestType
     const POST = 'POST';
     const PUT = 'PUT';
     const PATCH = 'PATCH';
-    const HEAD = 'HEAD';
-    const DELETE = 'DELETE';
 }

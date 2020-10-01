@@ -50,6 +50,14 @@ class ClientService
      */
     private $settingsService;
 
+    /**
+     * ClientService constructor.
+     * @param SettingsServiceInterface $settingsService
+     * @param TokenService $tokenService
+     * @param LoggerServiceInterface $logger
+     * @param GuzzleFactory $factory
+     * @param DependencyProvider $dependencyProvider
+     */
     public function __construct(
         SettingsServiceInterface $settingsService,
         TokenService $tokenService,
@@ -74,11 +82,12 @@ class ClientService
 
         $environment = (bool) $this->settingsService->get('sandbox');
         $environment === true ? $this->baseUrl = BaseURL::SANDBOX : $this->baseUrl = BaseURL::LIVE;
-
-        //Set Partner-Attribution-Id
-        //$this->setPartnerAttributionId(PartnerAttributionId::PAYPAL_CLASSIC); //Default
     }
 
+    /**
+     * @param array $settings
+     * @throws RequestException
+     */
     public function configure(array $settings)
     {
         $this->shopId = $settings['shopId'];
@@ -140,14 +149,6 @@ class ClientService
 
             case RequestType::PUT:
                 $response = $this->client->put($resourceUri, $this->headers, $data)->getBody();
-                break;
-
-            case RequestType::HEAD:
-                $response = $this->client->head($resourceUri, $this->headers)->getBody();
-                break;
-
-            case RequestType::DELETE:
-                $response = $this->client->delete($resourceUri, $this->headers)->getBody();
                 break;
 
             default:

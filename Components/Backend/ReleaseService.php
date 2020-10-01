@@ -2,13 +2,17 @@
 
 namespace SwagPaymentSezzle\Components\Backend;
 
+use Exception;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
-use SwagPaymentSezzle\Components\Exception\OrderNotFoundException;
+use Shopware\Models\Order\Status;
 use SwagPaymentSezzle\Components\ExceptionHandlerServiceInterface;
 use SwagPaymentSezzle\Components\Services\OrderDataService;
+use SwagPaymentSezzle\Components\Services\OrderStatusService;
+use SwagPaymentSezzle\Components\Services\Validation\PaymentActionValidator;
 use SwagPaymentSezzle\Components\Services\PaymentStatusService;
 use SwagPaymentSezzle\SezzleBundle\Resources\ReleaseResource;
+use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
 use SwagPaymentSezzle\SezzleBundle\Util;
 
 class ReleaseService
@@ -35,52 +39,77 @@ class ReleaseService
      * @var ModelManager
      */
     private $modelManager;
+    /**
+     * @var OrderStatusService
+     */
+    private $orderStatusService;
+    /**
+     * @var PaymentActionValidator
+     */
+    private $paymentActionValidator;
 
     public function __construct(
         ExceptionHandlerServiceInterface $exceptionHandler,
         ReleaseResource $releaseResource,
         PaymentStatusService $paymentStatusService,
+        OrderStatusService $orderStatusService,
         OrderDataService $orderDataService,
-        ModelManager $modelManager
-    ) {
+        ModelManager $modelManager,
+        PaymentActionValidator $paymentActionValidator
+    )
+    {
         $this->exceptionHandler = $exceptionHandler;
         $this->releaseResource = $releaseResource;
         $this->paymentStatusService = $paymentStatusService;
+        $this->orderStatusService = $orderStatusService;
         $this->orderDataService = $orderDataService;
         $this->modelManager = $modelManager;
+        $this->paymentActionValidator = $paymentActionValidator;
     }
 
     /**
-     * @param string $orderId
+     * @param string $orderUUID
      * @param string $amountToRelease
      * @param string $currency
      * @return array
      */
-    public function releaseOrder($orderId, $amountToRelease, $currency)
+    public function releaseOrder($orderUUID, $amountToRelease, $currency)
     {
         $releasePayload = $this->createRelease($amountToRelease, $currency);
 
         try {
-            $captureData = $this->releaseResource->create($orderId, $releasePayload);
-            if (!empty($captureData['uuid'])) {
-                $this->paymentStatusService->updatePaymentStatus(
-                    $orderId,
-                    \SwagPaymentPayPalUnified\Components\PaymentStatus::PAYMENT_STATUS_CANCELLED
-                );
-                /** @var Order|null $orderModel */
-                $orderModel = $this->modelManager->getRepository(Order::class)->findOneBy(['temporaryId' => $orderId]);
+            if (!$this->paymentActionValidator->isAmountValid($orderUUID, $amountToRelease, 'DoRelease')) {
+                throw new Exception("Invalid amount");
+            }
+            $captureData = $this->releaseResource->create($orderUUID, $releasePayload);
+            if (empty($captureData['uuid'])) {
+                throw new Exception("Error releasing");
+            }
+            $this->orderStatusService->updateOrderStatus(
+                $orderUUID,
+                Status::ORDER_STATE_IN_PROCESS
+            );
+            /** @var Order|null $orderModel */
+            $orderModel = $this->modelManager->getRepository(Order::class)->findOneBy(['temporaryId' => $orderUUID]);
 
-                if (!($orderModel instanceof Order)) {
-                    throw new OrderNotFoundException('temporaryId', $orderId);
-                }
-                $attributesToUpdate = [
-                    'releasedAmount' => Util::formatToCurrency($releasePayload->getAmountInCents())
-                ];
-                $this->orderDataService->applyPaymentAttributes($orderModel->getNumber(), $attributesToUpdate);
+            if (!($orderModel instanceof Order)) {
+                throw new Exception('Order not found');
             }
 
+            if ($orderModel->getAttribute()->getSwagSezzleAuthAmount() == $amountToRelease) {
+                $this->paymentStatusService->updatePaymentStatus(
+                    $orderUUID,
+                    Status::PAYMENT_STATE_THE_PROCESS_HAS_BEEN_CANCELLED
+                );
+            }
+            $attributesToUpdate = [
+                'authAmount' => $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $amountToRelease,
+                'releasedAmount' => $amountToRelease
+            ];
+            $this->orderDataService->applyPaymentAttributes($orderModel->getNumber(), $attributesToUpdate);
+
             $viewParameter = ['success' => true];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error = $this->exceptionHandler->handle($e, 'capture order');
 
             $viewParameter = [
@@ -93,13 +122,13 @@ class ReleaseService
     }
 
     /**
-     * @param $amount
+     * @param float $amount
      * @param string $currency
-     * @return  \SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount
+     * @return  Amount
      */
     private function createRelease($amount, $currency)
     {
-        $requestParameters = new \SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount();
+        $requestParameters = new Amount();
         $requestParameters->setAmountInCents(Util::formatToCents($amount));
         $requestParameters->setCurrency($currency);
 

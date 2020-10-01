@@ -30,6 +30,13 @@ class OrderDataService
      */
     private $userDataService;
 
+    /**
+     * OrderDataService constructor.
+     * @param Connection $dbalConnection
+     * @param SettingsServiceInterface $settingsService
+     * @param TokenizeResource $tokenizeResource
+     * @param UserDataService $userDataService
+     */
     public function __construct(
         Connection $dbalConnection,
         SettingsServiceInterface $settingsService,
@@ -70,6 +77,10 @@ class OrderDataService
             ->execute();
     }
 
+    /**
+     * @param string $orderNumber
+     * @return mixed
+     */
     public function getOrder($orderNumber)
     {
         return $this->dbalConnection->createQueryBuilder()
@@ -110,7 +121,7 @@ class OrderDataService
         $builder->update('s_order_attributes', 'oa');
 
         foreach ($data as $key => $value) {
-            if ($value) {
+            if ($value >= 0) {
                 switch ($key) {
                     case 'referenceId':
                         $parameters[':' . $key] = $value;
@@ -155,6 +166,9 @@ class OrderDataService
 
     }
 
+    /**
+     * @param string $orderNumber
+     */
     public function applyTokenizeAttributes($orderNumber)
     {
         $userId = $this->dbalConnection->createQueryBuilder()
@@ -191,6 +205,9 @@ class OrderDataService
             ])->execute();
     }
 
+    /**
+     *
+     */
     public function clearSezzleSessionData()
     {
         $shopwareSession = Shopware()->Session();

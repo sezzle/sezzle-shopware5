@@ -35,6 +35,7 @@ class DependencyProvider
      * Returns the module with the given name, if any exists.
      *
      * @param string $moduleName
+     * @return array
      */
     public function getModule($moduleName)
     {

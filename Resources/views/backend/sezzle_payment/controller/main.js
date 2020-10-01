@@ -19,6 +19,9 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         releaseOrder: '{url module=backend controller=Sezzle action=releaseOrder}',
     },
 
+    sezzleRecord: null,
+    panel: null,
+
     init: function () {
         var me = this;
 
@@ -42,6 +45,10 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             amount = record.get('amount'),
             isPartial = authAmount === amount;
 
+        me.sezzleRecord = record;
+        me.panel = panel;
+
+        panel.setLoading(true);
         Ext.Ajax.request({
             url: this.urls.captureOrder,
             params: {
@@ -49,10 +56,6 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
                 currency: currency,
                 amount: amount,
                 isPartial: isPartial
-            },
-            success: function(responseData, request) {
-                var captureAmount = Ext.get("capture_amount");
-                captureAmount.dom.innerHTML = amount;
             },
             callback: Ext.bind(me.captureCallback, me)
         });
@@ -64,16 +67,16 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             currency = record.get('currency'),
             amount = record.get('amount');
 
+        me.sezzleRecord = record;
+        me.panel = panel;
+
+        panel.setLoading(true);
         Ext.Ajax.request({
             url: this.urls.refundOrder,
             params: {
                 id: sezzleOrderUUID,
                 currency: currency,
                 amount: amount
-            },
-            success: function(responseData, request) {
-                var refundAmount = Ext.get("refund_amount");
-                refundAmount.dom.innerHTML = amount;
             },
             callback: Ext.bind(me.refundCallback, me)
         });
@@ -85,16 +88,16 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             currency = record.get('currency'),
             amount = record.get('amount');
 
+        me.sezzleRecord = record;
+        me.panel = panel;
+
+        panel.setLoading(true);
         Ext.Ajax.request({
             url: this.urls.releaseOrder,
             params: {
                 id: sezzleOrderUUID,
                 currency: currency,
                 amount: amount
-            },
-            success: function(responseData, request) {
-                var releaseAmount = Ext.get("release_amount");
-                releaseAmount.dom.innerHTML = amount;
             },
             callback: Ext.bind(me.releaseCallback, me)
         });
@@ -104,9 +107,11 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         var me = this,
             responseObject = Ext.JSON.decode(response.responseText);
 
+        me.panel.setLoading(false);
+
         if (Ext.isDefined(responseObject) && responseObject.success) {
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/captureSuccess}The payment has been captured successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
-            me.subApplication.getStore('Order').reload();
+            me.gridReload();
         } else {
             Shopware.Notification.createStickyGrowlMessage({ title: '{s name=growl/title}Sezzle{/s}', text: responseObject.message }, '{s name=title}Sezzle - Payment{/s}');
         }
@@ -116,9 +121,10 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         var me = this,
             responseObject = Ext.JSON.decode(response.responseText);
 
+        me.panel.setLoading(false);
         if (Ext.isDefined(responseObject) && responseObject.success) {
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/refundSuccess}The payment has been refunded successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
-            me.subApplication.getStore('Order').reload();
+            me.gridReload();
         } else {
             Shopware.Notification.createStickyGrowlMessage({ title: '{s name=growl/title}Sezzle{/s}', text: responseObject.message }, '{s name=title}Sezzle - Payment{/s}');
         }
@@ -128,11 +134,19 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         var me = this,
             responseObject = Ext.JSON.decode(response.responseText);
 
+        me.panel.setLoading(false);
         if (Ext.isDefined(responseObject) && responseObject.success) {
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/releaseSuccess}The payment has been released successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
-            me.subApplication.getStore('Order').reload();
+            me.gridReload();
         } else {
             Shopware.Notification.createStickyGrowlMessage({ title: '{s name=growl/title}Sezzle{/s}', text: responseObject.message }, '{s name=title}Sezzle - Payment{/s}');
         }
     },
+
+    gridReload: function () {
+        var me = this,
+            mainController = me.subApplication.getController('Main');
+        mainController.showOrder(me.sezzleRecord);
+        me.subApplication.getStore('Order').reload();
+    }
 });

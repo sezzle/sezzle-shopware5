@@ -18,6 +18,11 @@ class BasketDataService
      */
     private $settingsService;
 
+    /**
+     * BasketDataService constructor.
+     * @param Connection $dbalConnection
+     * @param SettingsServiceInterface $settingsService
+     */
     public function __construct(
         Connection $dbalConnection,
         SettingsServiceInterface $settingsService
@@ -45,6 +50,11 @@ class BasketDataService
             ])->execute();
     }
 
+    /**
+     * @param array $basket
+     * @param string $key
+     * @return bool|string
+     */
     public function getValueByKey($basket, $key)
     {
         echo "<pre>";

@@ -25,6 +25,12 @@ class UserDataService
      */
     private $tokenizeResource;
 
+    /**
+     * UserDataService constructor.
+     * @param Connection $dbalConnection
+     * @param SettingsServiceInterface $settingsService
+     * @param TokenizeResource $tokenizeResource
+     */
     public function __construct(
         Connection $dbalConnection,
         SettingsServiceInterface $settingsService,
@@ -72,6 +78,11 @@ class UserDataService
 
     }
 
+    /**
+     * @param int $userId
+     * @return bool
+     * @throws \Exception
+     */
     public function isCustomerUuidValid($userId)
     {
         $dateTimeNow = new \DateTime();
@@ -93,6 +104,11 @@ class UserDataService
 
     }
 
+    /**
+     * @param $userId
+     * @param $key
+     * @return bool|string
+     */
     public function getValueByKey($userId, $key)
     {
         $attribute = sprintf("swag_sezzle_%s", $key);

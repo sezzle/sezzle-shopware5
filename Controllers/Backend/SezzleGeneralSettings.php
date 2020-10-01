@@ -15,6 +15,9 @@ class Shopware_Controllers_Backend_SezzleGeneralSettings extends Shopware_Contro
      */
     protected $alias = 'general';
 
+    /**
+     * @throws Exception
+     */
     public function detailAction()
     {
         $shopId = (int) $this->Request()->getParam('shopId');

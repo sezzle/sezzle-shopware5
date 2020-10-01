@@ -14,6 +14,10 @@ use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
 use SwagPaymentSezzle\SezzleBundle\Structs\Session;
 use SwagPaymentSezzle\SezzleBundle\Util;
 
+/**
+ * Class ApiBuilderService
+ * @package SwagPaymentSezzle\Components\Services
+ */
 class ApiBuilderService implements ApiBuilderInterface
 {
     /**
@@ -71,6 +75,13 @@ class ApiBuilderService implements ApiBuilderInterface
      */
     private $snippetManager;
 
+    /**
+     * ApiBuilderService constructor.
+     * @param RouterInterface $router
+     * @param SettingsServiceInterface $settingsService
+     * @param SnippetManager $snippetManager
+     * @param DependencyProvider $dependencyProvider
+     */
     public function __construct(
         RouterInterface $router,
         SettingsServiceInterface $settingsService,
@@ -165,21 +176,6 @@ class ApiBuilderService implements ApiBuilderInterface
         $taxAmount->setCurrency($this->basketData['sCurrencyName']);
         $order->setTaxAmount($taxAmount);
 
-//        $items = [];
-//        if (isset($this->basketData['content'])) {
-//            foreach ($this->basketData['content'] as $item) {
-//                $itemObj = new Session\Order\Item();
-//                $itemObj->setName($item['articlename']);
-//                $itemObj->setSku($item['articleID']);
-//                $itemObj->setQuantity($item['quantity']);
-//                $itemAmount = new Session\Order\Amount();
-//                $itemAmount->setAmountInCents(number_format($item['price'], 2));
-//                $itemAmount->setCurreny($this->basketData['sCurrencyName']);
-//                $itemObj->setPrice($itemAmount);
-//                $items[] = $itemObj->toArray();
-//            }
-//        }
-
         $order->setItems($this->getItemList());
 
         $shippingCosts = new Session\Order\Amount();
@@ -195,6 +191,9 @@ class ApiBuilderService implements ApiBuilderInterface
         return $requestParameters;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCapturePayload(ApiBuilderParameters $params)
     {
         $this->order = $params->getOrder();
@@ -210,6 +209,9 @@ class ApiBuilderService implements ApiBuilderInterface
         return $requestParameters;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomerOrderPayload(ApiBuilderParameters $params)
     {
         $this->basketData = $params->getBasketData();

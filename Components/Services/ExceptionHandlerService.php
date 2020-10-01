@@ -7,20 +7,22 @@ use Shopware\Components\HttpClient\RequestException;
 use SwagPaymentSezzle\Components\Exception\SezzleApiException;
 use SwagPaymentSezzle\Components\ExceptionHandlerServiceInterface;
 use SwagPaymentSezzle\SezzleBundle\Components\LoggerServiceInterface;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\ErrorResponse;
-use SwagPaymentPayPalUnified\PayPalBundle\Structs\GenericErrorResponse;
+use SwagPaymentSezzle\SezzleBundle\Structs\ErrorResponse;
 
 class ExceptionHandlerService implements ExceptionHandlerServiceInterface
 {
     const DEFAULT_MESSAGE = 'An error occurred: ';
     const LOG_MESSAGE = 'Could not %s due to a communication failure';
-    const WEBHOOK_ALREADY_EXISTS_ERROR = 'WEBHOOK_URL_ALREADY_EXISTS';
 
     /**
      * @var LoggerServiceInterface
      */
     private $loggerService;
 
+    /**
+     * ExceptionHandlerService constructor.
+     * @param LoggerServiceInterface $loggerService
+     */
     public function __construct(LoggerServiceInterface $loggerService)
     {
         $this->loggerService = $loggerService;
@@ -53,13 +55,6 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface
             }
         }
 
-        if (strpos($requestBody, self::WEBHOOK_ALREADY_EXISTS_ERROR) === false) {
-            $this->loggerService->error(sprintf(self::LOG_MESSAGE, $currentAction), [
-                'message' => $exceptionMessage,
-                'payload' => $requestBody,
-            ]);
-        }
-
         if (!$requestBody) {
             return new SezzleApiException(
                 $e->getCode(),
@@ -76,15 +71,6 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface
             );
         }
 
-        if (array_key_exists('error', $requestBody) && array_key_exists('error_description', $requestBody)) {
-            $genericErrorStruct = GenericErrorResponse::fromArray($requestBody);
-
-            return new SezzleApiException(
-                $genericErrorStruct->getError(),
-                self::DEFAULT_MESSAGE . $genericErrorStruct->getErrorDescription()
-            );
-        }
-
         $errorStruct = ErrorResponse::fromArray($requestBody);
 
         if (!$errorStruct) {
@@ -95,17 +81,9 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface
         }
 
         $message = self::DEFAULT_MESSAGE . $errorStruct->getMessage();
-        $errorDetails = $errorStruct->getDetails();
-
-        if (!empty($errorDetails)) {
-            $message .= ': ';
-            foreach ($errorDetails as $errorDetail) {
-                $message .= $errorDetail->getIssue() . ' "' . $errorDetail->getField() . '" ';
-            }
-        }
 
         return new SezzleApiException(
-            $errorStruct->getName(),
+            $errorStruct->getLocation(),
             $message
         );
     }

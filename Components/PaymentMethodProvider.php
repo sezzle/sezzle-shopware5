@@ -43,8 +43,9 @@ class PaymentMethodProvider
 
     /**
      * @param bool $active
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      * @see PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME
-     *
      */
     public function setPaymentMethodActiveFlag($active)
     {

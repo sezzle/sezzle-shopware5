@@ -62,6 +62,9 @@ class Shopware_Controllers_Backend_SezzleSettings extends Shopware_Controllers_B
         }
     }
 
+    /**
+     *
+     */
     private function configureClient()
     {
         $request = $this->Request();

@@ -7,7 +7,7 @@ use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
 use SwagPaymentSezzle\Components\Exception\OrderNotFoundException;
 
-class PaymentStatusService
+class OrderStatusService
 {
     /**
      * @var ModelManager
@@ -15,7 +15,7 @@ class PaymentStatusService
     private $modelManager;
 
     /**
-     * PaymentStatusService constructor.
+     * OrderStatusService constructor.
      * @param ModelManager $modelManager
      */
     public function __construct(ModelManager $modelManager)
@@ -24,30 +24,24 @@ class PaymentStatusService
     }
 
     /**
-     * @param string $parentPayment
-     * @param int $paymentStateId
+     * @param string $orderUUID
+     * @param int $orderState
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function updatePaymentStatus($parentPayment, $paymentStateId)
+    public function updateOrderStatus($orderUUID, $orderState)
     {
         /** @var Order|null $orderModel */
-        $orderModel = $this->modelManager->getRepository(Order::class)->findOneBy(['temporaryId' => $parentPayment]);
+        $orderModel = $this->modelManager->getRepository(Order::class)->findOneBy(['temporaryId' => $orderUUID]);
 
         if (!($orderModel instanceof Order)) {
-            throw new OrderNotFoundException('temporaryId', $parentPayment);
+            throw new OrderNotFoundException('temporaryId', $orderUUID);
         }
 
         /** @var Status|null $orderStatusModel */
-        $orderStatusModel = $this->modelManager->getRepository(Status::class)->find($paymentStateId);
+        $orderStatusModel = $this->modelManager->getRepository(Status::class)->find($orderState);
 
-        $orderModel->setPaymentStatus($orderStatusModel);
-        if ($paymentStateId === Status::PAYMENT_STATE_COMPLETELY_PAID
-            || $paymentStateId === Status::PAYMENT_STATE_PARTIALLY_PAID
-        ) {
-            $orderModel->setClearedDate(new \DateTime());
-        }
-
+        $orderModel->setOrderStatus($orderStatusModel);
         $this->modelManager->flush($orderModel);
     }
 }
