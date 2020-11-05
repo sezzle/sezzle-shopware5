@@ -13,6 +13,10 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
      */
     window: null,
 
+    refs: [
+        { ref: 'detailWindow', selector: 'order-detail-window' }
+    ],
+
     urls: {
         captureOrder: '{url module=backend controller=Sezzle action=captureOrder}',
         refundOrder: '{url module=backend controller=Sezzle action=refundOrder}',
@@ -144,9 +148,10 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
     },
 
     gridReload: function () {
-        var me = this,
+        var me = this;
             mainController = me.subApplication.getController('Main');
         mainController.showOrder(me.sezzleRecord);
         me.subApplication.getStore('Order').reload();
+        me.getDetailWindow().destroy();
     }
 });
