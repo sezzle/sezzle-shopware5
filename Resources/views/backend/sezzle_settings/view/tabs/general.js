@@ -98,7 +98,7 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
      * @returns { Ext.form.Container }
      */
     createNotice: function () {
-        var infoNotice = Shopware.Notification.createBlockMessage('{s name=description}Sezzle - the Sezzle button in the checkout! Register for your Sezzle business account here: <a href="https://dashboard.sezzle.com/merchant/signup" title="https://dashboard.sezzle.com/merchant/signup" target="_blank">https://dashboard.sezzle.com/merchant/signup</a>{/s}', 'info');
+        var infoNotice = Shopware.Notification.createBlockMessage('{s name=description}Sezzle - Buy Now, Pay Later with 0% interest! Register for your Sezzle business account <a href="https://dashboard.sezzle.com/merchant/signup" title="Sezzle Merchant Dashboard SignUp" target="_blank">here</a>, if you have not done yet.{/s}', 'info');
 
         // There is no style defined for the type "info" in the shopware backend stylesheet, therefore we have to apply it manually
         infoNotice.style = {
