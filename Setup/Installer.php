@@ -300,9 +300,8 @@ class Installer
     private function getUnifiedPaymentLogo()
     {
         return '<!-- Sezzle Logo -->'
-            . '<a href="https://www.sezzle.com" target="_blank" rel="noopener">'
             . '<img src="https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png" alt="Logo Sezzle">'
-            . '</a><br><!-- Sezzle Logo -->';
+            . '<br><!-- Sezzle Logo -->';
     }
 
     /**
