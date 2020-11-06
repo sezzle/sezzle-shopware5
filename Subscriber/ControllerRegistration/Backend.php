@@ -4,6 +4,8 @@ namespace SwagPaymentSezzle\Subscriber\ControllerRegistration;
 
 use Enlight\Event\SubscriberInterface;
 use Enlight_Template_Manager;
+use Enlight_Controller_ActionEventArgs as ActionEventArgs;
+use Enlight_View_Default;
 
 class Backend implements SubscriberInterface
 {
@@ -34,7 +36,8 @@ class Backend implements SubscriberInterface
         return [
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_Sezzle' => 'onGetBackendControllerPath',
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleSettings' => 'onGetBackendSettingsControllerPath',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleGeneralSettings' => 'onGetBackendGeneralSettingsControllerPath'
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleGeneralSettings' => 'onGetBackendGeneralSettingsControllerPath',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Index' => 'onLoadBackendIndex'
         ];
     }
 
@@ -73,5 +76,17 @@ class Backend implements SubscriberInterface
     public function onGetBackendGeneralSettingsControllerPath()
     {
         return $this->pluginDirectory . '/Controllers/Backend/SezzleGeneralSettings.php';
+    }
+
+    /**
+     * Handles the Enlight_Controller_Action_PostDispatchSecure_Backend_Index event.
+     * Extends the backend icon set by the paypal icon.
+     */
+    public function onLoadBackendIndex(ActionEventArgs $args)
+    {
+        /** @var Enlight_View_Default $view */
+        $view = $args->getSubject()->View();
+        $view->addTemplateDir($this->pluginDirectory . '/Resources/views/');
+        $view->extendsTemplate('backend/sezzle_settings/menu_icon.tpl');
     }
 }

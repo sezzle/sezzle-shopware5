@@ -6,7 +6,7 @@
             <name>Sezzle</name>
             <label lang="en">Sezzle</label>
             <label lang="de">Sezzle</label>
-            <class>sprite--Sezzle</class>
+            <class>sprite--sezzle</class>
             <parent identifiedBy="controller">Payments</parent>
             <children>
                 <entry>
