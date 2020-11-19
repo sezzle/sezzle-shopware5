@@ -243,7 +243,7 @@ class Installer
             'string',
             [
                 'position' => -100,
-                'displayInBackend' => false,
+                'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID',
                 'helpText' => 'Sezzle Customer UUID',
             ]);
@@ -251,8 +251,8 @@ class Installer
             'swag_sezzle_customer_uuid_expiry',
             'datetime',
             [
-                'position' => -100,
-                'displayInBackend' => false,
+                'position' => -200,
+                'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID Expiry',
                 'helpText' => 'Sezzle Customer UUID Expiry',
             ]);
@@ -260,8 +260,8 @@ class Installer
             'swag_sezzle_customer_uuid_status',
             'boolean',
             [
-                'position' => -100,
-                'displayInBackend' => false,
+                'position' => -300,
+                'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID Status',
                 'helpText' => 'Sezzle Customer UUID Status',
             ]);

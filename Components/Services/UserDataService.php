@@ -2,7 +2,9 @@
 
 namespace SwagPaymentSezzle\Components\Services;
 
+use DateTime;
 use Doctrine\DBAL\Connection;
+use Exception;
 use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
 use SwagPaymentSezzle\SezzleBundle\PaymentType;
 use SwagPaymentSezzle\SezzleBundle\Resources\TokenizeResource;
@@ -81,26 +83,48 @@ class UserDataService
     /**
      * @param int $userId
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function isCustomerUuidValid($userId)
     {
-        $dateTimeNow = new \DateTime();
+        $dateTimeNow = new DateTime();
 
 
         $customerUuidExpiry = $this->getValueByKey($userId, 'customer_uuid_expiry');
 
         if (!$customerUuidExpiry) {
+            $this->deleteTokenizeRecord($userId);
             return false;
         }
 
-        $customerUuidExpiry = new \DateTime($customerUuidExpiry);
+        $customerUuidExpiry = new DateTime($customerUuidExpiry);
 
         if ($customerUuidExpiry->getTimestamp() < $dateTimeNow->getTimestamp()) {
+            $this->deleteTokenizeRecord($userId);
             return false;
         }
 
         return true;
+
+    }
+
+    public function deleteTokenizeRecord($userId)
+    {
+        if ($userId) {
+            $builder = $this->dbalConnection->createQueryBuilder();
+
+            $builder->update('s_user_attributes', 'ua')
+                ->set('ua.swag_sezzle_customer_uuid', ':customerUuid')
+                ->set('ua.swag_sezzle_customer_uuid_status', ':customerUuidStatus')
+                ->set('ua.swag_sezzle_customer_uuid_expiry', ':customerUuidExpiry')
+                ->where('ua.userID = :userID')
+                ->setParameters([
+                    ':userID' => $userId,
+                    ':customerUuid' => null,
+                    ':customerUuidStatus' => false,
+                    ':customerUuidExpiry' => null
+                ])->execute();
+        }
 
     }
 
@@ -117,7 +141,7 @@ class UserDataService
 
         //Since joins are being stripped out, we have to select the correct orderId by a sub query.
         return $this->dbalConnection->createQueryBuilder()
-            ->select('ua.'.$attribute)
+            ->select('ua.' . $attribute)
             ->from('s_user_attributes', 'ua')
             ->where('ua.userID = :userId')
             ->setParameters([

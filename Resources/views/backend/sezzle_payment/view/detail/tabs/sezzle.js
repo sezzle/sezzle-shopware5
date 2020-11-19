@@ -169,7 +169,11 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                             <table>
                                 <tr>
                                     <td>Auth Expiry : </td>
-                                    <td>{authExpiry} ({authStatus})</td>
+                                    <tpl if="authStatus == \'Expired\'">
+                                        <td style="color: #ff0000">{authExpiry} ({authStatus})</td>
+                                    <tpl else>
+                                        <td>{authExpiry} ({authStatus})</td>
+                                    </tpl>
                                 </tr>
                             </table>
                         </div>

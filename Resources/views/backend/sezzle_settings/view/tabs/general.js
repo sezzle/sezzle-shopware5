@@ -89,7 +89,7 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
             me.createNotice(),
             me.createActivationContainer(),
             me.createRestContainer(),
-            me.createBehaviourContainer(),
+            me.createMerchantContainer(),
             me.createErrorHandlingContainer()
         ];
     },
@@ -180,12 +180,12 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
     /**
      * @returns { Ext.form.FieldSet }
      */
-    createBehaviourContainer: function () {
+    createMerchantContainer: function () {
         var me = this;
 
 
         me.behaviourContainer = Ext.create('Ext.form.FieldSet', {
-            title: '{s name="fieldset/behaviour/title"}Behaviour{/s}',
+            title: '{s name="fieldset/behaviour/title"}Merchant{/s}',
             items: [
                 {
                     xtype: 'textfield',
@@ -195,26 +195,21 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
                     allowBlank: false
                 },
                 {
-                    xtype: 'checkbox',
-                    name: 'tokenize',
-                    inputValue: true,
-                    uncheckedValue: false,
-                    fieldLabel: '{s name="fieldset/rest/enableTokenize"}Enable Tokenization{/s}',
-                    boxLabel: '{s name="fieldset/rest/enableTokenize/help"}Enable this option to tokenize customer.{/s}'
-                },
-                {
                     xtype: 'combobox',
                     name: 'merchantLocation',
                     fieldLabel: '{s name="fieldset/behaviour/merchantLocation"}Merchant location{/s}',
                     helpText: '{s name="fieldset/behaviour/merchantLocation/help"}Choose your merchant location. Depending on this, different features are available to you.{/s}',
                     store: Ext.create('Shopware.apps.SezzleSettings.store.MerchantLocation'),
                     valueField: 'type',
-                    value: 'germany',
-                    listeners: {
-                        'select': function(checkbox) {
-                            me.fireEvent('onChangeMerchantLocation', checkbox);
-                        }
-                    }
+                    value: 'us'
+                },
+                {
+                    xtype: 'checkbox',
+                    name: 'tokenize',
+                    inputValue: true,
+                    uncheckedValue: false,
+                    fieldLabel: '{s name="fieldset/rest/enableTokenize"}Enable Tokenization{/s}',
+                    boxLabel: '{s name="fieldset/rest/enableTokenize/help"}Enable this option to tokenize customer.{/s}'
                 },
                 {
                     xtype: 'combobox',
