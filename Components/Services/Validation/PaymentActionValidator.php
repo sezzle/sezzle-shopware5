@@ -39,27 +39,19 @@ class PaymentActionValidator
             return false;
         }
 
+        $amountAvailable = 0.00;
         switch ($method) {
             case 'DoCapture':
-                $amountAvailableToCapture = $orderModel->getInvoiceAmount() - $orderModel->getAttribute()->getSwagSezzleCapturedAmount();
-                if ($amount > $amountAvailableToCapture) {
-                    return false;
-                }
+                $amountAvailable = $orderModel->getInvoiceAmount() - $orderModel->getAttribute()->getSwagSezzleCapturedAmount();
                 break;
             case 'DoRefund':
-                $amountAvailableToRefund = $orderModel->getAttribute()->getSwagSezzleCapturedAmount() - $orderModel->getAttribute()->getSwagSezzleRefundedAmount();
-                if ($amount > $amountAvailableToRefund) {
-                    return false;
-                }
+                $amountAvailable = $orderModel->getAttribute()->getSwagSezzleCapturedAmount() - $orderModel->getAttribute()->getSwagSezzleRefundedAmount();
                 break;
             case 'DoRelease':
-                $amountAvailableToRelease = $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $orderModel->getAttribute()->getSwagSezzleCapturedAmount();
-                if ($amount > $amountAvailableToRelease) {
-                    return false;
-                }
+                $amountAvailable = $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $orderModel->getAttribute()->getSwagSezzleCapturedAmount();
                 break;
         }
-        return true;
+        return $amount <= $amountAvailable;
     }
 
     /**

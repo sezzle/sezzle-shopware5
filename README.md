@@ -24,7 +24,7 @@ There are two ways of installing and upgrading the plugin.
 
 ### Manual
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
-* Unzip the file and follow the following instructions.
+* Just unzip the file and follow the following instructions.
 * Navigate to `Shopware` `[Shopware]/custom/plugins/` either through `SFTP` or `SSH`.
 * Copy `SwagPaymentSezzle` directory from unzipped folder to `[Shopware]/custom/plugins/`.
 * Login to `Shopware 5` Backend and navigate to `Configuration > Plugin Manager > Management > Installed`.
@@ -37,12 +37,12 @@ There are two ways of installing and upgrading the plugin.
 ### Composer
 * Change the version number of the `sezzle/sezzlepay` inside `composer.json`.
 * Open terminal and navigate to `Shopware` root path.
-* Run the below command for the updating the plugin to a newer version:
+* Run the following command for the updating the plugin to a newer version:
 ```composer update sezzle/sezzlepay```
 
 ### Manual
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
-* Unzip the file and follow the following instructions.
+* Just unzip the file and follow the following instructions.
 * Delete the contents from `[Shopware]/custom/plugins/SwagPaymentSezzle`.
 * Copy the contents of `SwagPaymentSezzle` directory from unzipped folder to `[Shopware]/custom/plugins/SwagPaymentSezzle/`.
 * Login to `Shopware` Backend and navigate to `Configuration > Cache/performance`.
@@ -53,7 +53,7 @@ There are two ways of installing and upgrading the plugin.
 
 ### Payment Configuration
 
-* Make sure you have the `Merchant UUID` and the `API Keys` from the [`Sezzle Merchant Dashboard`](https://dashboard.sezzle.com/merchant/). Sign Up if you have not signed up to get the necessities.
+* Make sure you have the `Merchant UUID` and the `API Keys` from the [`Sezzle Merchant Dashboard`](https://dashboard.sezzle.com/merchant/). You must be [registered with Sezzle](https://dashboard.sezzle.com/merchant/signup) to access the Merchant Dashboard.
 * Navigate to `Customers > Payments > Sezzle > Settings` in your `Shopware` Backend.
 * Enable `Sezzle` by checking the `Enable for this shop` checkbox.
 * Set the `Public Key` and `Private Key`. 
@@ -61,7 +61,7 @@ There are two ways of installing and upgrading the plugin.
 * You can also verify your `API Keys` by clicking on the `Test API Settings` button.
 * Set the `Merchant UUID`.
 * Set the `Merchant Location` as per the store origin.
-* Check the `Enable Tokenization` checkbox for allowing `Sezzle` to tokenize the customer account if they approve it. If customer wish to tokenize their account, next time, they don't have to redirect to Sezzle Checkout for completing the purchase, rather it will happen in your website.
+* Check the `Enable Tokenization` checkbox to enable customer tokenization in the Sezzle checkout. If the customer agrees to be tokenized, then future checkouts for this customer will not require a redirect to Sezzle.
 * Set `Payment Action` as `Authorize only` for doing payment authorization only and `Authorize and Capture` for doing instant capture.
 * Check the `Display errors` checkbox for showing up `Sezzle` related error code in the web URL on failure.
 * Set `Logging` as `Normal` if you want to log only errors in log file and `Extended` for logging all kind of error messages including `Normal, Warning and Error`.
@@ -71,67 +71,61 @@ There are two ways of installing and upgrading the plugin.
 
 ## Frontend Functionality
 
-* If you have correctly set up `Sezzle`, you will see `Sezzle` as a payment method in the checkout page.
+* If you have successfully installed the Sezzle plugin, then Sezzle will be included as a payment method in the checkout page.
 * Select `Sezzle` and move forward.
 * Once you click `Complete Payment`, you will be redirected to `Sezzle Checkout` to complete the checkout.
-* In the final page of Sezzle Checkout, check the `Approve {Website Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account. And, then click on `Complete Order` to complete your purchase.
-* If your account is already tokenized, order will be placed without redirection otherwise you will be redirected to Sezzle Checkout for completing the purchase.
+* **[Optional]** In the final page of Sezzle Checkout, check the `Approve {Store Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account.
+* Finally, click on `Complete Order` to complete your purchase. Note that, if your account is already tokenized, order will be placed without redirection otherwise you will be redirected to Sezzle Checkout for completing the purchase.
 * On successful order placement, you will be redirected to the order confirmation page.
 
 ## Capture Payment
 
 * If `Payment Action` is set to `Authorize and Capture`, capture will be performed instantly from the plugin after order is created and validated in `Shopware`.
-* If `Payment Action` is set to `Authorize`, capture needs to be performed manually from the `Shopware` backend. Follow the below steps to do so.
+* If `Payment Action` is set to `Authorize`, capture needs to be performed manually from the `Shopware` backend. Follow the below steps to capture.
     * Go the order and click on `Sezzle` tab.
-    * Input a value in `Amount` field and click on `Capture` to capture the payment.
-    * This will automatically capture the payment in `Sezzle`.
+    * Input a value in `Amount` field and click on `Capture` to capture the payment in `Sezzle`.
 
 ## Refund Payment
 
 * Go the order and click on `Sezzle` tab.
-* Input a value in `Amount` field and click on `Refund` to refund the payment.
-* This will automatically refund the payment in `Sezzle`.
-* In `Sezzle Merchant Dashboard`, `Order Status` as `Refunded` means payment has been fully refunded and `Order Status` as `Partially Refunded` means payment has been partially refunded.
+* Input a value in `Amount` field and click on `Refund` to refund the payment in `Sezzle`.
 
 ## Release Payment
 
 * Go the order and click on `Sezzle` tab.
-* Input a value in `Amount` field and click on `Release` to release the payment.
-* This will automatically release the payment in `Sezzle`.
-* In `Sezzle Merchant Dashboard`, `Order Status` as `Deleted due to checkout not being captured before expiration` means payment has been fully released.
+* Input a value in `Amount` field and click on `Release` to release the payment in `Sezzle`.
 
 ## Order Verification in Shopware Backend
 
 * Login to `Shopware` admin and navigate to `Customers > Orders`.
 * Proceed into the corresponding order.
-* Payment is successfully captured by `Sezzle` can be known from the following:.
+* Payment is successfully captured by `Sezzle` when:.
     * Current Payment Status is `Completely Paid`.
-    * `Capture Amount` should match the `Auth Amount`.
-* Payment is only authorized can be known from the following:
+    * `Capture Amount` equals the `Auth Amount`.
+* Payment is only authorized when:
     * Current Payment Status is `Open`.
-    * `Auth Amount` should match the `Order Amount`.
-    * `Capture Amount` should be `0`.
-* Payment is refunded can be known from the following:
+    * `Auth Amount` equals the `Order Amount`.
+    * `Capture Amount` equals `0`.
+* Payment is refunded when:
     * Current Payment Status is `Re-crediting`.
-    * `Refund Amount` should be equal or less that `Capture Amount`.
-* Payment is released can be known from the following:
-    * Current Payment Status is `The process is cancelled` in case of full release.
-    * Current Payment Status is `Open` in case of partial release.
+    * `Refund Amount` is equal to or less than the `Capture Amount`.
+* Payment is released when:
+    * Current Payment Status is The process is cancelled for a full release or Open for a partial release.
     * Amount will be deducted from `Auth Amount` and should appear in `Released Amount`.
 
 ## Order Verification in Sezzle Merchant Dashboard
 
 * Login to `Sezzle Merchant Dashboard` and navigate to `Orders`.
 * Proceed into the corresponding order.
-* Status as `Approved` means payment is successfully captured by `Sezzle`.
-* Status as `Authorized, uncaptured` means payment is authorized but yet not captured.
-* Status as `Refunded` means payment is refunded.
-* Status as `Deleted due to checkout not being captured before expiration` means either payment was not captured in time or the payment is released.
+* Payment successfully captured has a status of `Approved`.
+* Payment authorized but not captured has a status of `Authorized, uncaptured`.
+* Payment refunded has a status of `Refunded` or `Partially refunded`.
+* Payment released or not captured before the authorization expired has a status of  `Deleted due to checkout not being captured before expiration`.
 
 ## Customer Tokenization Details
 
 * Login to `Shopware` Backend and navigate to `Customers > Customers`.
-* Go inside a customer for which you want to see the tokenization details.
+* Select customer to view tokenization details.
 * `Sezzle Customer UUID`, `Sezzle Customer UUID Expiry` and `Sezzle Customer UUID Status` will appear under `Free text fields`.
 
 ## How Sandbox works?
@@ -142,9 +136,8 @@ There are two ways of installing and upgrading the plugin.
 * You will be redirected to the Sezzle Checkout.
 * Sign In or Sign Up to continue.
 * Enter the payment details using test data, then move to final page.
-* Check the `Approve {Website Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account.
-* If your account is already tokenized, order will be placed without redirection otherwise you will be redirected to Sezzle Checkout for completing the purchase.
-* After payment is completed at Sezzle, you will be directed to your site's successful payment page.
+* **[Optional]** Check the `Approve {Store Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account.
+* Finally, click on `Complete Order` to complete your purchase. Note that, if your account is already tokenized, order will be placed without redirection otherwise you will be redirected to Sezzle Checkout for completing the purchase.
 * `Sandbox` testing is complete. You can login to your `Sezzle Merchant Sandbox Dashboard` to see the test order you just placed.
 
 ## Troubleshooting/Debugging
