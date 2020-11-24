@@ -24,7 +24,7 @@ There are two ways of installing and upgrading the plugin.
 
 ### Manual
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
-* Just unzip the file and follow the following instructions.
+* Unzip the file.
 * Navigate to `Shopware` `[Shopware]/custom/plugins/` either through `SFTP` or `SSH`.
 * Copy `SwagPaymentSezzle` directory from unzipped folder to `[Shopware]/custom/plugins/`.
 * Login to `Shopware 5` Backend and navigate to `Configuration > Plugin Manager > Management > Installed`.
@@ -42,7 +42,7 @@ There are two ways of installing and upgrading the plugin.
 
 ### Manual
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
-* Just unzip the file and follow the following instructions.
+* Unzip the file.
 * Delete the contents from `[Shopware]/custom/plugins/SwagPaymentSezzle`.
 * Copy the contents of `SwagPaymentSezzle` directory from unzipped folder to `[Shopware]/custom/plugins/SwagPaymentSezzle/`.
 * Login to `Shopware` Backend and navigate to `Configuration > Cache/performance`.
@@ -73,9 +73,9 @@ There are two ways of installing and upgrading the plugin.
 
 * If you have successfully installed the Sezzle plugin, then Sezzle will be included as a payment method in the checkout page.
 * Select `Sezzle` and move forward.
-* Once you click `Complete Payment`, you will be redirected to `Sezzle Checkout` to complete the checkout.
-* **[Optional]** In the final page of Sezzle Checkout, check the `Approve {Store Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account.
-* Finally, click on `Complete Order` to complete your purchase. Note that, if your account is already tokenized, order will be placed without redirection otherwise you will be redirected to Sezzle Checkout for completing the purchase.
+* Once you click `Complete Payment`, you will be redirected to `Sezzle Checkout` to complete the checkout. Note: If your account is already tokenized, skip the next two steps as you will not be redirected to Sezzle.
+* **[Optional]** On the final page of Sezzle Checkout, check the `Approve {Store Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account.
+* Finally, click on `Complete Order` to complete your purchase.
 * On successful order placement, you will be redirected to the order confirmation page.
 
 ## Capture Payment
@@ -99,7 +99,7 @@ There are two ways of installing and upgrading the plugin.
 
 * Login to `Shopware` admin and navigate to `Customers > Orders`.
 * Proceed into the corresponding order.
-* Payment is successfully captured by `Sezzle` when:.
+* Payment is successfully captured by `Sezzle` when:
     * Current Payment Status is `Completely Paid`.
     * `Capture Amount` equals the `Auth Amount`.
 * Payment is only authorized when:
@@ -132,12 +132,11 @@ There are two ways of installing and upgrading the plugin.
 
 * In the `Sezzle` settings page of your `Shopware` Backend, enter the `Sandbox` `API Keys` from your [`Sezzle Merchant Sandbox Dashboard`](https://sandbox.dashboard.sezzle.com/merchant/) and check the `Enable sandbox` checkbox, then save the configuration. Make sure you are doing this on your `dev/staging` website.
 * On your website, add an item to the cart, then proceed to `Checkout` and select `Sezzle` as the payment method.
-* To pay with Sezzle, click `Complete Payment`.
-* You will be redirected to the Sezzle Checkout.
+* Once you click `Complete Payment`, you will be redirected to `Sezzle Checkout` to complete the checkout. Note: If your account is already tokenized, skip the next four steps as you will not be redirected to Sezzle.
 * Sign In or Sign Up to continue.
 * Enter the payment details using test data, then move to final page.
 * **[Optional]** Check the `Approve {Store Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account.
-* Finally, click on `Complete Order` to complete your purchase. Note that, if your account is already tokenized, order will be placed without redirection otherwise you will be redirected to Sezzle Checkout for completing the purchase.
+* Finally, click on `Complete Order` to complete your purchase.
 * `Sandbox` testing is complete. You can login to your `Sezzle Merchant Sandbox Dashboard` to see the test order you just placed.
 
 ## Troubleshooting/Debugging
