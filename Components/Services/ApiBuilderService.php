@@ -235,14 +235,10 @@ class ApiBuilderService implements ApiBuilderInterface
      */
     private function getTotalAmount()
     {
-        //Case 1: Show gross prices in shopware and don't exclude country tax
-        if ($this->showGrossPrices() && !$this->useNetPriceCalculation()) {
-            return $this->formatPrice($this->basketData['AmountNumeric']);
-        }
-
-        //Case 2: Show net prices in shopware and don't exclude country tax
-        if (!$this->showGrossPrices() && !$this->useNetPriceCalculation()) {
-            return $this->formatPrice($this->basketData['AmountWithTaxNumeric']);
+        if (!$this->useNetPriceCalculation()) {
+            return $this->showGrossPrices()
+                ? $this->formatPrice($this->basketData['AmountNumeric']) //Case 1: Show gross prices in shopware and don't exclude country tax
+                : $this->formatPrice($this->basketData['AmountWithTaxNumeric']); //Case 2: Show net prices in shopware and don't exclude country tax
         }
 
         //Case 3: No tax handling at all, just use the net amounts.

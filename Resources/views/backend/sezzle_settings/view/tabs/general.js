@@ -246,11 +246,11 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
             }, {
                 xtype: 'combobox',
                 name: 'logLevel',
-                helpText: '{s name=fieldset/errorHandling/logLevel/help}<u>Normal</u><br>Only errors will be logged to file.<br><br><u>Extended</u>Normal, Warning and Error messages will be logged to file. This is useful for debug environments.{/s}',
+                helpText: '{s name=fieldset/errorHandling/logLevel/help}<u>ERROR</u><br>Only errors will be logged to file.<br><br><u>ALL</u><br>Normal, Warning and Error messages will be logged to file. This is useful for debug environments.{/s}',
                 fieldLabel: '{s name=fieldset/errorHandling/logLevel}Logging{/s}',
                 store: Ext.create('Shopware.apps.SezzleSettings.store.LogLevel'),
                 valueField: 'id',
-                value: 0
+                value: 1
             }]
         });
 

@@ -10,7 +10,7 @@ Ext.define('Shopware.apps.SezzleSettings.store.LogLevel', {
     ],
 
     data: [
-        { id: '0', text: '{s name="normal"}Normal{/s}' },
-        { id: '1', text: '{s name="extended"}Extended{/s}' }
+        { id: '0', text: '{s name="error"}ERROR{/s}' },
+        { id: '1', text: '{s name="all"}ALL{/s}' }
     ]
 });

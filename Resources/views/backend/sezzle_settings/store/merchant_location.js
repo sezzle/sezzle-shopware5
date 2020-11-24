@@ -10,7 +10,7 @@ Ext.define('Shopware.apps.SezzleSettings.store.MerchantLocation', {
     ],
 
     data: [
-        { type: 'us', text: '{s name="us"}United Stated of America{/s}' },
+        { type: 'us', text: '{s name="us"}United States of America{/s}' },
         { type: 'ca', text: '{s name="ca"}Canada{/s}' },
         { type: 'in', text: '{s name="in"}India{/s}' },
         { type: 'au', text: '{s name="au"}Australia{/s}' },
