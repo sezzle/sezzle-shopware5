@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="sezzle.session_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\SessionResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+
+        <service id="sezzle.capture_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\CaptureResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+
+        <service id="sezzle.order_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\OrderResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+
+        <service id="sezzle.tokenize_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\TokenizeResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+        <service id="sezzle.customer_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\CustomerResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+
+        <service id="sezzle.refund_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\RefundResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+
+        <service id="sezzle.release_resource"
+                 class="SwagPaymentSezzle\SezzleBundle\Resources\ReleaseResource"
+                 public="true">
+            <argument type="service" id="sezzle.client_service"/>
+        </service>
+    </services>
+</container>

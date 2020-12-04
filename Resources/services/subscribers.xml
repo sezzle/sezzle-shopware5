@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="sezzle.subscriber.controller.backend"
+                 class="SwagPaymentSezzle\Subscriber\ControllerRegistration\Backend"
+                 public="true">
+            <argument>%sezzle.plugin_dir%</argument>
+            <argument type="service" id="template"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="sezzle.subscriber.controller.frontend"
+                 class="SwagPaymentSezzle\Subscriber\ControllerRegistration\Frontend"
+                 public="true">
+            <argument>%sezzle.plugin_dir%</argument>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="sezzle.subscriber.templates" class="SwagPaymentSezzle\Subscriber\BackendOrder">
+            <argument>%sezzle.plugin_dir%</argument>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="sezzle.subscriber.payment_means"
+                 class="SwagPaymentSezzle\Subscriber\PaymentMeans"
+                 public="true">
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="sezzle.settings_service"/>
+            <argument type="service" id="session"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+    </services>
+</container>
