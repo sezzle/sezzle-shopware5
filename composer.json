@@ -2,7 +2,7 @@
     "name": "sezzle/shopware5",
     "type": "shopware5-plugin",
     "description": "Sezzle Payment Plugin for Shopware 5",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "version": "1.0.0",
     "keywords": ["sezzle", "shopware", "plugin", "payment", "gateway"],
     "extra": {
