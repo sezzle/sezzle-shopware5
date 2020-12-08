@@ -113,7 +113,14 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
     isAuthValid: function () {
         var me = this,
             authExpiry = new Date(me.sezzleRecord.authExpiry),
-            currentDate = new Date();
+            currentDate = new Date(
+                new Date().getUTCFullYear(),
+                new Date().getUTCMonth(),
+                new Date().getUTCDate(),
+                new Date().getUTCHours(),
+                new Date().getUTCMinutes(),
+                new Date().getUTCSeconds()
+            );
 
         return currentDate < authExpiry;
     },
