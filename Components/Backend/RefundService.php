@@ -99,8 +99,10 @@ class RefundService
             if (!($orderModel instanceof Order)) {
                 throw new Exception('Order not found');
             }
+            $prevRefundedAmount = $orderModel->getAttribute()->getSwagSezzleRefundedAmount();
+            $newRefundedAmount = Util::formatToCurrency($refundPayload->getAmountInCents());
             $attributesToUpdate = [
-                'refundedAmount' => Util::formatToCurrency($refundPayload->getAmountInCents())
+                'refundedAmount' => $prevRefundedAmount + $newRefundedAmount
             ];
             $this->orderDataService->applyPaymentAttributes($orderModel->getNumber(), $attributesToUpdate);
 

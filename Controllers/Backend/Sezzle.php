@@ -46,12 +46,12 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
         $this->registerShopResource();
 
         $orderUUID = $this->Request()->getParam('id');
-        $amountToCapture = $this->Request()->getParam('amount');
+        $amountToRefund = $this->Request()->getParam('amount');
         $currency = $this->Request()->getParam('currency');
 
         /** @var RefundService $refundService */
         $refundService = $this->get('sezzle.backend.refund_service');
-        $viewParameter = $refundService->refundOrder($orderUUID, $amountToCapture, $currency);
+        $viewParameter = $refundService->refundOrder($orderUUID, $amountToRefund, $currency);
 
         $this->View()->assign($viewParameter);
     }
@@ -64,12 +64,12 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
         $this->registerShopResource();
 
         $orderUUID = $this->Request()->getParam('id');
-        $amountToCapture = $this->Request()->getParam('amount');
+        $amountToRelease = $this->Request()->getParam('amount');
         $currency = $this->Request()->getParam('currency');
 
         /** @var ReleaseService $releaseService */
         $releaseService = $this->get('sezzle.backend.release_service');
-        $viewParameter = $releaseService->releaseOrder($orderUUID, $amountToCapture, $currency);
+        $viewParameter = $releaseService->releaseOrder($orderUUID, $amountToRelease, $currency);
 
         $this->View()->assign($viewParameter);
     }
