@@ -29,7 +29,7 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
         $orderUUID = $this->Request()->getParam('id');
         $amountToCapture = $this->Request()->getParam('amount');
         $currency = $this->Request()->getParam('currency');
-        $isPartial = $this->Request()->getParam('isPartial') === '1';
+        $isPartial = $this->Request()->getParam('isPartial') == "true";
 
         /** @var CaptureService $captureService */
         $captureService = $this->get('sezzle.backend.capture_service');

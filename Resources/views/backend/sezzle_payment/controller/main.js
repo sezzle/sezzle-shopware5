@@ -46,8 +46,8 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             sezzleOrderUUID = record.get('sezzleOrderUUID'),
             currency = record.get('currency'),
             authAmount = record.get('authAmount'),
-            amount = record.get('amount'),
-            isPartial = authAmount === amount;
+            amount = parseFloat(record.get('amount')),
+            isPartial = authAmount !== amount;
 
         me.sezzleRecord = record;
         me.panel = panel;
@@ -69,7 +69,7 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         var me = this,
             sezzleOrderUUID = record.get('sezzleOrderUUID'),
             currency = record.get('currency'),
-            amount = record.get('amount');
+            amount = parseFloat(record.get('amount'));
 
         me.sezzleRecord = record;
         me.panel = panel;
@@ -90,7 +90,7 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         var me = this,
             sezzleOrderUUID = record.get('sezzleOrderUUID'),
             currency = record.get('currency'),
-            amount = record.get('amount');
+            amount = parseFloat(record.get('amount'));
 
         me.sezzleRecord = record;
         me.panel = panel;
