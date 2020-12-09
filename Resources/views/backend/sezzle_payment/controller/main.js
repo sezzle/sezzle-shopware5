@@ -46,8 +46,8 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             sezzleOrderUUID = record.get('sezzleOrderUUID'),
             currency = record.get('currency'),
             authAmount = record.get('authAmount'),
-            amount = record.get('amount'),
-            isPartial = authAmount === amount;
+            amount = parseFloat(record.get('amount')),
+            isPartial = authAmount !== amount;
 
         me.sezzleRecord = record;
         me.panel = panel;
@@ -69,7 +69,7 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         var me = this,
             sezzleOrderUUID = record.get('sezzleOrderUUID'),
             currency = record.get('currency'),
-            amount = record.get('amount');
+            amount = parseFloat(record.get('amount'));
 
         me.sezzleRecord = record;
         me.panel = panel;
@@ -90,7 +90,7 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         var me = this,
             sezzleOrderUUID = record.get('sezzleOrderUUID'),
             currency = record.get('currency'),
-            amount = record.get('amount');
+            amount = parseFloat(record.get('amount'));
 
         me.sezzleRecord = record;
         me.panel = panel;
@@ -114,6 +114,7 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
         me.panel.setLoading(false);
 
         if (Ext.isDefined(responseObject) && responseObject.success) {
+            me.sezzleRecord.set('amount', '');
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/captureSuccess}The payment has been captured successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
             me.gridReload();
         } else {
@@ -127,6 +128,7 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
 
         me.panel.setLoading(false);
         if (Ext.isDefined(responseObject) && responseObject.success) {
+            me.sezzleRecord.set('amount', '');
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/refundSuccess}The payment has been refunded successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
             me.gridReload();
         } else {
@@ -140,6 +142,7 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
 
         me.panel.setLoading(false);
         if (Ext.isDefined(responseObject) && responseObject.success) {
+            me.sezzleRecord.set('amount', '');
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/releaseSuccess}The payment has been released successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
             me.gridReload();
         } else {

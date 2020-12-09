@@ -87,7 +87,7 @@ class UserDataService
      */
     public function isCustomerUuidValid($userId)
     {
-        $dateTimeNow = new DateTime();
+        $dateTimeNow = new DateTime('now', new \DateTimeZone('UTC'));
 
 
         $customerUuidExpiry = $this->getValueByKey($userId, 'customer_uuid_expiry');
@@ -97,7 +97,7 @@ class UserDataService
             return false;
         }
 
-        $customerUuidExpiry = new DateTime($customerUuidExpiry);
+        $customerUuidExpiry = new DateTime($customerUuidExpiry, new \DateTimeZone('UTC'));
 
         if ($customerUuidExpiry->getTimestamp() < $dateTimeNow->getTimestamp()) {
             $this->deleteTokenizeRecord($userId);

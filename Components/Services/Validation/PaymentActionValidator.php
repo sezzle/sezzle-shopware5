@@ -76,8 +76,9 @@ class PaymentActionValidator
         }
 
         $authExpiryDatetime = $orderModel->getAttribute()->getSwagSezzleAuthExpiry();
+        $authExpiryDatetime = new \DateTime($authExpiryDatetime->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
 
-        $currentDatetime = new \DateTime();
+        $currentDatetime = new \DateTime('now', new \DateTimeZone('UTC'));
 
         if ($authExpiryDatetime->getTimestamp() < $currentDatetime->getTimestamp()) {
             return false;
