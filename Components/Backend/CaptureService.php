@@ -103,8 +103,10 @@ class CaptureService
             if (!($orderModel instanceof Order)) {
                 throw new Exception('Order not found');
             }
+            $prevCapturedAmount = $orderModel->getAttribute()->getSwagSezzleCapturedAmount();
+            $newCapturedAmount = Util::formatToCurrency($capturePayload->getCaptureAmount()->getAmountInCents());
             $attributesToUpdate = [
-                'capturedAmount' => Util::formatToCurrency($capturePayload->getCaptureAmount()->getAmountInCents())
+                'capturedAmount' => $prevCapturedAmount + $newCapturedAmount
             ];
             $this->orderDataService->applyPaymentAttributes($orderModel->getNumber(), $attributesToUpdate);
 

@@ -102,9 +102,11 @@ class ReleaseService
                     Status::PAYMENT_STATE_THE_PROCESS_HAS_BEEN_CANCELLED
                 );
             }
+            $prevReleasedAmount = $orderModel->getAttribute()->getSwagSezzleReleasedAmount();
+            $newReleasedAmount = Util::formatToCurrency($releasePayload->getAmountInCents());
             $attributesToUpdate = [
-                'authAmount' => $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $amountToRelease,
-                'releasedAmount' => $amountToRelease
+                'authAmount' => $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $newReleasedAmount,
+                'releasedAmount' => $prevReleasedAmount + $newReleasedAmount
             ];
             $this->orderDataService->applyPaymentAttributes($orderModel->getNumber(), $attributesToUpdate);
 
