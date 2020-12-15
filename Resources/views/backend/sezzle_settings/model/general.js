@@ -22,6 +22,8 @@ Ext.define('Shopware.apps.SezzleSettings.model.General', {
         { name: 'logLevel', type: 'int', defaultValue: 0 },
         { name: 'displayErrors', type: 'bool' },
         { name: 'merchantLocation', type: 'string', defaultValue: 'germany' },
+        { name: 'enableWidgetPdp', type: 'bool', defaultValue: false },
+        { name: 'enableWidgetCart', type: 'bool', defaultValue: false },
     ]
 });
 // {/block}
