@@ -64,8 +64,8 @@ There are two ways of installing and upgrading the plugin.
 * Check the `Enable Tokenization` checkbox to enable customer tokenization in the Sezzle checkout. If the customer agrees to be tokenized, then future checkouts for this customer will not require a redirect to Sezzle.
 * Set `Payment Action` as `Authorize only` for doing payment authorization only and `Authorize and Capture` for doing instant capture.
 * Check the `Display errors` checkbox for showing up `Sezzle` related error code in the web URL on failure.
-* Check the `Enable Widget in PDP` checkbox for adding widget script in the Product Display Page which will help in enabling `Sezzle Widget` Modal in PDP.
-* Check the `Enable Widget in Cart` checkbox for adding widget script in the Cart Page which will help in enabling `Sezzle Widget` Modal in Cart Page.
+* Check the `Enable Widget in PDP` checkbox to add the widget script and the `Sezzle Widget` Modal to the Product Display Page.
+* Check the `Enable Widget in Cart` checkbox to add the widget script and the `Sezzle Widget` Modal to the Cart Page.
 * Set `Logging` to `ERROR` to log only error messages or `ALL` to log all messages, including errors, warnings, and notices.
 * Save the settings and clear the cache.
 
