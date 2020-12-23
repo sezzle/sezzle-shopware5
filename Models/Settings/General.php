@@ -90,6 +90,18 @@ class General extends ModelEntity
     private $merchantLocation;
 
     /**
+     * @var bool
+     * @ORM\Column(name="enable_widget_pdp", type="boolean", nullable=false)
+     */
+    private $enableWidgetPdp;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="enable_widget_cart", type="boolean", nullable=false)
+     */
+    private $enableWidgetCart;
+
+    /**
      * @return int
      */
     public function getId()
@@ -279,6 +291,38 @@ class General extends ModelEntity
     public function setMerchantLocation($merchantLocation)
     {
         $this->merchantLocation = $merchantLocation;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEnableWidgetPdp()
+    {
+        return $this->enableWidgetPdp;
+    }
+
+    /**
+     * @param bool $enableWidgetPdp
+     */
+    public function setEnableWidgetPdp($enableWidgetPdp)
+    {
+        $this->enableWidgetPdp = $enableWidgetPdp;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEnableWidgetCart()
+    {
+        return $this->enableWidgetCart;
+    }
+
+    /**
+     * @param bool $enableWidgetCart
+     */
+    public function setEnableWidgetCart($enableWidgetCart)
+    {
+        $this->enableWidgetCart = $enableWidgetCart;
     }
 
     /**

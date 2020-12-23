@@ -26,6 +26,14 @@
             <tag name="shopware.event_subscriber"/>
         </service>
 
+        <service id="sezzle.subscriber.frontend"
+                 class="SwagPaymentSezzle\Subscriber\Frontend"
+                 public="true">
+            <argument>%sezzle.plugin_dir%</argument>
+            <argument type="service" id="sezzle.settings_service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
         <service id="sezzle.subscriber.payment_means"
                  class="SwagPaymentSezzle\Subscriber\PaymentMeans"
                  public="true">

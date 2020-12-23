@@ -90,6 +90,7 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
             me.createActivationContainer(),
             me.createRestContainer(),
             me.createMerchantContainer(),
+            me.createWidgetContainer(),
             me.createErrorHandlingContainer()
         ];
     },
@@ -184,7 +185,7 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
         var me = this;
 
 
-        me.behaviourContainer = Ext.create('Ext.form.FieldSet', {
+        me.merchantContainer = Ext.create('Ext.form.FieldSet', {
             title: '{s name="fieldset/behaviour/title"}Merchant{/s}',
             items: [
                 {
@@ -223,7 +224,39 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
             ]
         });
 
-        return me.behaviourContainer;
+        return me.merchantContainer;
+    },
+
+    /**
+     * @returns { Ext.form.FieldSet }
+     */
+    createWidgetContainer: function () {
+        var me = this;
+
+
+        me.widgetContainer = Ext.create('Ext.form.FieldSet', {
+            title: '{s name="fieldset/widget/title"}Widget{/s}',
+            items: [
+                {
+                    xtype: 'checkbox',
+                    name: 'enableWidgetPdp',
+                    inputValue: true,
+                    uncheckedValue: false,
+                    fieldLabel: '{s name="fieldset/rest/enableWidgetPdp"}Enable Widget in PDP{/s}',
+                    boxLabel: '{s name="fieldset/rest/enableWidgetPdp/help"}Enable this option to activate Sezzle Widget in PDP.{/s}'
+                },
+                {
+                    xtype: 'checkbox',
+                    name: 'enableWidgetCart',
+                    inputValue: true,
+                    uncheckedValue: false,
+                    fieldLabel: '{s name="fieldset/rest/enableWidgetCart"}Enable Widget in Cart{/s}',
+                    boxLabel: '{s name="fieldset/rest/enableWidgetCart/help"}Enable this option to activate Sezzle Widget in Cart.{/s}'
+                }
+            ]
+        });
+
+        return me.widgetContainer;
     },
 
     /**

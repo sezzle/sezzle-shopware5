@@ -225,7 +225,8 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
 
 
         generalTab.restContainer.setDisabled(!active);
-        generalTab.behaviourContainer.setDisabled(!active);
+        generalTab.merchantContainer.setDisabled(!active);
+        generalTab.widgetContainer.setDisabled(!active);
         generalTab.errorHandlingContainer.setDisabled(!active);
     },
 });
