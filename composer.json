@@ -6,15 +6,6 @@
     "version": "1.0.0",
     "keywords": ["sezzle", "shopware", "plugin", "payment", "gateway"],
     "extra": {
-        "shopware-plugin-class": "SwagPaymentSezzle\\SwagPaymentSezzle",
-        "copyright": "Sezzle",
-        "label": {
-            "de-DE": "Sezzle",
-            "en-GB": "Sezzle"
-        },
-        "description": {
-            "de-DE": "Jetzt kaufen Später zahlen mit 0% Zinsen",
-            "en-GB": "Buy Now Pay Later with 0% Interest"
-        }
+        "installer-name": "SwagPaymentSezzle"
     }
 }
