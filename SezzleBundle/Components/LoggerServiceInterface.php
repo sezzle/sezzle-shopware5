@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Components;
+namespace Sezzle\SezzleBundle\Components;
 
 interface LoggerServiceInterface
 {

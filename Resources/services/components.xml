@@ -10,31 +10,31 @@
     <services>
 
         <service id="sezzle.dependency_provider"
-                 class="SwagPaymentSezzle\Components\DependencyProvider"
+                 class="Sezzle\Components\DependencyProvider"
                  public="true">
             <argument type="service" id="service_container"/>
         </service>
 
         <service id="sezzle.exception_handler_service"
-                 class="SwagPaymentSezzle\Components\Services\ExceptionHandlerService"
+                 class="Sezzle\Components\Services\ExceptionHandlerService"
                  public="true">
             <argument id="sezzle.logger_service" type="service"/>
         </service>
 
         <service id="sezzle.payment_status_service"
-                 class="SwagPaymentSezzle\Components\Services\PaymentStatusService"
+                 class="Sezzle\Components\Services\PaymentStatusService"
                  public="true">
             <argument type="service" id="models"/>
         </service>
 
         <service id="sezzle.order_status_service"
-                 class="SwagPaymentSezzle\Components\Services\OrderStatusService"
+                 class="Sezzle\Components\Services\OrderStatusService"
                  public="true">
             <argument type="service" id="models"/>
         </service>
 
         <service id="sezzle.api_builder_service"
-                 class="SwagPaymentSezzle\Components\Services\ApiBuilderService"
+                 class="Sezzle\Components\Services\ApiBuilderService"
                  public="true">
             <argument type="service" id="router"/>
             <argument type="service" id="sezzle.settings_service"/>
@@ -43,7 +43,7 @@
         </service>
 
         <service id="sezzle.order_data_service"
-                 class="SwagPaymentSezzle\Components\Services\OrderDataService"
+                 class="Sezzle\Components\Services\OrderDataService"
                  public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="sezzle.settings_service"/>
@@ -52,27 +52,27 @@
         </service>
 
         <service id="sezzle.logger_service"
-                 class="SwagPaymentSezzle\Components\Services\LoggerService"
+                 class="Sezzle\Components\Services\LoggerService"
                  public="true">
             <argument type="service" id="pluginlogger"/>
             <argument type="service" id="sezzle.settings_service"/>
         </service>
 
         <service id="sezzle.settings_service"
-                 class="SwagPaymentSezzle\Components\Services\SettingsService"
+                 class="Sezzle\Components\Services\SettingsService"
                  public="true">
             <argument type="service" id="models"/>
             <argument type="service" id="sezzle.dependency_provider"/>
         </service>
 
         <service id="sezzle.basket_data_service"
-                 class="SwagPaymentSezzle\Components\Services\BasketDataService"
+                 class="Sezzle\Components\Services\BasketDataService"
                  public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="sezzle.settings_service"/>
         </service>
         <service id="sezzle.user_data_service"
-                 class="SwagPaymentSezzle\Components\Services\UserDataService"
+                 class="Sezzle\Components\Services\UserDataService"
                  public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="sezzle.settings_service"/>

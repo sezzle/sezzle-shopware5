@@ -7,7 +7,7 @@
     <services>
 
         <service id="sezzle.backend.capture_service"
-                 class="SwagPaymentSezzle\Components\Backend\CaptureService"
+                 class="Sezzle\Components\Backend\CaptureService"
                  public="true">
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.capture_resource"/>
@@ -19,7 +19,7 @@
         </service>
 
         <service id="sezzle.backend.refund_service"
-                 class="SwagPaymentSezzle\Components\Backend\RefundService"
+                 class="Sezzle\Components\Backend\RefundService"
                  public="true">
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.refund_resource"/>
@@ -31,7 +31,7 @@
         </service>
 
         <service id="sezzle.backend.release_service"
-                 class="SwagPaymentSezzle\Components\Backend\ReleaseService"
+                 class="Sezzle\Components\Backend\ReleaseService"
                  public="true">
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.release_resource"/>

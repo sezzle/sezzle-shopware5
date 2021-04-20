@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Components;
+namespace Sezzle\Components;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Components\Model\ModelManager;
@@ -11,7 +11,7 @@ class PaymentMethodProvider
     /**
      * The technical name of the sezzle payment method.
      */
-    const SEZZLE_PAYMENT_METHOD_NAME = 'SwagPaymentSezzle';
+    const SEZZLE_PAYMENT_METHOD_NAME = 'Sezzle';
 
     /**
      * @var ModelManager

@@ -1,10 +1,10 @@
 <?php
 
-namespace SwagPaymentSezzle\Components;
+namespace Sezzle\Components;
 
 /**
  * Class ApiBuilderParameters
- * @package SwagPaymentSezzle\Components
+ * @package Sezzle\Components
  */
 class ApiBuilderParameters
 {

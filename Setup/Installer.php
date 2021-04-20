@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Setup;
+namespace Sezzle\Setup;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -12,7 +12,7 @@ use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Payment\Payment;
 use Shopware\Models\Plugin\Plugin;
 use Shopware_Components_Translation;
-use SwagPaymentSezzle\Components\PaymentMethodProvider;
+use Sezzle\Components\PaymentMethodProvider;
 
 /**
  * Class Installer
@@ -323,7 +323,7 @@ class Installer
         $this->translation->write(
             2,
             'config_payment',
-            $translationKeys['SwagPaymentSezzle'],
+            $translationKeys['Sezzle'],
             [
                 'description' => 'Sezzle',
                 'additionalDescription' => 'Sezzle',
@@ -340,7 +340,7 @@ class Installer
         return $this->modelManager->getDBALQueryBuilder()
             ->select('name, id')
             ->from('s_core_paymentmeans', 'pm')
-            ->where("pm.name = 'SwagPaymentSezzle'")
+            ->where("pm.name = 'Sezzle'")
             ->execute()
             ->fetchAll(PDO::FETCH_KEY_PAIR);
     }

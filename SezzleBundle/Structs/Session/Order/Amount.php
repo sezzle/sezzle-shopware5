@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Session\Order;
+namespace Sezzle\SezzleBundle\Structs\Session\Order;
 
 class Amount
 {

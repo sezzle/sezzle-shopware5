@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Exception;
+namespace Sezzle\Components\Exception;
 
 class OrderNotFoundException extends \RuntimeException
 {

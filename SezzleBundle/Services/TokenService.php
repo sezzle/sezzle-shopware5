@@ -1,12 +1,12 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Services;
+namespace Sezzle\SezzleBundle\Services;
 
 use Shopware\Components\CacheManager;
 use Shopware\Components\HttpClient\RequestException;
-use SwagPaymentSezzle\SezzleBundle\Resources\TokenResource;
-use SwagPaymentSezzle\SezzleBundle\Structs\AuthCredentials;
-use SwagPaymentSezzle\SezzleBundle\Structs\Token;
+use Sezzle\SezzleBundle\Resources\TokenResource;
+use Sezzle\SezzleBundle\Structs\AuthCredentials;
+use Sezzle\SezzleBundle\Structs\Token;
 
 class TokenService
 {

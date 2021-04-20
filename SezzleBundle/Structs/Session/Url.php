@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Session;
+namespace Sezzle\SezzleBundle\Structs\Session;
 
 class Url
 {

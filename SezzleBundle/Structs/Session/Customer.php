@@ -1,8 +1,8 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Session;
+namespace Sezzle\SezzleBundle\Structs\Session;
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Customer\Address;
+use Sezzle\SezzleBundle\Structs\Session\Customer\Address;
 
 class Customer
 {

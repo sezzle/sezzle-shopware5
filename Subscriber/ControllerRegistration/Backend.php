@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Subscriber\ControllerRegistration;
+namespace Sezzle\Subscriber\ControllerRegistration;
 
 use Enlight\Event\SubscriberInterface;
 use Enlight_Template_Manager;

@@ -6,6 +6,6 @@
     "version": "1.0.0",
     "keywords": ["sezzle", "shopware", "plugin", "payment", "gateway"],
     "extra": {
-        "installer-name": "SwagPaymentSezzle"
+        "installer-name": "Sezzle"
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use SwagPaymentSezzle\Models\Settings\General as GeneralSettingsModel;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\Models\Settings\General as GeneralSettingsModel;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
 
 class Shopware_Controllers_Backend_SezzleGeneralSettings extends Shopware_Controllers_Backend_Application
 {

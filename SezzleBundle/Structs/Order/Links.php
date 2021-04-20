@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Order;
+namespace Sezzle\SezzleBundle\Structs\Order;
 
 
 use SwagPaymentPayPalUnified\PayPalBundle\Structs\Common\Link;

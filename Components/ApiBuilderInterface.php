@@ -1,14 +1,14 @@
 <?php
 
-namespace SwagPaymentSezzle\Components;
+namespace Sezzle\Components;
 
-use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session;
+use Sezzle\SezzleBundle\Structs\CustomerOrder;
+use Sezzle\SezzleBundle\Structs\Order\Capture;
+use Sezzle\SezzleBundle\Structs\Session;
 
 /**
  * Interface ApiBuilderInterface
- * @package SwagPaymentSezzle\Components
+ * @package Sezzle\Components
  */
 interface ApiBuilderInterface
 {

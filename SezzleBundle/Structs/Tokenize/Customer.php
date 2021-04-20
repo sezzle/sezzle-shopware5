@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Tokenize;
+namespace Sezzle\SezzleBundle\Structs\Tokenize;
 
 use DateTime;
 

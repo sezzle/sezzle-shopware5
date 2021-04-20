@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle;
+namespace Sezzle\SezzleBundle;
 
 class RequestUri
 {

@@ -2,7 +2,7 @@
 Ext.define('Shopware.apps.SezzleSettings.store.LogLevel', {
     extend: 'Ext.data.Store',
 
-    storeId: 'SwagPaymentSezzleLogLevel',
+    storeId: 'SezzleLogLevel',
 
     fields: [
         { name: 'id', type: 'int' },
