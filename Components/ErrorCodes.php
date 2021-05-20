@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Components;
+namespace Sezzle\Components;
 
 final class ErrorCodes
 {

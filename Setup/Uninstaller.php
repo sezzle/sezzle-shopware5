@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagPaymentSezzle\Setup;
+namespace Sezzle\Setup;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Bundle\AttributeBundle\Service\CrudService;
 use Shopware\Components\Model\ModelManager;
-use SwagPaymentSezzle\Components\PaymentMethodProvider;
+use Sezzle\Components\PaymentMethodProvider;
 
 class Uninstaller
 {

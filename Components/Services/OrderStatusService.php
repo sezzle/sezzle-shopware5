@@ -1,11 +1,11 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Services;
+namespace Sezzle\Components\Services;
 
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
-use SwagPaymentSezzle\Components\Exception\OrderNotFoundException;
+use Sezzle\Components\Exception\OrderNotFoundException;
 
 class OrderStatusService
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Subscriber;
+namespace Sezzle\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
 

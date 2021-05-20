@@ -1,10 +1,10 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Session;
+namespace Sezzle\SezzleBundle\Structs\Session;
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Discount;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Item;
+use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
+use Sezzle\SezzleBundle\Structs\Session\Order\Discount;
+use Sezzle\SezzleBundle\Structs\Session\Order\Item;
 
 class Order
 {

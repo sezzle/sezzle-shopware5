@@ -1,12 +1,12 @@
 <?php
 
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs;
+namespace Sezzle\SezzleBundle\Structs;
 
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Authorization;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Links;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
+use Sezzle\SezzleBundle\Structs\Order\Authorization;
+use Sezzle\SezzleBundle\Structs\Order\Links;
+use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
 
 class Order
 {

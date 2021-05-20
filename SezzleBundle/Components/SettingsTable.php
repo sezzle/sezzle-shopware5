@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Components;
+namespace Sezzle\SezzleBundle\Components;
 
 /**
  * No complete table names can be declared below to avoid references to the actual plugin.

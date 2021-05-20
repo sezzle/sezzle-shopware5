@@ -1,16 +1,16 @@
 <?php
 
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Order;
+namespace Sezzle\SezzleBundle\Structs\Order;
 
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Session;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
+use Sezzle\SezzleBundle\Structs\Session;
+use Sezzle\SezzleBundle\Structs\Session\Order;
+use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
 
 /**
  * Class Capture
- * @package SwagPaymentSezzle\SezzleBundle\Structs\Order
+ * @package Sezzle\SezzleBundle\Structs\Order
  */
 class Capture
 {

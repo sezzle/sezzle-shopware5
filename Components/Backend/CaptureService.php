@@ -1,21 +1,21 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Backend;
+namespace Sezzle\Components\Backend;
 
 use Exception;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
-use SwagPaymentSezzle\Components\ExceptionHandlerServiceInterface;
-use SwagPaymentSezzle\Components\Services\OrderDataService;
-use SwagPaymentSezzle\Components\Services\OrderStatusService;
-use SwagPaymentSezzle\Components\Services\Validation\PaymentActionValidator;
-use SwagPaymentSezzle\Components\Services\PaymentStatusService;
-use SwagPaymentSezzle\SezzleBundle\PaymentAction;
-use SwagPaymentSezzle\SezzleBundle\Resources\CaptureResource;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
-use SwagPaymentSezzle\SezzleBundle\Util;
+use Sezzle\Components\ExceptionHandlerServiceInterface;
+use Sezzle\Components\Services\OrderDataService;
+use Sezzle\Components\Services\OrderStatusService;
+use Sezzle\Components\Services\Validation\PaymentActionValidator;
+use Sezzle\Components\Services\PaymentStatusService;
+use Sezzle\SezzleBundle\PaymentAction;
+use Sezzle\SezzleBundle\Resources\CaptureResource;
+use Sezzle\SezzleBundle\Structs\Order\Capture;
+use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
+use Sezzle\SezzleBundle\Util;
 
 class CaptureService
 {

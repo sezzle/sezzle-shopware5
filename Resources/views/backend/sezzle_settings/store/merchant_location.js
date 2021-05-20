@@ -2,7 +2,7 @@
 Ext.define('Shopware.apps.SezzleSettings.store.MerchantLocation', {
     extend: 'Ext.data.Store',
 
-    storeId: 'SwagPaymentSezzleMerchantLocation',
+    storeId: 'SezzleMerchantLocation',
 
     fields: [
         { name: 'type', type: 'string' },

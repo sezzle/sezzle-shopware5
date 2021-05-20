@@ -1,9 +1,9 @@
 <?php
 
-namespace SwagPaymentSezzle\Subscriber;
+namespace Sezzle\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
 
 class Frontend implements SubscriberInterface
 {

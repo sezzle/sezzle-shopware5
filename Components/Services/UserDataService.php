@@ -1,14 +1,14 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Services;
+namespace Sezzle\Components\Services;
 
 use DateTime;
 use Doctrine\DBAL\Connection;
 use Exception;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\PaymentType;
-use SwagPaymentSezzle\SezzleBundle\Resources\TokenizeResource;
-use SwagPaymentSezzle\SezzleBundle\Structs\Tokenize;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\PaymentType;
+use Sezzle\SezzleBundle\Resources\TokenizeResource;
+use Sezzle\SezzleBundle\Structs\Tokenize;
 
 class UserDataService
 {

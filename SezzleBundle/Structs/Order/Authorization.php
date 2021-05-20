@@ -1,9 +1,9 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs\Order;
+namespace Sezzle\SezzleBundle\Structs\Order;
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Authorization\State;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
+use Sezzle\SezzleBundle\Structs\Order\Authorization\State;
+use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
 
 class Authorization
 {

@@ -10,7 +10,7 @@
             <parent identifiedBy="controller">Payments</parent>
             <children>
                 <entry>
-                    <name>SwagPaymentSezzleSettings</name>
+                    <name>SezzleSettings</name>
                     <label lang="en">Settings</label>
                     <label lang="de">Einstellungen</label>
                     <controller>SezzleSettings</controller>

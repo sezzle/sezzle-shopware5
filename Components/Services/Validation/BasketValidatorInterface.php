@@ -1,8 +1,8 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Services\Validation;
+namespace Sezzle\Components\Services\Validation;
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Order;
+use Sezzle\SezzleBundle\Structs\Order;
 
 interface BasketValidatorInterface
 {

@@ -1,17 +1,17 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Services;
+namespace Sezzle\SezzleBundle\Services;
 
 use Shopware\Components\HttpClient\GuzzleFactory;
 use Shopware\Components\HttpClient\GuzzleHttpClient as GuzzleClient;
 use Shopware\Components\HttpClient\RequestException;
-use SwagPaymentSezzle\Components\DependencyProvider;
-use SwagPaymentSezzle\SezzleBundle\BaseURL;
-use SwagPaymentSezzle\SezzleBundle\Components\LoggerServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\RequestType;
-use SwagPaymentSezzle\SezzleBundle\Structs\AuthCredentials;
-use SwagPaymentSezzle\SezzleBundle\Structs\Token;
+use Sezzle\Components\DependencyProvider;
+use Sezzle\SezzleBundle\BaseURL;
+use Sezzle\SezzleBundle\Components\LoggerServiceInterface;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\RequestType;
+use Sezzle\SezzleBundle\Structs\AuthCredentials;
+use Sezzle\SezzleBundle\Structs\Token;
 
 class ClientService
 {

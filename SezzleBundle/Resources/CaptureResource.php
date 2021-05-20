@@ -1,12 +1,12 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Resources;
+namespace Sezzle\SezzleBundle\Resources;
 
 use Shopware\Components\HttpClient\RequestException;
-use SwagPaymentSezzle\SezzleBundle\RequestType;
-use SwagPaymentSezzle\SezzleBundle\RequestUri;
-use SwagPaymentSezzle\SezzleBundle\Services\ClientService;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
+use Sezzle\SezzleBundle\RequestType;
+use Sezzle\SezzleBundle\RequestUri;
+use Sezzle\SezzleBundle\Services\ClientService;
+use Sezzle\SezzleBundle\Structs\Order\Capture;
 
 class CaptureResource
 {

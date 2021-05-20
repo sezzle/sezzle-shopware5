@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Setup;
+namespace Sezzle\Setup;
 
 class InstallationException extends \Exception
 {

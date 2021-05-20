@@ -7,7 +7,7 @@
     <services>
 
         <service id="sezzle.subscriber.controller.backend"
-                 class="SwagPaymentSezzle\Subscriber\ControllerRegistration\Backend"
+                 class="Sezzle\Subscriber\ControllerRegistration\Backend"
                  public="true">
             <argument>%sezzle.plugin_dir%</argument>
             <argument type="service" id="template"/>
@@ -15,19 +15,19 @@
         </service>
 
         <service id="sezzle.subscriber.controller.frontend"
-                 class="SwagPaymentSezzle\Subscriber\ControllerRegistration\Frontend"
+                 class="Sezzle\Subscriber\ControllerRegistration\Frontend"
                  public="true">
             <argument>%sezzle.plugin_dir%</argument>
             <tag name="shopware.event_subscriber"/>
         </service>
 
-        <service id="sezzle.subscriber.templates" class="SwagPaymentSezzle\Subscriber\BackendOrder">
+        <service id="sezzle.subscriber.templates" class="Sezzle\Subscriber\BackendOrder">
             <argument>%sezzle.plugin_dir%</argument>
             <tag name="shopware.event_subscriber"/>
         </service>
 
         <service id="sezzle.subscriber.frontend"
-                 class="SwagPaymentSezzle\Subscriber\Frontend"
+                 class="Sezzle\Subscriber\Frontend"
                  public="true">
             <argument>%sezzle.plugin_dir%</argument>
             <argument type="service" id="sezzle.settings_service"/>
@@ -35,7 +35,7 @@
         </service>
 
         <service id="sezzle.subscriber.payment_means"
-                 class="SwagPaymentSezzle\Subscriber\PaymentMeans"
+                 class="Sezzle\Subscriber\PaymentMeans"
                  public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="sezzle.settings_service"/>

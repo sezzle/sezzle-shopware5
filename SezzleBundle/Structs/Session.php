@@ -1,11 +1,11 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs;
+namespace Sezzle\SezzleBundle\Structs;
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Customer;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Tokenize;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Url;
+use Sezzle\SezzleBundle\Structs\Session\Customer;
+use Sezzle\SezzleBundle\Structs\Session\Order;
+use Sezzle\SezzleBundle\Structs\Session\Tokenize;
+use Sezzle\SezzleBundle\Structs\Session\Url;
 
 class Session
 {

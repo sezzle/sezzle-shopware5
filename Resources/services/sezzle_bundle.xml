@@ -7,7 +7,7 @@
     <services>
 
         <service id="sezzle.client_service"
-                 class="SwagPaymentSezzle\SezzleBundle\Services\ClientService"
+                 class="Sezzle\SezzleBundle\Services\ClientService"
                  public="true">
             <argument type="service" id="sezzle.settings_service"/>
             <argument type="service" id="sezzle.token_service"/>
@@ -18,7 +18,7 @@
         </service>
 
         <service id="sezzle.token_service"
-                 class="SwagPaymentSezzle\SezzleBundle\Services\TokenService"
+                 class="Sezzle\SezzleBundle\Services\TokenService"
                  public="true">
             <argument type="service" id="shopware.cache_manager"/>
         </service>

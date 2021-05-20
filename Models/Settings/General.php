@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Models\Settings;
+namespace Sezzle\Models\Settings;
 
 use Doctrine\ORM\Mapping as ORM;
 use Shopware\Components\Model\ModelEntity;

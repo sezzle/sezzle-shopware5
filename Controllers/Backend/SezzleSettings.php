@@ -1,9 +1,9 @@
 <?php
 
-use SwagPaymentSezzle\Components\ExceptionHandlerServiceInterface;
-use SwagPaymentSezzle\Models\Settings\General as GeneralSettingsModel;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\Services\ClientService;
+use Sezzle\Components\ExceptionHandlerServiceInterface;
+use Sezzle\Models\Settings\General as GeneralSettingsModel;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\Services\ClientService;
 
 class Shopware_Controllers_Backend_SezzleSettings extends Shopware_Controllers_Backend_Application
 {
