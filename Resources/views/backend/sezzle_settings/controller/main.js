@@ -101,7 +101,9 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
     saveRecords: function() {
         var me = this;
 
-        me.generalRecord.save();
+        me.generalRecord.save({
+            callback: Ext.bind(me.onSaveSettingsCallback, me)
+        });
     },
 
     prepareRecords: function() {
@@ -136,8 +138,6 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         me.window.setLoading('{s name="loading/saveSettings"}Saving settings...{/s}');
         me.generalRecord.set(generalSettings);
         me.saveRecords();
-        Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/saveSettings}The settings have been saved!{/s}', me.window.title);
-        me.window.setLoading(false);
     },
 
     onValidateAPISettings: function() {
@@ -148,7 +148,8 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
 
         Ext.Ajax.request({
             url: me.validateAPIUrl,
-            params: {
+            headers: { 'Content-Type': 'application/json' },
+            jsonData: {
                 shopId: me.shopId,
                 publicKey: generalSettings['publicKey'],
                 privateKey: generalSettings['privateKey'],
@@ -156,6 +157,38 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
             },
             callback: Ext.bind(me.onValidateAPIAjaxCallback, me)
         });
+    },
+
+    /**
+     * @param { Object } request
+     * @param { Object } response
+     * @param { Object } args
+     */
+    onSaveSettingsCallback: function(request, response, args) {
+        var me = this,
+            responseObject = response.response,
+            resultSetObject = response.resultSet,
+            message = '';
+
+        if (Ext.isDefined(responseObject) && response.success) {
+            Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/saveSettings}The settings has been saved{/s}', me.window.title);
+            me.window.setLoading(false);
+            return;
+        }
+
+        if (Ext.isDefined(resultSetObject) && Ext.isDefined(resultSetObject.message)) {
+            message = responseObject.message;
+        }
+
+        Shopware.Notification.createStickyGrowlMessage(
+            {
+                title: '{s name=growl/title}Sezzle{/s}',
+                text: '{s name=growl/saveSettingsError}Failed to save the settings.{/s} ' + '<br><u>' + message + '</u>'
+            },
+            me.window.title
+        );
+
+        me.window.setLoading(false);
     },
 
     /**
@@ -175,14 +208,14 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
             return;
         }
 
-        if (Ext.isDefined(responseObject)) {
+        if (Ext.isDefined(responseObject) && Ext.isDefined(responseObject.message)) {
             message = responseObject.message;
         }
 
         Shopware.Notification.createStickyGrowlMessage(
             {
                 title: '{s name=growl/title}Sezzle{/s}',
-                text: '{s name=growl/validateAPIError}The API settings are invalid:{/s} ' + '<br><u>' + message + '</u>'
+                text: '{s name=growl/validateAPIError}The API settings are invalid.{/s} ' + '<br><u>' + message + '</u>'
             },
             me.window.title
         );

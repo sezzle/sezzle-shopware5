@@ -147,7 +147,7 @@ class ClientService
             $this->setHeader('Content-Type', 'application/json');
         }
 
-        $this->logger->notify('Sending request [' . $type . '] to ' . $resourceUri, ['payload' => $data]);
+        $this->logger->error('Sending request [' . $type . '] to ' . $resourceUri, ['payload' => $data]);
 
         switch ($type) {
             case RequestType::POST:
