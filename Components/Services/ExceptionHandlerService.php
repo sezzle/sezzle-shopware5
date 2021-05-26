@@ -2,6 +2,7 @@
 
 namespace Sezzle\Components\Services;
 
+use Exception;
 use GuzzleHttp\Exception\ClientException;
 use Shopware\Components\HttpClient\RequestException;
 use Sezzle\Components\Exception\SezzleApiException;
@@ -31,7 +32,7 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(\Exception $e, $currentAction)
+    public function handle(Exception $e, $currentAction)
     {
         $exceptionMessage = $e->getMessage();
 

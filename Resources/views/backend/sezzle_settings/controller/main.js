@@ -16,12 +16,12 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
     /**
      * @type { String }
      */
-    detailUrl: '{url controller=SezzleSettings action=detail}',
+    //detailUrl: '{url controller=SezzleSettings action=detail}',
 
     /**
      * @type { String }
      */
-    generalDetailUrl: '{url controller=SezzleGeneralSettings action=detail}',
+    generalDetailUrl: '{url controller=SezzleSettings action=detail}',
 
     /**
      * @type { String }

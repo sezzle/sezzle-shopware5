@@ -4,7 +4,7 @@ Ext.define('Shopware.apps.SezzleSettings.model.General', {
 
     configure: function() {
         return {
-            controller: 'SezzleGeneralSettings'
+            controller: 'SezzleSettings'
         };
     },
 
@@ -24,6 +24,7 @@ Ext.define('Shopware.apps.SezzleSettings.model.General', {
         { name: 'merchantLocation', type: 'string', defaultValue: 'germany' },
         { name: 'enableWidgetPdp', type: 'bool', defaultValue: false },
         { name: 'enableWidgetCart', type: 'bool', defaultValue: false },
+        { name: 'gatewayRegion', type: 'string' },
     ]
 });
 // {/block}

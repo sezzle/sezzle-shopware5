@@ -94,7 +94,7 @@ class Uninstaller
      */
     private function removeSettingsTables()
     {
-        $sql = 'DROP TABLE IF EXISTS `swag_payment_sezzle_settings_express`;';
+        $sql = 'DROP TABLE IF EXISTS `swag_payment_sezzle_settings_general`;';
 
         $this->connection->exec($sql);
     }

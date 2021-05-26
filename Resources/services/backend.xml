@@ -6,6 +6,13 @@
 
     <services>
 
+        <service id="sezzle.backend.gateway_region_service"
+                 class="Sezzle\Components\Backend\GatewayRegionService"
+                 public="true">
+            <argument type="service" id="sezzle.settings_service"/>
+            <argument type="service" id="sezzle.gateway_region"/>
+        </service>
+
         <service id="sezzle.backend.capture_service"
                  class="Sezzle\Components\Backend\CaptureService"
                  public="true">

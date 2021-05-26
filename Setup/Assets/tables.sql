@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS swag_payment_sezzle_settings_general (
     `display_errors`            TINYINT(1)   NOT NULL,
     `merchant_location`         VARCHAR(255) NOT NULL,
     `enable_widget_pdp`         TINYINT(1),
-    `enable_widget_cart`        TINYINT(1)
+    `enable_widget_cart`        TINYINT(1),
+    `gateway_region`            VARCHAR(255)
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8

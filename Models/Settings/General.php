@@ -102,6 +102,12 @@ class General extends ModelEntity
     private $enableWidgetCart;
 
     /**
+     * @var string
+     * @ORM\Column(name="gateway_region", type="string", nullable=false)
+     */
+    private $gatewayRegion;
+
+    /**
      * @return int
      */
     public function getId()
@@ -323,6 +329,22 @@ class General extends ModelEntity
     public function setEnableWidgetCart($enableWidgetCart)
     {
         $this->enableWidgetCart = $enableWidgetCart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGatewayRegion()
+    {
+        return $this->gatewayRegion;
+    }
+
+    /**
+     * @param string $gatewayRegion
+     */
+    public function setGatewayRegion($gatewayRegion)
+    {
+        $this->gatewayRegion = $gatewayRegion;
     }
 
     /**
