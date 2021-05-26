@@ -7,7 +7,7 @@ use Shopware\Components\Model\ModelEntity;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="swag_payment_sezzle_settings_general")
+ * @ORM\Table(name="sezzle_settings_general")
  */
 class General extends ModelEntity
 {

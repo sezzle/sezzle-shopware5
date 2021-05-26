@@ -154,7 +154,7 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                     <div class="base-info">
                         <table>
                             <tr>
-                                <td>Auth Amount : </td>
+                                <td>Authorized Amount : </td>
                                 <td>{currency} <div id="auth_amount" style="float: right">&nbsp;{authAmount}</div></td>
                             </tr>
                             <tr>
@@ -175,11 +175,11 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                         <div>
                             <table>
                                 <tr>
-                                    <td>Auth Expiry : </td>
+                                    <td>Authorization Expiry : </td>
                                     <tpl if="authStatus == \'Expired\'">
-                                        <td style="color: #ff0000">{authExpiry} ({authStatus})</td>
+                                        <td style="color: #ff0000"> {authExpiry} ({authStatus})</td>
                                     <tpl else>
-                                        <td>{authExpiry} ({authStatus})</td>
+                                        <td style="color: #008000"> {authExpiry} ({authStatus})</td>
                                     </tpl>
                                 </tr>
                             </table>

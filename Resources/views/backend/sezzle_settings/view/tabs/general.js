@@ -186,7 +186,7 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
 
 
         me.merchantContainer = Ext.create('Ext.form.FieldSet', {
-            title: '{s name="fieldset/behaviour/title"}Merchant{/s}',
+            title: '{s name="fieldset/merchant/title"}Merchant{/s}',
             items: [
                 {
                     xtype: 'textfield',
