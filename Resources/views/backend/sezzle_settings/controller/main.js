@@ -232,7 +232,7 @@ Ext.define('Shopware.apps.SezzleSettings.controller.Main', {
         var me = this;
 
         if (!success) {
-            Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/loadSettingsError}Could not load settings due to an unknown error{/s}', me.window.title);
+            Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/loadSettingsError}Could not load settings due to an unknown error.{/s}', me.window.title);
         }
 
         var generalTab = me.getGeneralTab(),
