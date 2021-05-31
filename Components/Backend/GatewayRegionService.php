@@ -64,13 +64,9 @@ class GatewayRegionService
         $publicKey = $settings['public_key'];
         $privateKey = $settings['private_key'];
 
-        // return stored region if the key elements match
-        if ($storedPublicKey === $publicKey
+        return ($storedPublicKey === $publicKey
             && $storedPrivateKey === $privateKey
-            && $storedApiMode === $apiMode) {
-            return false;
-        }
-        return true;
+            && $storedApiMode === $apiMode);
     }
 
 }

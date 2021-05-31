@@ -46,13 +46,9 @@ class Shopware_Controllers_Backend_SezzleSettings extends Shopware_Controllers_B
     {
         try {
             $gatewayRegion = $this->getGatewayRegion();
-            if (!$gatewayRegion) {
-                $this->View()->assign([
-                    'success' => false,
-                ]);
-                return;
-            }
-            $this->View()->assign('success', true);
+            $this->View()->assign([
+                'success' => $gatewayRegion,
+            ]);
         } catch (Exception $e) {
             $this->View()->assign(
                 ['success' => false, 'message' => "Something went wrong while validating the keys."]
