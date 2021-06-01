@@ -64,7 +64,7 @@ class GatewayRegionService
         $publicKey = $settings['public_key'];
         $privateKey = $settings['private_key'];
 
-        return ($storedPublicKey === $publicKey
+        return !($storedPublicKey === $publicKey
             && $storedPrivateKey === $privateKey
             && $storedApiMode === $apiMode);
     }
