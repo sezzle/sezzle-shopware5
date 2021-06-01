@@ -118,7 +118,10 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/captureSuccess}The payment has been captured successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
             me.gridReload();
         } else {
-            Shopware.Notification.createStickyGrowlMessage({ title: '{s name=growl/title}Sezzle{/s}', text: responseObject.message }, '{s name=title}Sezzle - Payment{/s}');
+            Shopware.Notification.createStickyGrowlMessage({
+                title: '{s name=growl/title}Sezzle{/s}',
+                text: '{s name=growl/captureError}' + responseObject.message  + '{/s}'
+            }, '{s name=title}Sezzle - Payment{/s}');
         }
     },
 
@@ -132,7 +135,10 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/refundSuccess}The payment has been refunded successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
             me.gridReload();
         } else {
-            Shopware.Notification.createStickyGrowlMessage({ title: '{s name=growl/title}Sezzle{/s}', text: responseObject.message }, '{s name=title}Sezzle - Payment{/s}');
+            Shopware.Notification.createStickyGrowlMessage({
+                title: '{s name=growl/title}Sezzle{/s}',
+                text: '{s name=growl/refundError}' + responseObject.message  + '{/s}'
+            }, '{s name=title}Sezzle - Payment{/s}');
         }
     },
 
@@ -146,7 +152,10 @@ Ext.define('Shopware.apps.SezzlePayment.controller.Main', {
             Shopware.Notification.createGrowlMessage('{s name=growl/title}Sezzle{/s}', '{s name=growl/releaseSuccess}The payment has been released successfully{/s}', '{s name=title}Sezzle - Payment{/s}');
             me.gridReload();
         } else {
-            Shopware.Notification.createStickyGrowlMessage({ title: '{s name=growl/title}Sezzle{/s}', text: responseObject.message }, '{s name=title}Sezzle - Payment{/s}');
+            Shopware.Notification.createStickyGrowlMessage({
+                title: '{s name=growl/title}Sezzle{/s}',
+                text: '{s name=growl/releaseError}' + responseObject.message  + '{/s}'
+            }, '{s name=title}Sezzle - Payment{/s}');
         }
     },
 

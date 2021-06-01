@@ -42,7 +42,7 @@ class BasketDataService
         $builder = $this->dbalConnection->createQueryBuilder();
 
         $builder->update('s_order_basket_attributes', 'ba')
-            ->set('ba.swag_sezzle_order_uuid', ':orderUuid')
+            ->set('ba.sezzle_order_uuid', ':orderUuid')
             ->where('ba.basketId = :basketId')
             ->setParameters([
                 ':basketId' => $basketId,
@@ -58,7 +58,7 @@ class BasketDataService
     public function getValueByKey($basket, $key)
     {
         echo "<pre>";
-        $attribute = sprintf("swag_sezzle_%s", $key);
+        $attribute = sprintf("sezzle_%s", $key);
         $basketId = function ($basket) {
             foreach ($basket['content'] as $lineItem) {
                 return $lineItem['id'];

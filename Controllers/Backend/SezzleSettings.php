@@ -1,9 +1,11 @@
 <?php
 
+use Sezzle\Components\Backend\GatewayRegionService;
 use Sezzle\Components\ExceptionHandlerServiceInterface;
 use Sezzle\Models\Settings\General as GeneralSettingsModel;
 use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
 use Sezzle\SezzleBundle\Services\ClientService;
+use Shopware\Components\HttpClient\RequestException;
 
 class Shopware_Controllers_Backend_SezzleSettings extends Shopware_Controllers_Backend_Application
 {
@@ -15,12 +17,12 @@ class Shopware_Controllers_Backend_SezzleSettings extends Shopware_Controllers_B
     /**
      * {@inheritdoc}
      */
-    protected $alias = 'settings';
+    //protected $alias = 'settings';
 
     /**
-     * @var SettingsServiceInterface
+     * {@inheritdoc}
      */
-    private $settingsService;
+    protected $alias = 'general';
 
     /**
      * @var ClientService
@@ -28,56 +30,126 @@ class Shopware_Controllers_Backend_SezzleSettings extends Shopware_Controllers_B
     private $clientService;
 
     /**
-     * @var ExceptionHandlerServiceInterface
-     */
-    private $exceptionHandler;
-
-    /**
      * {@inheritdoc}
      */
     public function preDispatch()
     {
-        $this->settingsService = $this->get('sezzle.settings_service');
         $this->clientService = $this->get('sezzle.client_service');
-        $this->exceptionHandler = $this->get('sezzle.exception_handler_service');
 
         parent::preDispatch();
     }
 
     /**
-     * Initialize the REST api client to check if the credentials are correct
+     * Validate API Keys
      */
     public function validateAPIAction()
     {
         try {
-            $this->configureClient();
-            $this->View()->assign('success', true);
-        } catch (Exception $e) {
-            $error = $this->exceptionHandler->handle($e, 'validate API credentials');
-
+            $gatewayRegion = $this->getGatewayRegion();
             $this->View()->assign([
-                'success' => false,
-                'message' => $error->getCompleteMessage()
+                'success' => $gatewayRegion,
             ]);
+        } catch (Exception $e) {
+            $this->View()->assign(
+                ['success' => false, 'message' => "Something went wrong while validating the keys."]
+            );
         }
     }
 
     /**
-     *
+     * @inheritDoc
      */
-    private function configureClient()
+    public function createAction()
+    {
+        try {
+            $requestParams = $this->Request()->getParams();
+            $gatewayRegion = $this->getGatewayRegion();
+            if (!$gatewayRegion) {
+                $this->View()->assign(
+                    ['success' => false, 'message' => "Invalid API Keys."]
+                );
+                return;
+            }
+            $requestParams['gatewayRegion'] = $gatewayRegion;
+            $this->View()->assign(
+                $this->save($requestParams)
+            );
+        } catch (Exception $e) {
+            $this->View()->assign(
+                ['success' => false, 'message' => "Something went wrong while saving the settings."]
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateAction()
+    {
+        try {
+            $requestParams = $this->Request()->getParams();
+            $gatewayRegion = $this->getGatewayRegion();
+            if (!$gatewayRegion) {
+                $this->View()->assign(
+                    ['success' => false, 'message' => "Invalid API Keys."]
+                );
+                return;
+            }
+            $requestParams['gatewayRegion'] = $gatewayRegion;
+            $this->View()->assign(
+                $this->save($requestParams)
+            );
+        } catch (Exception $e) {
+            $this->View()->assign(
+                ['success' => false, 'message' => "Something went wrong while saving the settings."]
+            );
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function detailAction()
+    {
+        $shopId = (int)$this->Request()->getParam('shopId');
+
+        /** @var SettingsServiceInterface $settingsService */
+        $settingsService = $this->get('sezzle.settings_service');
+
+        /** @var GeneralSettingsModel $settings */
+        $settings = $settingsService->getSettings($shopId);
+
+        if ($settings !== null) {
+            $this->view->assign('general', $settings->toArray());
+        }
+    }
+
+    /**
+     * Get gateway region
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function getGatewayRegion()
+    {
+        /** @var GatewayRegionService $gatewayRegionService */
+        $gatewayRegionService = $this->get('sezzle.backend.gateway_region_service');
+        return $gatewayRegionService->get($this->getSettings());
+    }
+
+    /**
+     * Get settings
+     *
+     * @return array
+     */
+    private function getSettings()
     {
         $request = $this->Request();
-        $shopId = (int) $request->getParam('shopId');
-        $publicKey = $request->getParam('publicKey');
-        $sandbox = $request->getParam('sandbox', 'false') !== 'false';
-        $privateKey = $request->getParam('privateKey');
-
-        $this->clientService->configure([
-            'public_key' => $publicKey,
-            'private_key' => $privateKey,
-            'sandbox' => $sandbox,
-            'shopId' => $shopId,
-        ]);
+        return [
+            'public_key' => $request->getParam('publicKey'),
+            'private_key' => $request->getParam('privateKey'),
+            'sandbox' => $request->getParam('sandbox'),
+            'shopId' => (int)$request->getParam('shopId'),
+        ];
     }
 }

@@ -24,10 +24,12 @@ class AuthCredentials
 
     /**
      * @param string $publicKey
+     * @return AuthCredentials
      */
     public function setPublicKey($publicKey)
     {
         $this->publicKey = $publicKey;
+        return $this;
     }
 
     /**
@@ -40,10 +42,12 @@ class AuthCredentials
 
     /**
      * @param string $privateKey
+     * @return AuthCredentials
      */
     public function setPrivateKey($privateKey)
     {
         $this->privateKey = $privateKey;
+        return $this;
     }
 
     /**

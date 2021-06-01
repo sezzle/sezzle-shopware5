@@ -42,8 +42,7 @@ class OrderDataService
         SettingsServiceInterface $settingsService,
         TokenizeResource $tokenizeResource,
         UserDataService $userDataService
-    )
-    {
+    ) {
         $this->dbalConnection = $dbalConnection;
         $this->settingsService = $settingsService;
         $this->tokenizeResource = $tokenizeResource;
@@ -125,35 +124,35 @@ class OrderDataService
                 switch ($key) {
                     case 'referenceId':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_reference_id', ':referenceId');
+                        $builder->set('oa.sezzle_reference_id', ':referenceId');
                         break;
                     case 'orderUuid':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_order_uuid', ':orderUuid');
+                        $builder->set('oa.sezzle_order_uuid', ':orderUuid');
                         break;
                     case 'authAmount':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_auth_amount', ':authAmount');
+                        $builder->set('oa.sezzle_auth_amount', ':authAmount');
                         break;
                     case 'capturedAmount':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_captured_amount', ':capturedAmount');
+                        $builder->set('oa.sezzle_captured_amount', ':capturedAmount');
                         break;
                     case 'refundedAmount':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_refunded_amount', ':refundedAmount');
+                        $builder->set('oa.sezzle_refunded_amount', ':refundedAmount');
                         break;
                     case 'releasedAmount':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_released_amount', ':releasedAmount');
+                        $builder->set('oa.sezzle_released_amount', ':releasedAmount');
                         break;
                     case 'paymentAction':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_payment_action', ':paymentAction');
+                        $builder->set('oa.sezzle_payment_action', ':paymentAction');
                         break;
                     case 'authExpiry':
                         $parameters[':' . $key] = $value;
-                        $builder->set('oa.swag_sezzle_auth_expiry', ':authExpiry');
+                        $builder->set('oa.sezzle_auth_expiry', ':authExpiry');
                         break;
                 }
 
@@ -195,8 +194,8 @@ class OrderDataService
             ->getSQL();
 
         $builder->update('s_order_attributes', 'oa')
-            ->set('oa.swag_sezzle_customer_uuid', ':customerUuid')
-            ->set('oa.swag_sezzle_customer_uuid_expiry', ':customerUuidExpiry')
+            ->set('oa.sezzle_customer_uuid', ':customerUuid')
+            ->set('oa.sezzle_customer_uuid_expiry', ':customerUuidExpiry')
             ->where('oa.orderID = (' . $subQuery . ')')
             ->setParameters([
                 ':orderNumber' => $orderNumber,

@@ -36,7 +36,6 @@ class Backend implements SubscriberInterface
         return [
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_Sezzle' => 'onGetBackendControllerPath',
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleSettings' => 'onGetBackendSettingsControllerPath',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleGeneralSettings' => 'onGetBackendGeneralSettingsControllerPath',
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Index' => 'onLoadBackendIndex'
         ];
     }
@@ -65,17 +64,6 @@ class Backend implements SubscriberInterface
         $this->template->addTemplateDir($this->pluginDirectory . '/Resources/views/');
 
         return $this->pluginDirectory . '/Controllers/Backend/SezzleSettings.php';
-    }
-
-    /**
-     * Handles the Enlight_Controller_Dispatcher_ControllerPath_Backend_SezzleGeneralSettings event.
-     * Returns the path to the backend application controller.
-     *
-     * @return string
-     */
-    public function onGetBackendGeneralSettingsControllerPath()
-    {
-        return $this->pluginDirectory . '/Controllers/Backend/SezzleGeneralSettings.php';
     }
 
     /**

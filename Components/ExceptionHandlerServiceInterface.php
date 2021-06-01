@@ -7,6 +7,7 @@ use Sezzle\Components\Exception\SezzleApiException;
 interface ExceptionHandlerServiceInterface
 {
     /**
+     * @param \Exception $e
      * @param string $currentAction
      *
      * @return SezzleApiException The error message and name extracted from the exception

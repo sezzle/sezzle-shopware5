@@ -96,16 +96,16 @@ class ReleaseService
                 throw new Exception('Order not found');
             }
 
-            if ($orderModel->getAttribute()->getSwagSezzleAuthAmount() == $amountToRelease) {
+            if ($orderModel->getAttribute()->getSezzleAuthAmount() == $amountToRelease) {
                 $this->paymentStatusService->updatePaymentStatus(
                     $orderUUID,
                     Status::PAYMENT_STATE_THE_PROCESS_HAS_BEEN_CANCELLED
                 );
             }
-            $prevReleasedAmount = $orderModel->getAttribute()->getSwagSezzleReleasedAmount();
+            $prevReleasedAmount = $orderModel->getAttribute()->getSezzleReleasedAmount();
             $newReleasedAmount = Util::formatToCurrency($releasePayload->getAmountInCents());
             $attributesToUpdate = [
-                'authAmount' => $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $newReleasedAmount,
+                'authAmount' => $orderModel->getAttribute()->getSezzleAuthAmount() - $newReleasedAmount,
                 'releasedAmount' => $prevReleasedAmount + $newReleasedAmount
             ];
             $this->orderDataService->applyPaymentAttributes($orderModel->getNumber(), $attributesToUpdate);

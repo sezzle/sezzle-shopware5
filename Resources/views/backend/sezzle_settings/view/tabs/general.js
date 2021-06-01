@@ -152,15 +152,15 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
                 {
                     xtype: 'textfield',
                     name: 'publicKey',
-                    fieldLabel: '{s name="fieldset/rest/clientId"}Public Key{/s}',
-                    helpText: '{s name="fieldset/rest/clientId/help"}The REST-API Public Key that is being used to authenticate this plugin to the Sezzle API.{/s}',
+                    fieldLabel: '{s name="fieldset/rest/publicKey"}Public Key{/s}',
+                    helpText: '{s name="fieldset/publicKey/clientId/help"}The Public Key that is being used to authenticate this plugin to the Sezzle API.{/s}',
                     allowBlank: false
                 },
                 {
                     xtype: 'textfield',
                     name: 'privateKey',
-                    fieldLabel: '{s name="fieldset/rest/clientSecret"}Private Key{/s}',
-                    helpText: '{s name="fieldset/rest/clientSecret/help"}The REST-API Private Key that is being used to authenticate this plugin to the Sezzle API.{/s}',
+                    fieldLabel: '{s name="fieldset/rest/privateKey"}Private Key{/s}',
+                    helpText: '{s name="fieldset/rest/privateKey/help"}The Private Key that is being used to authenticate this plugin to the Sezzle API.{/s}',
                     allowBlank: false
                 },
                 {
@@ -186,20 +186,20 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
 
 
         me.merchantContainer = Ext.create('Ext.form.FieldSet', {
-            title: '{s name="fieldset/behaviour/title"}Merchant{/s}',
+            title: '{s name="fieldset/merchant/title"}Merchant{/s}',
             items: [
                 {
                     xtype: 'textfield',
                     name: 'merchantUuid',
-                    fieldLabel: '{s name="fieldset/rest/merchantUuid"}Merchant UUID{/s}',
-                    helpText: '{s name="fieldset/rest/merchantUuid/help"}The Merchant UUID that is being used to validate the merchant.{/s}',
+                    fieldLabel: '{s name="fieldset/merchant/merchantUuid"}Merchant UUID{/s}',
+                    helpText: '{s name="fieldset/merchant/merchantUuid/help"}The Merchant UUID that is being used to validate the merchant.{/s}',
                     allowBlank: false
                 },
                 {
                     xtype: 'combobox',
                     name: 'merchantLocation',
-                    fieldLabel: '{s name="fieldset/behaviour/merchantLocation"}Merchant location{/s}',
-                    helpText: '{s name="fieldset/behaviour/merchantLocation/help"}Choose your merchant location. Depending on this, different features are available to you.{/s}',
+                    fieldLabel: '{s name="fieldset/merchant/merchantLocation"}Merchant location{/s}',
+                    helpText: '{s name="fieldset/merchant/merchantLocation/help"}Choose your merchant location. Depending on this, different features are available to you.{/s}',
                     store: Ext.create('Shopware.apps.SezzleSettings.store.MerchantLocation'),
                     valueField: 'type',
                     value: 'us'
@@ -209,14 +209,14 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
                     name: 'tokenize',
                     inputValue: true,
                     uncheckedValue: false,
-                    fieldLabel: '{s name="fieldset/rest/enableTokenize"}Enable Tokenization{/s}',
-                    boxLabel: '{s name="fieldset/rest/enableTokenize/help"}Enable this option to tokenize customer.{/s}'
+                    fieldLabel: '{s name="fieldset/merchant/enableTokenize"}Enable Tokenization{/s}',
+                    boxLabel: '{s name="fieldset/merchant/enableTokenize/help"}Enable this option to tokenize customer.{/s}'
                 },
                 {
                     xtype: 'combobox',
                     name: 'paymentAction',
-                    fieldLabel: '{s name="fieldset/behaviour/paymentAction"}Payment Action{/s}',
-                    helpText: '{s name="fieldset/behaviour/paymentAction/help"}Choose your payment action. Depending on this, payment will be captured instantly or in a delayed fashion.{/s}',
+                    fieldLabel: '{s name="fieldset/merchant/paymentAction"}Payment Action{/s}',
+                    helpText: '{s name="fieldset/merchant/paymentAction/help"}Choose your payment action. Depending on this, payment will be captured instantly or in a delayed fashion.{/s}',
                     store: Ext.create('Shopware.apps.SezzleSettings.store.PaymentAction'),
                     valueField: 'type',
                     value: 'authorize_capture'
@@ -242,16 +242,16 @@ Ext.define('Shopware.apps.SezzleSettings.view.tabs.General', {
                     name: 'enableWidgetPdp',
                     inputValue: true,
                     uncheckedValue: false,
-                    fieldLabel: '{s name="fieldset/rest/enableWidgetPdp"}Enable Widget in PDP{/s}',
-                    boxLabel: '{s name="fieldset/rest/enableWidgetPdp/help"}Enable this option to activate Sezzle Widget in PDP.{/s}'
+                    fieldLabel: '{s name="fieldset/widget/enableWidgetPdp"}Enable Widget in PDP{/s}',
+                    boxLabel: '{s name="fieldset/widget/enableWidgetPdp/help"}Enable this option to activate Sezzle Widget in PDP.{/s}'
                 },
                 {
                     xtype: 'checkbox',
                     name: 'enableWidgetCart',
                     inputValue: true,
                     uncheckedValue: false,
-                    fieldLabel: '{s name="fieldset/rest/enableWidgetCart"}Enable Widget in Cart{/s}',
-                    boxLabel: '{s name="fieldset/rest/enableWidgetCart/help"}Enable this option to activate Sezzle Widget in Cart.{/s}'
+                    fieldLabel: '{s name="fieldset/widget/enableWidgetCart"}Enable Widget in Cart{/s}',
+                    boxLabel: '{s name="fieldset/widget/enableWidgetCart/help"}Enable this option to activate Sezzle Widget in Cart.{/s}'
                 }
             ]
         });

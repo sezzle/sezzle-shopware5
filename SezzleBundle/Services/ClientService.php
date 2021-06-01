@@ -2,6 +2,11 @@
 
 namespace Sezzle\SezzleBundle\Services;
 
+use Exception;
+use RuntimeException;
+use Sezzle\Config;
+use Sezzle\SezzleBundle\GatewayRegion;
+use Sezzle\SezzleBundle\TransactionMode;
 use Shopware\Components\HttpClient\GuzzleFactory;
 use Shopware\Components\HttpClient\GuzzleHttpClient as GuzzleClient;
 use Shopware\Components\HttpClient\RequestException;
@@ -50,6 +55,11 @@ class ClientService
      */
     private $settingsService;
 
+    private static $supportedGatewayRegions = [
+        'US' => 'https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/sezzle-pay-over-time-no-interest@2x.png',
+        'EU' => 'https://media.eu.sezzle.com/payment-method/assets/sezzle.png'
+    ];
+
     /**
      * ClientService constructor.
      * @param SettingsServiceInterface $settingsService
@@ -72,27 +82,34 @@ class ClientService
 
         $shop = $dependencyProvider->getShop();
 
-        //Backend does not have any active shop. In order to authenticate there, please use
-        //the "configure()"-function instead.
         if ($shop === null || !$this->settingsService->hasSettings() || !$this->settingsService->get('active')) {
             return;
         }
 
         $this->shopId = $shop->getId();
 
-        $environment = (bool) $this->settingsService->get('sandbox');
-        $environment === true ? $this->baseUrl = BaseURL::SANDBOX : $this->baseUrl = BaseURL::LIVE;
+        $gatewayRegion = $this->settingsService->get('gateway_region');
+        $apiMode = (bool)$this->settingsService->get('sandbox')
+            ? TransactionMode::SANDBOX
+            : TransactionMode::LIVE;
+        $this->baseUrl = GatewayRegion::getGatewayUrl($apiMode, 'v2', $gatewayRegion);
     }
 
     /**
+     * Configure the client with auth
+     *
      * @param array $settings
      * @throws RequestException
      */
     public function configure(array $settings)
     {
-        $this->shopId = $settings['shopId'];
-        $environment = $settings['sandbox'];
-        $environment === true ? $this->baseUrl = BaseURL::SANDBOX : $this->baseUrl = BaseURL::LIVE;
+        if (!$this->shopId && isset($settings['shopId'])) {
+            $this->shopId = $settings['shopId'];
+        }
+        $environment = (bool)$settings['sandbox'];
+        $apiMode = $environment ? TransactionMode::SANDBOX : TransactionMode::LIVE;
+
+        $this->baseUrl = GatewayRegion::getGatewayUrl($apiMode, 'v2', $settings['gateway_region']);
 
         //Create authentication
         $credentials = new AuthCredentials();
@@ -115,14 +132,12 @@ class ClientService
     public function sendRequest($type, $resourceUri, array $data = [], $tokenRequired = true)
     {
         if (!$this->getHeader('Authorization') && $tokenRequired) {
-            $environment = (bool) $this->settingsService->get('sandbox');
-            $environment === true ? $this->baseUrl = BaseURL::SANDBOX : $this->baseUrl = BaseURL::LIVE;
-
-            //Create authentication
-            $credentials = new AuthCredentials();
-            $credentials->setPublicKey($this->settingsService->get('public_key'));
-            $credentials->setPrivateKey($this->settingsService->get('private_key'));
-            $this->createAuthentication($credentials);
+            $this->configure([
+                'sandbox' => $this->settingsService->get('sandbox'),
+                'public_key' => $this->settingsService->get('public_key'),
+                'private_key' => $this->settingsService->get('private_key'),
+                'gateway_region' => $this->settingsService->get('gateway_region')
+            ]);
         }
 
         $resourceUri = $this->baseUrl . $resourceUri;
@@ -132,7 +147,7 @@ class ClientService
             $this->setHeader('Content-Type', 'application/json');
         }
 
-        $this->logger->notify('Sending request [' . $type . '] to ' . $resourceUri, ['payload' => $data]);
+        $this->logger->error('Sending request [' . $type . '] to ' . $resourceUri, ['payload' => $data]);
 
         switch ($type) {
             case RequestType::POST:
@@ -152,7 +167,7 @@ class ClientService
                 break;
 
             default:
-                throw new \RuntimeException('An unsupported request type was provided. The type was: ' . $type);
+                throw new RuntimeException('An unsupported request type was provided. The type was: ' . $type);
         }
 
         $this->logger->notify('Received data from ' . $resourceUri, ['payload' => $response]);
@@ -193,6 +208,7 @@ class ClientService
      *
      * @param AuthCredentials $credentials
      * @throws RequestException
+     * @throws Exception
      */
     private function createAuthentication(AuthCredentials $credentials)
     {
@@ -207,11 +223,12 @@ class ClientService
             ]);
 
             throw $requestException;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Could not create authentication - unknown exception', [
                 'message' => $e->getMessage(),
                 'stacktrace' => $e->getTraceAsString(),
             ]);
+            throw $e;
         }
     }
 }

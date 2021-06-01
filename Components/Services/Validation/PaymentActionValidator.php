@@ -42,13 +42,13 @@ class PaymentActionValidator
         $amountAvailable = 0.00;
         switch ($method) {
             case 'DoCapture':
-                $amountAvailable = $orderModel->getInvoiceAmount() - $orderModel->getAttribute()->getSwagSezzleCapturedAmount();
+                $amountAvailable = $orderModel->getInvoiceAmount() - $orderModel->getAttribute()->getSezzleCapturedAmount();
                 break;
             case 'DoRefund':
-                $amountAvailable = $orderModel->getAttribute()->getSwagSezzleCapturedAmount() - $orderModel->getAttribute()->getSwagSezzleRefundedAmount();
+                $amountAvailable = $orderModel->getAttribute()->getSezzleCapturedAmount() - $orderModel->getAttribute()->getSezzleRefundedAmount();
                 break;
             case 'DoRelease':
-                $amountAvailable = $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $orderModel->getAttribute()->getSwagSezzleCapturedAmount();
+                $amountAvailable = $orderModel->getAttribute()->getSezzleAuthAmount() - $orderModel->getAttribute()->getSezzleCapturedAmount();
                 break;
         }
         return $amount <= $amountAvailable;
@@ -71,11 +71,11 @@ class PaymentActionValidator
         if ($action === PaymentAction::AUTHORIZE_CAPTURE) {
             return true;
         }
-        if ($action === PaymentAction::AUTHORIZE && !$orderModel->getAttribute()->getSwagSezzleAuthExpiry()) {
+        if ($action === PaymentAction::AUTHORIZE && !$orderModel->getAttribute()->getSezzleAuthExpiry()) {
             return false;
         }
 
-        $authExpiryDatetime = $orderModel->getAttribute()->getSwagSezzleAuthExpiry();
+        $authExpiryDatetime = $orderModel->getAttribute()->getSezzleAuthExpiry();
         $authExpiryDatetime = new \DateTime($authExpiryDatetime->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
 
         $currentDatetime = new \DateTime('now', new \DateTimeZone('UTC'));

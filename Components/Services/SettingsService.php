@@ -128,7 +128,7 @@ class SettingsService implements SettingsServiceInterface
     {
         switch ($settingsType) {
             case SettingsTable::GENERAL:
-                return 'swag_payment_sezzle_settings_general';
+                return 'sezzle_settings_general';
             default:
                 throw new \RuntimeException('The provided table ' . $settingsType . ' is not supported');
                 break;
