@@ -1,13 +1,13 @@
 <?php
 
-namespace SwagPaymentSezzle\Models\Settings;
+namespace Sezzle\Models\Settings;
 
 use Doctrine\ORM\Mapping as ORM;
 use Shopware\Components\Model\ModelEntity;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="swag_payment_sezzle_settings_general")
+ * @ORM\Table(name="sezzle_settings_general")
  */
 class General extends ModelEntity
 {
@@ -100,6 +100,12 @@ class General extends ModelEntity
      * @ORM\Column(name="enable_widget_cart", type="boolean", nullable=false)
      */
     private $enableWidgetCart;
+
+    /**
+     * @var string
+     * @ORM\Column(name="gateway_region", type="string", nullable=false)
+     */
+    private $gatewayRegion;
 
     /**
      * @return int
@@ -323,6 +329,22 @@ class General extends ModelEntity
     public function setEnableWidgetCart($enableWidgetCart)
     {
         $this->enableWidgetCart = $enableWidgetCart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGatewayRegion()
+    {
+        return $this->gatewayRegion;
+    }
+
+    /**
+     * @param string $gatewayRegion
+     */
+    public function setGatewayRegion($gatewayRegion)
+    {
+        $this->gatewayRegion = $gatewayRegion;
     }
 
     /**

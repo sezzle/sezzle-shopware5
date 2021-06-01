@@ -42,22 +42,21 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
      * @object
      */
     snippets: {
-        title: '{s name=communication/window_title}Communication{/s}',
         paymentPanel: {
-            title: '{s name=sezzle/payment_panel/title}Payment Information{/s}',
+            title: '{s name=sezzle/paymentPanel/title}Payment Information{/s}',
         },
         paymentActionPanel: {
-            title: '{s name=sezzle/payment_action_panel/title}Payment Action{/s}',
-            text: '{s name=sezzle/payment_action_panel/text}Input a valid amount to capture/refund/release{/s}',
+            title: '{s name=sezzle/paymentActionPanel/title}Payment Action{/s}',
+            text: '{s name=sezzle/paymentActionPanel/text}Input a valid amount to capture/refund/release{/s}',
         },
         capture: {
-            button: 'Capture'
+            buttonText: '{s name=sezzle/paymentActionCapture/buttonText}Capture{/s}'
         },
         refund: {
-            button: 'Refund'
+            buttonText: '{s name=sezzle/paymentActionRefund/buttonText}Refund{/s}'
         },
         release: {
-            button: 'Release'
+            buttonText: '{s name=sezzle/paymentActionRelease/buttonText}Release{/s}'
         }
     },
 
@@ -81,7 +80,9 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
         me.registerEvents();
         me.determinePaymentAction();
 
-        me.sezzleRecord.authStatus = me.isAuthValid() ? 'Not Expired' : 'Expired';
+        me.sezzleRecord.authStatus = me.isAuthValid()
+            ? '{s name=sezzle/authNotExpired/text}Not Expired{/s}'
+            : '{s name=sezzle/authExpired/text}Expired{/s}';
 
         me.items = [
             me.createPanel(),
@@ -154,19 +155,19 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                     <div class="base-info">
                         <table>
                             <tr>
-                                <td>Auth Amount : </td>
+                                <td>{s name=sezzle/authorizedAmount/text}Authorized Amount{/s} : </td>
                                 <td>{currency} <div id="auth_amount" style="float: right">&nbsp;{authAmount}</div></td>
                             </tr>
                             <tr>
-                                <td>Captured Amount : </td>
+                                <td>{s name=sezzle/capturedAmount/text}Captured Amount{/s} : </td>
                                 <td>{currency} <div id="capture_amount" style="float: right">&nbsp;{capturedAmount}</div></td>
                             </tr>
                             <tr>
-                                <td>Refunded Amount : </td>
+                                <td>{s name=sezzle/refundedAmount/text}Refunded Amount{/s} : </td>
                                 <td>{currency} <div id="refund_amount" style="float: right">&nbsp;{refundedAmount}</div></td>
                             </tr>
                             <tr>
-                                <td>Released Amount : </td>
+                                <td>{s name=sezzle/releasedAmount/text}Released Amount{/s} : </td>
                                 <td>{currency} <div id="release_amount" style="float: right">&nbsp;{releasedAmount}</div></td>
                             </tr>
                         </table>
@@ -175,11 +176,11 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
                         <div>
                             <table>
                                 <tr>
-                                    <td>Auth Expiry : </td>
+                                    <td>{s name=sezzle/authorizationExpiry/text}Authorization Expiry{/s} : </td>
                                     <tpl if="authStatus == \'Expired\'">
-                                        <td style="color: #ff0000">{authExpiry} ({authStatus})</td>
+                                        <td style="color: #ff0000"> {authExpiry} ({authStatus})</td>
                                     <tpl else>
-                                        <td>{authExpiry} ({authStatus})</td>
+                                        <td style="color: #008000"> {authExpiry} ({authStatus})</td>
                                     </tpl>
                                 </tr>
                             </table>
@@ -228,13 +229,13 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
         if (method === 'DoCapture' && paymentAction === 'authorize' && !me.isAuthValid()) {
             Shopware.Notification.createStickyGrowlMessage({
                 title: '{s name=growl/title}Sezzle{/s}',
-                text: 'Auth expired. Cannot capture.'
+                text: '{s name=sezzle/authExpired/msg}Auth expired. Cannot capture.{/s}'
             }, '{s name=title}Sezzle - Payment{/s}');
             return false;
         } else if (amount > cap) {
             Shopware.Notification.createStickyGrowlMessage({
                 title: '{s name=growl/title}Sezzle{/s}',
-                text: 'Invaild amount'
+                text: '{s name=sezzle/invalidAmount/msg}Invalid amount{/s}'
             }, '{s name=title}Sezzle - Payment{/s}');
             return false;
         }
@@ -267,7 +268,7 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
         if (me.canCapture) {
             me.captureButton = Ext.create('Ext.button.Button', {
                 cls: 'primary',
-                text: me.snippets.capture.button,
+                text: me.snippets.capture.buttonText,
                 handler: function () {
                     me.record.set('amount', me.paymentActionTextArea.getValue());
                     me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
@@ -287,7 +288,7 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
         if (me.canRefund) {
             me.refundButton = Ext.create('Ext.button.Button', {
                 cls: 'primary',
-                text: me.snippets.refund.button,
+                text: me.snippets.refund.buttonText,
                 handler: function () {
                     me.record.set('amount', me.paymentActionTextArea.getValue());
                     me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);
@@ -307,7 +308,7 @@ Ext.define('Shopware.apps.Order.view.detail.tabs.Sezzle', {
         if (me.canRelease) {
             me.releaseButton = Ext.create('Ext.button.Button', {
                 cls: 'primary',
-                text: me.snippets.release.button,
+                text: me.snippets.release.buttonText,
                 handler: function () {
                     me.record.set('amount', me.paymentActionTextArea.getValue());
                     me.record.set('sezzleOrderUUID', me.sezzleRecord.sezzleOrderUUID);

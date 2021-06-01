@@ -2,7 +2,7 @@
 Ext.define('Shopware.apps.SezzleSettings.store.PaymentAction', {
     extend: 'Ext.data.Store',
 
-    storeId: 'SwagPaymentSezzlePaymentAction',
+    storeId: 'SezzlePaymentAction',
 
     fields: [
         { name: 'type', type: 'string' },

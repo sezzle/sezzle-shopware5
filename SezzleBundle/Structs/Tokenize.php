@@ -1,8 +1,8 @@
 <?php
 
-namespace SwagPaymentSezzle\SezzleBundle\Structs;
+namespace Sezzle\SezzleBundle\Structs;
 
-use SwagPaymentSezzle\SezzleBundle\Structs\Tokenize\Customer;
+use Sezzle\SezzleBundle\Structs\Tokenize\Customer;
 
 class Tokenize
 {

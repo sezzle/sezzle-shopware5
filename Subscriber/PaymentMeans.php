@@ -1,11 +1,11 @@
 <?php
 
-namespace SwagPaymentSezzle\Subscriber;
+namespace Sezzle\Subscriber;
 
 use Doctrine\DBAL\Connection;
 use Enlight\Event\SubscriberInterface;
-use SwagPaymentSezzle\Components\PaymentMethodProvider;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\Components\PaymentMethodProvider;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
 
 class PaymentMeans implements SubscriberInterface
 {

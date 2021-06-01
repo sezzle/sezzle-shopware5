@@ -2,27 +2,27 @@
 
 use Shopware\Components\HttpClient\RequestException;
 use Shopware\Models\Order\Status;
-use SwagPaymentSezzle\Components\Backend\CaptureService;
-use SwagPaymentSezzle\Components\DependencyProvider;
-use SwagPaymentSezzle\Components\ErrorCodes;
-use SwagPaymentSezzle\Components\ExceptionHandlerServiceInterface;
-use SwagPaymentSezzle\Components\PaymentMethodProvider;
-use SwagPaymentSezzle\Components\Services\BasketDataService;
-use SwagPaymentSezzle\Components\Services\OrderDataService;
-use SwagPaymentSezzle\Components\Services\SettingsService;
-use SwagPaymentSezzle\Components\Services\UserDataService;
-use SwagPaymentSezzle\Components\Services\Validation\BasketValidatorInterface;
-use SwagPaymentSezzle\Components\ApiBuilderParameters;
-use SwagPaymentSezzle\SezzleBundle\PaymentAction;
-use SwagPaymentSezzle\SezzleBundle\PaymentType;
-use SwagPaymentSezzle\SezzleBundle\Resources\CaptureResource;
-use SwagPaymentSezzle\SezzleBundle\Resources\CustomerResource;
-use SwagPaymentSezzle\SezzleBundle\Resources\OrderResource;
-use SwagPaymentSezzle\SezzleBundle\Resources\SessionResource;
-use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session;
-use SwagPaymentSezzle\SezzleBundle\Util;
+use Sezzle\Components\Backend\CaptureService;
+use Sezzle\Components\DependencyProvider;
+use Sezzle\Components\ErrorCodes;
+use Sezzle\Components\ExceptionHandlerServiceInterface;
+use Sezzle\Components\PaymentMethodProvider;
+use Sezzle\Components\Services\BasketDataService;
+use Sezzle\Components\Services\OrderDataService;
+use Sezzle\Components\Services\SettingsService;
+use Sezzle\Components\Services\UserDataService;
+use Sezzle\Components\Services\Validation\BasketValidatorInterface;
+use Sezzle\Components\ApiBuilderParameters;
+use Sezzle\SezzleBundle\PaymentAction;
+use Sezzle\SezzleBundle\PaymentType;
+use Sezzle\SezzleBundle\Resources\CaptureResource;
+use Sezzle\SezzleBundle\Resources\CustomerResource;
+use Sezzle\SezzleBundle\Resources\OrderResource;
+use Sezzle\SezzleBundle\Resources\SessionResource;
+use Sezzle\SezzleBundle\Structs\CustomerOrder;
+use Sezzle\SezzleBundle\Structs\Order;
+use Sezzle\SezzleBundle\Structs\Session;
+use Sezzle\SezzleBundle\Util;
 
 class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend_Payment
 {

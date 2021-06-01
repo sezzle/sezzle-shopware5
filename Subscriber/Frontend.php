@@ -1,9 +1,13 @@
 <?php
 
-namespace SwagPaymentSezzle\Subscriber;
+namespace Sezzle\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Enlight_Controller_ActionEventArgs;
+use Enlight_Event_EventArgs;
+use Enlight_View_Default;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\GatewayRegion;
 
 class Frontend implements SubscriberInterface
 {
@@ -39,34 +43,41 @@ class Frontend implements SubscriberInterface
         ];
     }
 
-    public function onPostDispatchSecure(\Enlight_Controller_ActionEventArgs $args)
+    public function onPostDispatchSecure(Enlight_Controller_ActionEventArgs $args)
     {
         if (!$this->settingsService->hasSettings()) {
             return;
         }
 
-        $active = (bool) $this->settingsService->get('active');
+        $active = (bool)$this->settingsService->get('active');
         if (!$active) {
             return;
         }
 
-        $isWidgetActiveForPDP = (bool) $this->settingsService->get('enable_widget_pdp');
-        $isWidgetActiveForCart = (bool) $this->settingsService->get('enable_widget_cart');
-        $merchantUUID = (bool) $this->settingsService->get('merchant_uuid');
+        $isWidgetActiveForPDP = (bool)$this->settingsService->get('enable_widget_pdp');
+        $isWidgetActiveForCart = (bool)$this->settingsService->get('enable_widget_cart');
+        $merchantUUID = $this->settingsService->get('merchant_uuid');
+        $gatewayRegion = $this->settingsService->get('gateway_region');
+        $widgetURL = sprintf(
+            "https://widget.%s/v1/javascript/price-widget?uuid=%s",
+            GatewayRegion::getSezzleDomain($gatewayRegion),
+            $merchantUUID
+        );
 
         /** @var Enlight_View_Default $view */
         $view = $args->getSubject()->View();
 
         //Assign shop specific and configurable values to the view.
-        $view->assign('merchantUUID', $merchantUUID);
+        // $view->assign('merchantUUID', $merchantUUID);
         $view->assign('isWidgetActiveForPDP', $isWidgetActiveForPDP);
         $view->assign('isWidgetActiveForCart', $isWidgetActiveForCart);
+        $view->assign('widgetURL', $widgetURL);
     }
 
     /**
      * Adds the template directory to the TemplateManager
      */
-    public function onCollectTemplateDir(\Enlight_Event_EventArgs $args)
+    public function onCollectTemplateDir(Enlight_Event_EventArgs $args)
     {
         $dirs = $args->getReturn();
         $dirs[] = $this->pluginDir . '/Resources/views/';

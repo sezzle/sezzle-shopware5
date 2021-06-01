@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagPaymentSezzle\Setup;
+namespace Sezzle\Setup;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Bundle\AttributeBundle\Service\CrudService;
 use Shopware\Components\Model\ModelManager;
-use SwagPaymentSezzle\Components\PaymentMethodProvider;
+use Sezzle\Components\PaymentMethodProvider;
 
 class Uninstaller
 {
@@ -74,16 +74,16 @@ class Uninstaller
      */
     private function removeAttributes()
     {
-        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'swag_sezzle_display_in_plus_iframe') !== null) {
+        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'sezzle_display_in_plus_iframe') !== null) {
             $this->attributeCrudService->delete(
                 's_core_paymentmeans_attributes',
-                'swag_sezzle_display_in_plus_iframe'
+                'sezzle_display_in_plus_iframe'
             );
         }
-        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'swag_sezzle_iframe_payment_logo') !== null) {
+        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'sezzle_iframe_payment_logo') !== null) {
             $this->attributeCrudService->delete(
                 's_core_paymentmeans_attributes',
-                'swag_sezzle_iframe_payment_logo'
+                'sezzle_iframe_payment_logo'
             );
         }
         $this->modelManager->generateAttributeModels(['s_core_paymentmeans_attributes']);
@@ -94,7 +94,7 @@ class Uninstaller
      */
     private function removeSettingsTables()
     {
-        $sql = 'DROP TABLE IF EXISTS `swag_payment_sezzle_settings_express`;';
+        $sql = 'DROP TABLE IF EXISTS `sezzle_settings_general`;';
 
         $this->connection->exec($sql);
     }

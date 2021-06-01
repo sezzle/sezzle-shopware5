@@ -1,14 +1,14 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Services;
+namespace Sezzle\Components\Services;
 
 use DateTime;
 use Doctrine\DBAL\Connection;
 use Exception;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\PaymentType;
-use SwagPaymentSezzle\SezzleBundle\Resources\TokenizeResource;
-use SwagPaymentSezzle\SezzleBundle\Structs\Tokenize;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\PaymentType;
+use Sezzle\SezzleBundle\Resources\TokenizeResource;
+use Sezzle\SezzleBundle\Structs\Tokenize;
 
 class UserDataService
 {
@@ -64,9 +64,9 @@ class UserDataService
                 $builder = $this->dbalConnection->createQueryBuilder();
 
                 $builder->update('s_user_attributes', 'ua')
-                    ->set('ua.swag_sezzle_customer_uuid', ':customerUuid')
-                    ->set('ua.swag_sezzle_customer_uuid_status', ':customerUuidStatus')
-                    ->set('ua.swag_sezzle_customer_uuid_expiry', ':customerUuidExpiry')
+                    ->set('ua.sezzle_customer_uuid', ':customerUuid')
+                    ->set('ua.sezzle_customer_uuid_status', ':customerUuidStatus')
+                    ->set('ua.sezzle_customer_uuid_expiry', ':customerUuidExpiry')
                     ->where('ua.userID = :userID')
                     ->setParameters([
                         ':userID' => $userId,
@@ -114,9 +114,9 @@ class UserDataService
             $builder = $this->dbalConnection->createQueryBuilder();
 
             $builder->update('s_user_attributes', 'ua')
-                ->set('ua.swag_sezzle_customer_uuid', ':customerUuid')
-                ->set('ua.swag_sezzle_customer_uuid_status', ':customerUuidStatus')
-                ->set('ua.swag_sezzle_customer_uuid_expiry', ':customerUuidExpiry')
+                ->set('ua.sezzle_customer_uuid', ':customerUuid')
+                ->set('ua.sezzle_customer_uuid_status', ':customerUuidStatus')
+                ->set('ua.sezzle_customer_uuid_expiry', ':customerUuidExpiry')
                 ->where('ua.userID = :userID')
                 ->setParameters([
                     ':userID' => $userId,
@@ -135,7 +135,7 @@ class UserDataService
      */
     public function getValueByKey($userId, $key)
     {
-        $attribute = sprintf("swag_sezzle_%s", $key);
+        $attribute = sprintf("sezzle_%s", $key);
         //return !empty($userData['additional']['user'][$attribute]) ? $userData['additional']['user'][$attribute] : null;
 
 

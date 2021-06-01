@@ -26,7 +26,7 @@ There are two ways of installing and upgrading the plugin.
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
 * Unzip the file.
 * Navigate to `Shopware` `[Shopware]/custom/plugins/` either through `SFTP` or `SSH`.
-* Copy `SwagPaymentSezzle` directory from unzipped folder to `[Shopware]/custom/plugins/`.
+* Create `Sezzle` directory and copy the contents of unzipped folder to `[Shopware]/custom/plugins/Sezzle`.
 * Login to `Shopware 5` Backend and navigate to `Configuration > Plugin Manager > Management > Installed`.
 * Find `Sezzle` from the `Uninstalled` list and click on the `+` button to install the plugin.
 * Once installed, you will see `Sezzle` under `Inactive` list. Click on the `x` button to activate the plugin.
@@ -43,8 +43,8 @@ There are two ways of installing and upgrading the plugin.
 ### Manual
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
 * Unzip the file.
-* Delete the contents from `[Shopware]/custom/plugins/SwagPaymentSezzle`.
-* Copy the contents of `SwagPaymentSezzle` directory from unzipped folder to `[Shopware]/custom/plugins/SwagPaymentSezzle/`.
+* Delete the contents from `[Shopware]/custom/plugins/Sezzle`.
+* Copy the contents of `Sezzle` directory from unzipped folder to `[Shopware]/custom/plugins/Sezzle/`.
 * Login to `Shopware` Backend and navigate to `Configuration > Cache/performance`.
 * Flush the cache storage by selecting `Clear shop cache`.
 
@@ -63,7 +63,7 @@ There are two ways of installing and upgrading the plugin.
 * Set the `Merchant Location` as per the store origin.
 * Check the `Enable Tokenization` checkbox to enable customer tokenization in the Sezzle checkout. If the customer agrees to be tokenized, then future checkouts for this customer will not require a redirect to Sezzle.
 * Set `Payment Action` as `Authorize only` for doing payment authorization only and `Authorize and Capture` for doing instant capture.
-* Check the `Display errors` checkbox for showing up `Sezzle` related error code in the web URL on failure.
+* Check the `Display errors` checkbox for showing up `Sezzle` related error code on the web URL on failure.
 * Check the `Enable Widget in PDP` checkbox to add the widget script and the `Sezzle Widget` Modal to the Product Display Page.
 * Check the `Enable Widget in Cart` checkbox to add the widget script and the `Sezzle Widget` Modal to the Cart Page.
 * Set `Logging` to `ERROR` to log only error messages or `ALL` to log all messages, including errors, warnings, and notices.
@@ -139,10 +139,10 @@ There are two ways of installing and upgrading the plugin.
 * Enter the payment details using test data, then move to final page.
 * **[Optional]** Check the `Approve {Store Name} to process payments from your Sezzle account for future transactions. You may revoke this authorization at any time in your Sezzle Dashboard` to tokenize your account.
 * Finally, click on `Complete Order` to complete your purchase.
-* `Sandbox` testing is complete. You can login to your `Sezzle Merchant Sandbox Dashboard` to see the test order you just placed.
+* `Sandbox` testing is complete. You can log in to your `Sezzle Merchant Sandbox Dashboard` to see the test order you just placed.
 
 ## Troubleshooting/Debugging
 * There is logging enabled by `Sezzle` for tracing the `Sezzle` actions.
-* In case merchant is facing issues which is unknown to `Merchant Success` and `Support` team, they can ask for this logs and forward to the `Platform Integrations` team.
-* Name of the log will be `plugin_dev-<current-date>.log`.It is always recommended to send the `core_dev-<current-date>` for better tracing of issues.
+* In case merchant is facing issues which is unknown to `Merchant Success` and `Support` team, they can ask for these logs and forward to the `Platform Integrations` team.
+* Name of the log will be `plugin_dev-<current-date>.log`.It is always recommended sending the `core_dev-<current-date>` for better tracing of issues.
 * Logs can be find in `[Shopware]/var/log/`.

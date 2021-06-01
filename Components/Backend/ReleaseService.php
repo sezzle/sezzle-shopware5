@@ -1,19 +1,19 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Backend;
+namespace Sezzle\Components\Backend;
 
 use Exception;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
-use SwagPaymentSezzle\Components\ExceptionHandlerServiceInterface;
-use SwagPaymentSezzle\Components\Services\OrderDataService;
-use SwagPaymentSezzle\Components\Services\OrderStatusService;
-use SwagPaymentSezzle\Components\Services\Validation\PaymentActionValidator;
-use SwagPaymentSezzle\Components\Services\PaymentStatusService;
-use SwagPaymentSezzle\SezzleBundle\Resources\ReleaseResource;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session\Order\Amount;
-use SwagPaymentSezzle\SezzleBundle\Util;
+use Sezzle\Components\ExceptionHandlerServiceInterface;
+use Sezzle\Components\Services\OrderDataService;
+use Sezzle\Components\Services\OrderStatusService;
+use Sezzle\Components\Services\Validation\PaymentActionValidator;
+use Sezzle\Components\Services\PaymentStatusService;
+use Sezzle\SezzleBundle\Resources\ReleaseResource;
+use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
+use Sezzle\SezzleBundle\Util;
 
 class ReleaseService
 {
@@ -96,16 +96,16 @@ class ReleaseService
                 throw new Exception('Order not found');
             }
 
-            if ($orderModel->getAttribute()->getSwagSezzleAuthAmount() == $amountToRelease) {
+            if ($orderModel->getAttribute()->getSezzleAuthAmount() == $amountToRelease) {
                 $this->paymentStatusService->updatePaymentStatus(
                     $orderUUID,
                     Status::PAYMENT_STATE_THE_PROCESS_HAS_BEEN_CANCELLED
                 );
             }
-            $prevReleasedAmount = $orderModel->getAttribute()->getSwagSezzleReleasedAmount();
+            $prevReleasedAmount = $orderModel->getAttribute()->getSezzleReleasedAmount();
             $newReleasedAmount = Util::formatToCurrency($releasePayload->getAmountInCents());
             $attributesToUpdate = [
-                'authAmount' => $orderModel->getAttribute()->getSwagSezzleAuthAmount() - $newReleasedAmount,
+                'authAmount' => $orderModel->getAttribute()->getSezzleAuthAmount() - $newReleasedAmount,
                 'releasedAmount' => $prevReleasedAmount + $newReleasedAmount
             ];
             $this->orderDataService->applyPaymentAttributes($orderModel->getNumber(), $attributesToUpdate);

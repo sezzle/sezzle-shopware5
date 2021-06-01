@@ -2,12 +2,12 @@
 
 {*Sezzle Widget integration*}
 {block name='frontend_index_content'}
-    {if $isWidgetActiveForCart && $merchantUUID}
+    {if $isWidgetActiveForCart && $widgetURL}
         <script>
             console.log("Sezzle Widget rendering.");
             var script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = 'https://widget.sezzle.com/v1/javascript/price-widget?uuid={$merchantUUID}';
+            script.src = '{$widgetURL}';
             document.body.append(script);
             console.log("Sezzle Widget rendered.");
         </script>

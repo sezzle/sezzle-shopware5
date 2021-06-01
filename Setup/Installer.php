@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Setup;
+namespace Sezzle\Setup;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -12,7 +12,7 @@ use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Payment\Payment;
 use Shopware\Models\Plugin\Plugin;
 use Shopware_Components_Translation;
-use SwagPaymentSezzle\Components\PaymentMethodProvider;
+use Sezzle\Components\PaymentMethodProvider;
 
 /**
  * Class Installer
@@ -130,7 +130,7 @@ class Installer
     public function createBasketAttributes()
     {
         $this->attributeCrudService->update('s_order_basket_attributes',
-            'swag_sezzle_order_uuid',
+            'sezzle_order_uuid',
             'string',
             [
                 'position' => -100,
@@ -145,9 +145,9 @@ class Installer
      */
     private function createOrderAttributes()
     {
-        $this->attributeCrudService->update('s_order_attributes', 'swag_sezzle_payment_action', 'string');
+        $this->attributeCrudService->update('s_order_attributes', 'sezzle_payment_action', 'string');
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_reference_id',
+            'sezzle_reference_id',
             'string',
             [
                 'position' => -100,
@@ -156,7 +156,7 @@ class Installer
                 'helpText' => 'Sezzle Order Reference ID',
             ]);
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_order_uuid',
+            'sezzle_order_uuid',
             'string',
             [
                 'position' => -200,
@@ -165,7 +165,7 @@ class Installer
                 'helpText' => 'Sezzle Order UUID',
             ]);
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_auth_expiry',
+            'sezzle_auth_expiry',
             'datetime',
             [
                 'position' => -300,
@@ -174,7 +174,7 @@ class Installer
                 'helpText' => 'Sezzle Payment Auth Expiry',
             ]);
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_customer_uuid',
+            'sezzle_customer_uuid',
             'string',
             [
                 'position' => -400,
@@ -183,7 +183,7 @@ class Installer
                 'helpText' => 'Sezzle Customer UUID',
             ]);
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_customer_uuid_expiry',
+            'sezzle_customer_uuid_expiry',
             'datetime',
             [
                 'position' => -500,
@@ -193,7 +193,7 @@ class Installer
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_auth_amount',
+            'sezzle_auth_amount',
             'float',
             [
                 'position' => -400,
@@ -203,7 +203,7 @@ class Installer
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_captured_amount',
+            'sezzle_captured_amount',
             'float',
             [
                 'position' => -500,
@@ -213,7 +213,7 @@ class Installer
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_refunded_amount',
+            'sezzle_refunded_amount',
             'float',
             [
                 'position' => -600,
@@ -223,7 +223,7 @@ class Installer
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
-            'swag_sezzle_released_amount',
+            'sezzle_released_amount',
             'float',
             [
                 'position' => -700,
@@ -239,7 +239,7 @@ class Installer
     private function createUserAttributes()
     {
         $this->attributeCrudService->update('s_user_attributes',
-            'swag_sezzle_customer_uuid',
+            'sezzle_customer_uuid',
             'string',
             [
                 'position' => -100,
@@ -248,7 +248,7 @@ class Installer
                 'helpText' => 'Sezzle Customer UUID',
             ]);
         $this->attributeCrudService->update('s_user_attributes',
-            'swag_sezzle_customer_uuid_expiry',
+            'sezzle_customer_uuid_expiry',
             'datetime',
             [
                 'position' => -200,
@@ -257,7 +257,7 @@ class Installer
                 'helpText' => 'Sezzle Customer UUID Expiry',
             ]);
         $this->attributeCrudService->update('s_user_attributes',
-            'swag_sezzle_customer_uuid_status',
+            'sezzle_customer_uuid_status',
             'boolean',
             [
                 'position' => -300,
@@ -323,7 +323,7 @@ class Installer
         $this->translation->write(
             2,
             'config_payment',
-            $translationKeys['SwagPaymentSezzle'],
+            $translationKeys['Sezzle'],
             [
                 'description' => 'Sezzle',
                 'additionalDescription' => 'Sezzle',
@@ -340,7 +340,7 @@ class Installer
         return $this->modelManager->getDBALQueryBuilder()
             ->select('name, id')
             ->from('s_core_paymentmeans', 'pm')
-            ->where("pm.name = 'SwagPaymentSezzle'")
+            ->where("pm.name = 'Sezzle'")
             ->execute()
             ->fetchAll(PDO::FETCH_KEY_PAIR);
     }

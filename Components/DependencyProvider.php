@@ -1,6 +1,6 @@
 <?php
 
-namespace SwagPaymentSezzle\Components;
+namespace Sezzle\Components;
 
 use Enlight_Components_Session_Namespace as ShopwareSession;
 use Shopware\Components\Cart\PaymentTokenService;

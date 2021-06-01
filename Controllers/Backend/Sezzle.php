@@ -3,9 +3,9 @@
 use Shopware\Models\Order\Order;
 use Shopware\Models\Shop\Repository as ShopRepository;
 use Shopware\Models\Shop\Shop;
-use SwagPaymentSezzle\Components\Backend\CaptureService;
-use SwagPaymentSezzle\Components\Backend\RefundService;
-use SwagPaymentSezzle\Components\Backend\ReleaseService;
+use Sezzle\Components\Backend\CaptureService;
+use Sezzle\Components\Backend\RefundService;
+use Sezzle\Components\Backend\ReleaseService;
 
 class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_Application
 {

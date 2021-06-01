@@ -22,15 +22,15 @@ Ext.define('Shopware.apps.SezzlePayment.view.detail.Window', {
                 var response = Ext.JSON.decode(responseData.responseText);
                 var sezzleRecord = {};
 
-                sezzleRecord.sezzleOrderUUID = response.data['__attribute_swag_sezzle_order_uuid'] || null;
+                sezzleRecord.sezzleOrderUUID = response.data['__attribute_sezzle_order_uuid'] || null;
 
-                sezzleRecord.authAmount = parseFloat(response.data['__attribute_swag_sezzle_auth_amount']) || 0.00;
-                sezzleRecord.capturedAmount = parseFloat(response.data['__attribute_swag_sezzle_captured_amount']) || 0.00;
-                sezzleRecord.refundedAmount = parseFloat(response.data['__attribute_swag_sezzle_refunded_amount']) || 0.00;
-                sezzleRecord.releasedAmount = parseFloat(response.data['__attribute_swag_sezzle_released_amount']) || 0.00;
+                sezzleRecord.authAmount = parseFloat(response.data['__attribute_sezzle_auth_amount']) || 0.00;
+                sezzleRecord.capturedAmount = parseFloat(response.data['__attribute_sezzle_captured_amount']) || 0.00;
+                sezzleRecord.refundedAmount = parseFloat(response.data['__attribute_sezzle_refunded_amount']) || 0.00;
+                sezzleRecord.releasedAmount = parseFloat(response.data['__attribute_sezzle_released_amount']) || 0.00;
 
-                sezzleRecord.paymentAction = response.data['__attribute_swag_sezzle_payment_action'];
-                sezzleRecord.authExpiry = response.data['__attribute_swag_sezzle_auth_expiry'];
+                sezzleRecord.paymentAction = response.data['__attribute_sezzle_payment_action'];
+                sezzleRecord.authExpiry = response.data['__attribute_sezzle_auth_expiry'];
                 sezzleRecord.currency = me.record.get('currency');
 
                 result.insert(6, Ext.create('Shopware.apps.Order.view.detail.tabs.Sezzle',{

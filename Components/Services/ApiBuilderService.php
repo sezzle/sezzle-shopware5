@@ -1,22 +1,22 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Services;
+namespace Sezzle\Components\Services;
 
 use Shopware\Components\Cart\PaymentTokenService;
 use Shopware\Components\Routing\RouterInterface;
 use Shopware_Components_Snippet_Manager as SnippetManager;
-use SwagPaymentSezzle\Components\DependencyProvider;
-use SwagPaymentSezzle\Components\ApiBuilderInterface;
-use SwagPaymentSezzle\Components\ApiBuilderParameters;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\Structs\CustomerOrder;
-use SwagPaymentSezzle\SezzleBundle\Structs\Order\Capture;
-use SwagPaymentSezzle\SezzleBundle\Structs\Session;
-use SwagPaymentSezzle\SezzleBundle\Util;
+use Sezzle\Components\DependencyProvider;
+use Sezzle\Components\ApiBuilderInterface;
+use Sezzle\Components\ApiBuilderParameters;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\Structs\CustomerOrder;
+use Sezzle\SezzleBundle\Structs\Order\Capture;
+use Sezzle\SezzleBundle\Structs\Session;
+use Sezzle\SezzleBundle\Util;
 
 /**
  * Class ApiBuilderService
- * @package SwagPaymentSezzle\Components\Services
+ * @package Sezzle\Components\Services
  */
 class ApiBuilderService implements ApiBuilderInterface
 {

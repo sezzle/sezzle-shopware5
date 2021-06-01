@@ -1,14 +1,14 @@
 <?php
 
-namespace SwagPaymentSezzle\Components\Services;
+namespace Sezzle\Components\Services;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Shop\DetachedShop;
-use SwagPaymentSezzle\Components\DependencyProvider;
-use SwagPaymentSezzle\Models\Settings;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsServiceInterface;
-use SwagPaymentSezzle\SezzleBundle\Components\SettingsTable;
+use Sezzle\Components\DependencyProvider;
+use Sezzle\Models\Settings;
+use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use Sezzle\SezzleBundle\Components\SettingsTable;
 
 class SettingsService implements SettingsServiceInterface
 {
@@ -128,7 +128,7 @@ class SettingsService implements SettingsServiceInterface
     {
         switch ($settingsType) {
             case SettingsTable::GENERAL:
-                return 'swag_payment_sezzle_settings_general';
+                return 'sezzle_settings_general';
             default:
                 throw new \RuntimeException('The provided table ' . $settingsType . ' is not supported');
                 break;
