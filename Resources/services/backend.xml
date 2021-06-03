@@ -7,14 +7,14 @@
     <services>
 
         <service id="sezzle.backend.gateway_region_service"
-                 class="Sezzle\Components\Backend\GatewayRegionService"
+                 class="SezzlePayment\Components\Backend\GatewayRegionService"
                  public="true">
             <argument type="service" id="sezzle.settings_service"/>
             <argument type="service" id="sezzle.gateway_region"/>
         </service>
 
         <service id="sezzle.backend.capture_service"
-                 class="Sezzle\Components\Backend\CaptureService"
+                 class="SezzlePayment\Components\Backend\CaptureService"
                  public="true">
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.capture_resource"/>
@@ -26,7 +26,7 @@
         </service>
 
         <service id="sezzle.backend.refund_service"
-                 class="Sezzle\Components\Backend\RefundService"
+                 class="SezzlePayment\Components\Backend\RefundService"
                  public="true">
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.refund_resource"/>
@@ -38,7 +38,7 @@
         </service>
 
         <service id="sezzle.backend.release_service"
-                 class="Sezzle\Components\Backend\ReleaseService"
+                 class="SezzlePayment\Components\Backend\ReleaseService"
                  public="true">
             <argument type="service" id="sezzle.exception_handler_service"/>
             <argument type="service" id="sezzle.release_resource"/>

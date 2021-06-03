@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Components\Exception;
+namespace SezzlePayment\Components\Exception;
 
 class SezzleApiException extends \Exception
 {

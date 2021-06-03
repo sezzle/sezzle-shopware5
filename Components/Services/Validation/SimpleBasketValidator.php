@@ -1,8 +1,8 @@
 <?php
 
-namespace Sezzle\Components\Services\Validation;
+namespace SezzlePayment\Components\Services\Validation;
 
-use Sezzle\SezzleBundle\Structs\Order;
+use SezzlePayment\SezzleBundle\Structs\Order;
 
 class SimpleBasketValidator implements BasketValidatorInterface
 {

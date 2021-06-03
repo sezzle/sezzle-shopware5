@@ -1,9 +1,9 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs\Order;
+namespace SezzlePayment\SezzleBundle\Structs\Order;
 
-use Sezzle\SezzleBundle\Structs\Order\Authorization\State;
-use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
+use SezzlePayment\SezzleBundle\Structs\Order\Authorization\State;
+use SezzlePayment\SezzleBundle\Structs\Session\Order\Amount;
 
 class Authorization
 {

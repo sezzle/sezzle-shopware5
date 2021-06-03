@@ -1,14 +1,14 @@
 <?php
 
-namespace Sezzle\Components\Services;
+namespace SezzlePayment\Components\Services;
 
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 use Shopware\Components\HttpClient\RequestException;
-use Sezzle\Components\Exception\SezzleApiException;
-use Sezzle\Components\ExceptionHandlerServiceInterface;
-use Sezzle\SezzleBundle\Components\LoggerServiceInterface;
-use Sezzle\SezzleBundle\Structs\ErrorResponse;
+use SezzlePayment\Components\Exception\SezzleApiException;
+use SezzlePayment\Components\ExceptionHandlerServiceInterface;
+use SezzlePayment\SezzleBundle\Components\LoggerServiceInterface;
+use SezzlePayment\SezzleBundle\Structs\ErrorResponse;
 
 class ExceptionHandlerService implements ExceptionHandlerServiceInterface
 {

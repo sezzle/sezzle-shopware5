@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Setup;
+namespace SezzlePayment\Setup;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -12,7 +12,7 @@ use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Payment\Payment;
 use Shopware\Models\Plugin\Plugin;
 use Shopware_Components_Translation;
-use Sezzle\Components\PaymentMethodProvider;
+use SezzlePayment\Components\PaymentMethodProvider;
 
 /**
  * Class Installer

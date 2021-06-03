@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs\Session\Customer;
+namespace SezzlePayment\SezzleBundle\Structs\Session\Customer;
 
 class Address
 {

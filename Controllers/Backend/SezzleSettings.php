@@ -1,10 +1,10 @@
 <?php
 
-use Sezzle\Components\Backend\GatewayRegionService;
-use Sezzle\Components\ExceptionHandlerServiceInterface;
-use Sezzle\Models\Settings\General as GeneralSettingsModel;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
-use Sezzle\SezzleBundle\Services\ClientService;
+use SezzlePayment\Components\Backend\GatewayRegionService;
+use SezzlePayment\Components\ExceptionHandlerServiceInterface;
+use SezzlePayment\Models\Settings\General as GeneralSettingsModel;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\Services\ClientService;
 use Shopware\Components\HttpClient\RequestException;
 
 class Shopware_Controllers_Backend_SezzleSettings extends Shopware_Controllers_Backend_Application

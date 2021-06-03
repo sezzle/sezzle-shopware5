@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Components;
+namespace SezzlePayment\SezzleBundle\Components;
 
 use Shopware\Components\Model\ModelEntity;
 

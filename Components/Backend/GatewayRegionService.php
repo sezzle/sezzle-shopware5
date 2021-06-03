@@ -1,9 +1,9 @@
 <?php
 
-namespace Sezzle\Components\Backend;
+namespace SezzlePayment\Components\Backend;
 
-use Sezzle\SezzleBundle\Components\GatewayRegionInterface;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\Components\GatewayRegionInterface;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 
 class GatewayRegionService
 {

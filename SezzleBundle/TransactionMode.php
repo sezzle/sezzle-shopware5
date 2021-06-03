@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Sezzle\SezzleBundle;
+namespace SezzlePayment\SezzleBundle;
 
 
 class TransactionMode

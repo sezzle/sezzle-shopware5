@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs\Tokenize;
+namespace SezzlePayment\SezzleBundle\Structs\Tokenize;
 
 use DateTime;
 

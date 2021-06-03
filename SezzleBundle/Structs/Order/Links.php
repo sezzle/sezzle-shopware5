@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Sezzle\SezzleBundle\Structs\Order;
+namespace SezzlePayment\SezzleBundle\Structs\Order;
 
 
 class Links

@@ -1,10 +1,10 @@
 <?php
 
-namespace Sezzle\Components\Services;
+namespace SezzlePayment\Components\Services;
 
 use Doctrine\DBAL\Connection;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
-use Sezzle\SezzleBundle\PaymentType;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\PaymentType;
 
 class BasketDataService
 {
