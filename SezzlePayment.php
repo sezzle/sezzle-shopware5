@@ -1,18 +1,18 @@
 <?php
 
-namespace Sezzle;
+namespace SezzlePayment;
 
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\DeactivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
-use Sezzle\Components\PaymentMethodProvider;
-use Sezzle\Setup\Installer;
-use Sezzle\Setup\Uninstaller;
+use SezzlePayment\Components\PaymentMethodProvider;
+use SezzlePayment\Setup\Installer;
+use SezzlePayment\Setup\Uninstaller;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class Sezzle extends Plugin
+class SezzlePayment extends Plugin
 {
     /**
      * {@inheritdoc}

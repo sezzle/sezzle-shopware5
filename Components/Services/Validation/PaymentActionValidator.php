@@ -1,10 +1,10 @@
 <?php
 
-namespace Sezzle\Components\Services\Validation;
+namespace SezzlePayment\Components\Services\Validation;
 
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
-use Sezzle\SezzleBundle\PaymentAction;
+use SezzlePayment\SezzleBundle\PaymentAction;
 
 class PaymentActionValidator
 {

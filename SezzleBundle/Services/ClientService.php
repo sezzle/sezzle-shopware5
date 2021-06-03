@@ -1,22 +1,22 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Services;
+namespace SezzlePayment\SezzleBundle\Services;
 
 use Exception;
 use RuntimeException;
-use Sezzle\Config;
-use Sezzle\SezzleBundle\GatewayRegion;
-use Sezzle\SezzleBundle\TransactionMode;
+use SezzlePayment\Config;
+use SezzlePayment\SezzleBundle\GatewayRegion;
+use SezzlePayment\SezzleBundle\TransactionMode;
 use Shopware\Components\HttpClient\GuzzleFactory;
 use Shopware\Components\HttpClient\GuzzleHttpClient as GuzzleClient;
 use Shopware\Components\HttpClient\RequestException;
-use Sezzle\Components\DependencyProvider;
-use Sezzle\SezzleBundle\BaseURL;
-use Sezzle\SezzleBundle\Components\LoggerServiceInterface;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
-use Sezzle\SezzleBundle\RequestType;
-use Sezzle\SezzleBundle\Structs\AuthCredentials;
-use Sezzle\SezzleBundle\Structs\Token;
+use SezzlePayment\Components\DependencyProvider;
+use SezzlePayment\SezzleBundle\BaseURL;
+use SezzlePayment\SezzleBundle\Components\LoggerServiceInterface;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\RequestType;
+use SezzlePayment\SezzleBundle\Structs\AuthCredentials;
+use SezzlePayment\SezzleBundle\Structs\Token;
 
 class ClientService
 {
@@ -147,7 +147,7 @@ class ClientService
             $this->setHeader('Content-Type', 'application/json');
         }
 
-        $this->logger->error('Sending request [' . $type . '] to ' . $resourceUri, ['payload' => $data]);
+        $this->logger->notify('Sending request [' . $type . '] to ' . $resourceUri, ['payload' => $data]);
 
         switch ($type) {
             case RequestType::POST:

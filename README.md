@@ -26,7 +26,7 @@ There are two ways of installing and upgrading the plugin.
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
 * Unzip the file.
 * Navigate to `Shopware` `[Shopware]/custom/plugins/` either through `SFTP` or `SSH`.
-* Create `Sezzle` directory and copy the contents of unzipped folder to `[Shopware]/custom/plugins/Sezzle`.
+* Create `SezzlePayment` directory and copy the contents of unzipped folder to `[Shopware]/custom/plugins/SezzlePayment`.
 * Login to `Shopware 5` Backend and navigate to `Configuration > Plugin Manager > Management > Installed`.
 * Find `Sezzle` from the `Uninstalled` list and click on the `+` button to install the plugin.
 * Once installed, you will see `Sezzle` under `Inactive` list. Click on the `x` button to activate the plugin.
@@ -43,8 +43,8 @@ There are two ways of installing and upgrading the plugin.
 ### Manual
 * Download the .zip or tar.gz file from `Sezzle's` github repository.
 * Unzip the file.
-* Delete the contents from `[Shopware]/custom/plugins/Sezzle`.
-* Copy the contents of `Sezzle` directory from unzipped folder to `[Shopware]/custom/plugins/Sezzle/`.
+* Delete the contents from `[Shopware]/custom/plugins/SezzlePayment`.
+* Copy the contents of `SezzlePayment` directory from unzipped folder to `[Shopware]/custom/plugins/SezzlePayment/`.
 * Login to `Shopware` Backend and navigate to `Configuration > Cache/performance`.
 * Flush the cache storage by selecting `Clear shop cache`.
 

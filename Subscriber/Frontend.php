@@ -1,13 +1,13 @@
 <?php
 
-namespace Sezzle\Subscriber;
+namespace SezzlePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
 use Enlight_Controller_ActionEventArgs;
 use Enlight_Event_EventArgs;
 use Enlight_View_Default;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
-use Sezzle\SezzleBundle\GatewayRegion;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\GatewayRegion;
 
 class Frontend implements SubscriberInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Components;
+namespace SezzlePayment\Components;
 
 final class ErrorCodes
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs\Session;
+namespace SezzlePayment\SezzleBundle\Structs\Session;
 
 use DateTime;
-use Sezzle\SezzleBundle\Structs\Order\Links;
+use SezzlePayment\SezzleBundle\Structs\Order\Links;
 
 class Tokenize
 {

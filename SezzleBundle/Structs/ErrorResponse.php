@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs;
+namespace SezzlePayment\SezzleBundle\Structs;
 
 class ErrorResponse
 {

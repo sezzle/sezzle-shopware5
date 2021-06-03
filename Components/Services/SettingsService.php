@@ -1,14 +1,14 @@
 <?php
 
-namespace Sezzle\Components\Services;
+namespace SezzlePayment\Components\Services;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Shop\DetachedShop;
-use Sezzle\Components\DependencyProvider;
-use Sezzle\Models\Settings;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
-use Sezzle\SezzleBundle\Components\SettingsTable;
+use SezzlePayment\Components\DependencyProvider;
+use SezzlePayment\Models\Settings;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\Components\SettingsTable;
 
 class SettingsService implements SettingsServiceInterface
 {

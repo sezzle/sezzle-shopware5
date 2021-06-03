@@ -1,10 +1,10 @@
 <?php
 
-namespace Sezzle\Components\Services;
+namespace SezzlePayment\Components\Services;
 
 use Shopware\Components\Logger;
-use Sezzle\SezzleBundle\Components\LoggerServiceInterface;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\Components\LoggerServiceInterface;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 
 class LoggerService implements LoggerServiceInterface
 {

@@ -6,12 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Sezzle\Setup;
+namespace SezzlePayment\Setup;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Bundle\AttributeBundle\Service\CrudService;
 use Shopware\Components\Model\ModelManager;
-use Sezzle\Components\PaymentMethodProvider;
+use SezzlePayment\Components\PaymentMethodProvider;
 
 class Uninstaller
 {

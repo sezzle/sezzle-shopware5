@@ -1,19 +1,19 @@
 <?php
 
-namespace Sezzle\Components\Backend;
+namespace SezzlePayment\Components\Backend;
 
 use Exception;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
-use Sezzle\Components\ExceptionHandlerServiceInterface;
-use Sezzle\Components\Services\OrderDataService;
-use Sezzle\Components\Services\OrderStatusService;
-use Sezzle\Components\Services\Validation\PaymentActionValidator;
-use Sezzle\Components\Services\PaymentStatusService;
-use Sezzle\SezzleBundle\Resources\ReleaseResource;
-use Sezzle\SezzleBundle\Structs\Session\Order\Amount;
-use Sezzle\SezzleBundle\Util;
+use SezzlePayment\Components\ExceptionHandlerServiceInterface;
+use SezzlePayment\Components\Services\OrderDataService;
+use SezzlePayment\Components\Services\OrderStatusService;
+use SezzlePayment\Components\Services\Validation\PaymentActionValidator;
+use SezzlePayment\Components\Services\PaymentStatusService;
+use SezzlePayment\SezzleBundle\Resources\ReleaseResource;
+use SezzlePayment\SezzleBundle\Structs\Session\Order\Amount;
+use SezzlePayment\SezzleBundle\Util;
 
 class ReleaseService
 {

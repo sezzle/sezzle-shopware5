@@ -7,11 +7,11 @@
     <services>
 
         <service id="sezzle.simple_basket_validator"
-                 class="Sezzle\Components\Services\Validation\SimpleBasketValidator"
+                 class="SezzlePayment\Components\Services\Validation\SimpleBasketValidator"
                  public="true"/>
 
         <service id="sezzle.payment_validator"
-                 class="Sezzle\Components\Services\Validation\PaymentActionValidator"
+                 class="SezzlePayment\Components\Services\Validation\PaymentActionValidator"
                  public="true">
             <argument type="service" id="models"/>
         </service>

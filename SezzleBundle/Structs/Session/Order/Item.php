@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs\Session\Order;
+namespace SezzlePayment\SezzleBundle\Structs\Session\Order;
 
 class Item
 {
