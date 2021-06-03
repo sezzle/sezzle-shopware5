@@ -1,14 +1,14 @@
 <?php
 
-namespace Sezzle\Components;
+namespace SezzlePayment\Components;
 
-use Sezzle\SezzleBundle\Structs\CustomerOrder;
-use Sezzle\SezzleBundle\Structs\Order\Capture;
-use Sezzle\SezzleBundle\Structs\Session;
+use SezzlePayment\SezzleBundle\Structs\CustomerOrder;
+use SezzlePayment\SezzleBundle\Structs\Order\Capture;
+use SezzlePayment\SezzleBundle\Structs\Session;
 
 /**
  * Interface ApiBuilderInterface
- * @package Sezzle\Components
+ * @package SezzlePayment\Components
  */
 interface ApiBuilderInterface
 {

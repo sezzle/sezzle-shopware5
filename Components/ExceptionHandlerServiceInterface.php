@@ -1,8 +1,8 @@
 <?php
 
-namespace Sezzle\Components;
+namespace SezzlePayment\Components;
 
-use Sezzle\Components\Exception\SezzleApiException;
+use SezzlePayment\Components\Exception\SezzleApiException;
 
 interface ExceptionHandlerServiceInterface
 {

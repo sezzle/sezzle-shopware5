@@ -1,8 +1,8 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs;
+namespace SezzlePayment\SezzleBundle\Structs;
 
-use Sezzle\SezzleBundle\Structs\Tokenize\Customer;
+use SezzlePayment\SezzleBundle\Structs\Tokenize\Customer;
 
 class Tokenize
 {

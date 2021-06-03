@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Sezzle\SezzleBundle;
+namespace SezzlePayment\SezzleBundle;
 
 
-use Sezzle\SezzleBundle\Components\GatewayRegionInterface;
-use Sezzle\SezzleBundle\Services\ClientService;
+use SezzlePayment\SezzleBundle\Components\GatewayRegionInterface;
+use SezzlePayment\SezzleBundle\Services\ClientService;
 use Shopware\Components\HttpClient\RequestException;
 
 /**
  * Class GatewayRegion
- * @package Sezzle\SezzleBundle
+ * @package SezzlePayment\SezzleBundle
  */
 class GatewayRegion implements GatewayRegionInterface
 {

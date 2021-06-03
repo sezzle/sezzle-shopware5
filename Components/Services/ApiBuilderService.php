@@ -1,22 +1,22 @@
 <?php
 
-namespace Sezzle\Components\Services;
+namespace SezzlePayment\Components\Services;
 
 use Shopware\Components\Cart\PaymentTokenService;
 use Shopware\Components\Routing\RouterInterface;
 use Shopware_Components_Snippet_Manager as SnippetManager;
-use Sezzle\Components\DependencyProvider;
-use Sezzle\Components\ApiBuilderInterface;
-use Sezzle\Components\ApiBuilderParameters;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
-use Sezzle\SezzleBundle\Structs\CustomerOrder;
-use Sezzle\SezzleBundle\Structs\Order\Capture;
-use Sezzle\SezzleBundle\Structs\Session;
-use Sezzle\SezzleBundle\Util;
+use SezzlePayment\Components\DependencyProvider;
+use SezzlePayment\Components\ApiBuilderInterface;
+use SezzlePayment\Components\ApiBuilderParameters;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\Structs\CustomerOrder;
+use SezzlePayment\SezzleBundle\Structs\Order\Capture;
+use SezzlePayment\SezzleBundle\Structs\Session;
+use SezzlePayment\SezzleBundle\Util;
 
 /**
  * Class ApiBuilderService
- * @package Sezzle\Components\Services
+ * @package SezzlePayment\Components\Services
  */
 class ApiBuilderService implements ApiBuilderInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Subscriber\ControllerRegistration;
+namespace SezzlePayment\Subscriber\ControllerRegistration;
 
 use Enlight\Event\SubscriberInterface;
 use Enlight_Template_Manager;

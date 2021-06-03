@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Subscriber;
+namespace SezzlePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
 

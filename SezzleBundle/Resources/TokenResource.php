@@ -1,12 +1,12 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Resources;
+namespace SezzlePayment\SezzleBundle\Resources;
 
 use Shopware\Components\HttpClient\RequestException;
-use Sezzle\SezzleBundle\RequestType;
-use Sezzle\SezzleBundle\RequestUri;
-use Sezzle\SezzleBundle\Services\ClientService;
-use Sezzle\SezzleBundle\Structs\AuthCredentials;
+use SezzlePayment\SezzleBundle\RequestType;
+use SezzlePayment\SezzleBundle\RequestUri;
+use SezzlePayment\SezzleBundle\Services\ClientService;
+use SezzlePayment\SezzleBundle\Structs\AuthCredentials;
 
 class TokenResource
 {

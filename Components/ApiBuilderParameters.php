@@ -1,10 +1,10 @@
 <?php
 
-namespace Sezzle\Components;
+namespace SezzlePayment\Components;
 
 /**
  * Class ApiBuilderParameters
- * @package Sezzle\Components
+ * @package SezzlePayment\Components
  */
 class ApiBuilderParameters
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Setup;
+namespace SezzlePayment\Setup;
 
 class InstallationException extends \Exception
 {

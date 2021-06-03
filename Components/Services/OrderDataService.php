@@ -1,13 +1,13 @@
 <?php
 
-namespace Sezzle\Components\Services;
+namespace SezzlePayment\Components\Services;
 
 use Doctrine\DBAL\Connection;
-use Sezzle\SezzleBundle\Components\SettingsServiceInterface;
-use Sezzle\SezzleBundle\PaymentType;
-use Sezzle\SezzleBundle\Resources\TokenizeResource;
-use Sezzle\SezzleBundle\Structs\Order;
-use Sezzle\SezzleBundle\Structs\Tokenize;
+use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\SezzleBundle\PaymentType;
+use SezzlePayment\SezzleBundle\Resources\TokenizeResource;
+use SezzlePayment\SezzleBundle\Structs\Order;
+use SezzlePayment\SezzleBundle\Structs\Tokenize;
 
 class OrderDataService
 {

@@ -7,42 +7,42 @@
     <services>
 
         <service id="sezzle.session_resource"
-                 class="Sezzle\SezzleBundle\Resources\SessionResource"
+                 class="SezzlePayment\SezzleBundle\Resources\SessionResource"
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>
 
         <service id="sezzle.capture_resource"
-                 class="Sezzle\SezzleBundle\Resources\CaptureResource"
+                 class="SezzlePayment\SezzleBundle\Resources\CaptureResource"
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>
 
         <service id="sezzle.order_resource"
-                 class="Sezzle\SezzleBundle\Resources\OrderResource"
+                 class="SezzlePayment\SezzleBundle\Resources\OrderResource"
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>
 
         <service id="sezzle.tokenize_resource"
-                 class="Sezzle\SezzleBundle\Resources\TokenizeResource"
+                 class="SezzlePayment\SezzleBundle\Resources\TokenizeResource"
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>
         <service id="sezzle.customer_resource"
-                 class="Sezzle\SezzleBundle\Resources\CustomerResource"
+                 class="SezzlePayment\SezzleBundle\Resources\CustomerResource"
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>
 
         <service id="sezzle.refund_resource"
-                 class="Sezzle\SezzleBundle\Resources\RefundResource"
+                 class="SezzlePayment\SezzleBundle\Resources\RefundResource"
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>
 
         <service id="sezzle.release_resource"
-                 class="Sezzle\SezzleBundle\Resources\ReleaseResource"
+                 class="SezzlePayment\SezzleBundle\Resources\ReleaseResource"
                  public="true">
             <argument type="service" id="sezzle.client_service"/>
         </service>

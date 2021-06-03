@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\SezzleBundle\Structs\Session;
+namespace SezzlePayment\SezzleBundle\Structs\Session;
 
 class Url
 {

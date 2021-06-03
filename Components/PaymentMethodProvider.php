@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Components;
+namespace SezzlePayment\Components;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Components\Model\ModelManager;

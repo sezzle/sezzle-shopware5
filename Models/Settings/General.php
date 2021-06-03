@@ -1,6 +1,6 @@
 <?php
 
-namespace Sezzle\Models\Settings;
+namespace SezzlePayment\Models\Settings;
 
 use Doctrine\ORM\Mapping as ORM;
 use Shopware\Components\Model\ModelEntity;
