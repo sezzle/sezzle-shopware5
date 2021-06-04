@@ -1,14 +1,11 @@
 <?php
-/**
- * (c) shopware AG <info@shopware.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace SezzlePayment\Setup;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Shopware\Bundle\AttributeBundle\Service\CrudService;
 use Shopware\Components\Model\ModelManager;
 use SezzlePayment\Components\PaymentMethodProvider;
@@ -57,8 +54,8 @@ class Uninstaller
     }
 
     /**
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     private function deactivatePayments()
     {
@@ -74,7 +71,8 @@ class Uninstaller
      */
     private function removeAttributes()
     {
-        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'sezzle_display_in_plus_iframe') !== null) {
+        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes',
+                'sezzle_display_in_plus_iframe') !== null) {
             $this->attributeCrudService->delete(
                 's_core_paymentmeans_attributes',
                 'sezzle_display_in_plus_iframe'
@@ -90,7 +88,7 @@ class Uninstaller
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     private function removeSettingsTables()
     {
