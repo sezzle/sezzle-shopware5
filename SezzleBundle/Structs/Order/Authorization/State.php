@@ -2,7 +2,6 @@
 
 namespace SezzlePayment\SezzleBundle\Structs\Order\Authorization;
 
-use SezzlePayment\SezzleBundle\Structs\Order\Authorization;
 use SezzlePayment\SezzleBundle\Structs\Session\Order\Amount;
 
 class State

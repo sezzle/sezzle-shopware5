@@ -2,11 +2,14 @@
 
 namespace SezzlePayment\SezzleBundle\Services;
 
+use DateTime;
+use Exception;
 use Shopware\Components\CacheManager;
 use Shopware\Components\HttpClient\RequestException;
 use SezzlePayment\SezzleBundle\Resources\TokenResource;
 use SezzlePayment\SezzleBundle\Structs\AuthCredentials;
 use SezzlePayment\SezzleBundle\Structs\Token;
+use Zend_Cache_Exception;
 
 class TokenService
 {
@@ -32,7 +35,7 @@ class TokenService
      * @param int $shopId
      *
      * @return Token
-     * @throws RequestException|\Zend_Cache_Exception
+     * @throws RequestException|Zend_Cache_Exception
      */
     public function getToken(ClientService $client, AuthCredentials $credentials, $shopId)
     {
@@ -59,7 +62,7 @@ class TokenService
 
     /**
      * @param int $shopId
-     * @throws \Zend_Cache_Exception
+     * @throws Zend_Cache_Exception
      */
     private function setToken(Token $token, $shopId)
     {
@@ -69,12 +72,12 @@ class TokenService
     /**
      * @param Token $token
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function isTokenValid(Token $token)
     {
-        $dateTimeNow = new \DateTime();
-        $dateTimeExpire = new \DateTime(substr($token->getExpirationDate(), 0, 19));
+        $dateTimeNow = new DateTime();
+        $dateTimeExpire = new DateTime(substr($token->getExpirationDate(), 0, 19));
         $dateTimeExpire = $dateTimeExpire->format('Y-m-d H:i:s');
         //Decrease expire date by one hour just to make sure, we don't run into an unauthorized exception.
         //$dateTimeExpire = $dateTimeExpire->sub(new \DateInterval('PT1H'));

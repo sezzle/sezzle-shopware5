@@ -252,7 +252,7 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
         $sezzleOrderObj = Order::fromArray($sezzleOrder);
         $orderUuid = $sezzleOrderObj->getUuid();
 
-        $paymentAction = $this->settingsService->get('payment_action');
+        $paymentAction = $this->settingsService->getPaymentAction();
         $authAmount = Util::formatToCurrency($sezzleOrderObj->getAuthorization()->getAuthorizationAmount()->getAmountInCents());
         $currency = $sezzleOrderObj->getAuthorization()->getAuthorizationAmount()->getCurrency();
 
@@ -388,7 +388,7 @@ class Shopware_Controllers_Frontend_Sezzle extends Shopware_Controllers_Frontend
             $exceptionHandler = $this->get('sezzle.exception_handler_service');
             $error = $exceptionHandler->handle($exception, 'process checkout');
 
-            if ($this->settingsService->hasSettings() && $this->settingsService->get('display_errors')) {
+            if ($this->settingsService->isDisplayErrors()) {
                 $message = $error->getMessage();
                 $name = $error->getName();
             }

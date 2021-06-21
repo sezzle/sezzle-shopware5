@@ -3,11 +3,8 @@
 namespace SezzlePayment\Components\Services;
 
 use Doctrine\DBAL\Connection;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 use SezzlePayment\SezzleBundle\PaymentType;
 use SezzlePayment\SezzleBundle\Resources\TokenizeResource;
-use SezzlePayment\SezzleBundle\Structs\Order;
-use SezzlePayment\SezzleBundle\Structs\Tokenize;
 
 class OrderDataService
 {
@@ -17,7 +14,7 @@ class OrderDataService
     private $dbalConnection;
 
     /**
-     * @var SettingsServiceInterface
+     * @var SettingsService
      */
     private $settingsService;
 
@@ -33,13 +30,13 @@ class OrderDataService
     /**
      * OrderDataService constructor.
      * @param Connection $dbalConnection
-     * @param SettingsServiceInterface $settingsService
+     * @param SettingsService $settingsService
      * @param TokenizeResource $tokenizeResource
      * @param UserDataService $userDataService
      */
     public function __construct(
         Connection $dbalConnection,
-        SettingsServiceInterface $settingsService,
+        SettingsService $settingsService,
         TokenizeResource $tokenizeResource,
         UserDataService $userDataService
     ) {

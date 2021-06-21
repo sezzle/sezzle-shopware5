@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/config.xsd">
+    <elements>
+        <element required="true" type="select" scope="shop">
+            <name>gateway_region</name>
+            <label lang="de">Region</label>
+            <label lang="en">Region</label>
+            <store>
+                <option>
+                    <value>EU</value>
+                    <label lang="de">EU</label>
+                    <label lang="en">EU</label>
+                </option>
+                <option>
+                    <value>US</value>
+                    <label lang="de">US</label>
+                    <label lang="en">US</label>
+                </option>
+            </store>
+        </element>
+        <element required="true" type="text" scope="shop">
+            <name>merchant_uuid</name>
+            <label lang="de">Händler UUID</label>
+            <label lang="en">Merchant UUID</label>
+        </element>
+        <element required="true" type="text" scope="shop">
+            <name>public_key</name>
+            <label lang="de">Öffentlicher Schlüssel</label>
+            <label lang="en">Public Key</label>
+        </element>
+        <element required="true" type="text" scope="shop">
+            <name>private_key</name>
+            <label lang="de">Privater Schlüssel</label>
+            <label lang="en">Private Key</label>
+        </element>
+        <element type="boolean" scope="shop">
+            <name>sandbox</name>
+            <label lang="de">Sandbox aktivieren</label>
+            <label lang="en">Enable sandbox</label>
+            <description lang="de">Aktivieren Sie diese Option, um die Integration zu testen</description>
+            <description lang="en">Enable this option to test the integration.</description>
+        </element>
+        <element type="button">
+            <name>buttonTest</name>
+            <label lang="de">Zugangsdaten prüfen</label>
+            <label lang="en">Validate credentials</label>
+            <options>
+                <handler>
+                    <![CDATA[
+                    function(button) {
+                      const buttonDomElement = Ext.getElementById(button.btnInnerEl.id);
+                      const lang = (buttonDomElement.innerHTML === 'Validate credentials'?'en':'de');
+                      const showWarning = function(){
+                          alert(lang==='de'?'Bitte aktivieren Sie das Plugin, um die Zugangsdaten zu überprüfen':'Please activate the plugin to validate your credentials');
+                      };
+                      const showSuccess = function(){
+                          alert(lang==='de'?'Zugangsdaten erfolgreich geprüft':'Credentials validated');
+                      };
+                      const showError = function(){
+                          alert(lang==='de'?'Zugangsdaten nicht korrekt (bitte speichern und Cache leeren nach einer Änderung der Zugangsdaten)':'Credentials invalid (please save and clear cache after any change before retrying)');
+                      };
+
+                      Ext.Ajax.request({
+                        url: window.location.protocol+'//'+window.location.host+window.location.pathname.replace('backend','backend/Sezzle/validateCredentials'),
+                        success: function (response) {
+                          let data = JSON.parse(response.responseText);
+                          if(data.success){
+                            showSuccess();
+                          }else{
+                            showError();
+                          }
+                        },
+                        failure: function (response) {
+                          if (response.status != 200) {
+                            showWarning();
+                          }
+                        }
+                      });
+                    }
+                    ]]>
+                </handler>
+            </options>
+        </element>
+        <element type="boolean" scope="shop">
+            <name>tokenize</name>
+            <label lang="de">Enable Tokenization</label>
+            <label lang="en">Aktiviere Tokenisierung</label>
+        </element>
+        <element required="true" type="select" scope="shop">
+            <name>payment_action</name>
+            <label lang="de">Zahlungsaktion</label>
+            <label lang="en">Payment Action</label>
+            <description lang="de">Wählen Sie Ihre Zahlungsaktion. Abhängig davon wird die Zahlung sofort oder in einer verzögerten Art und Weise erfasst werden.</description>
+            <description lang="en">Choose your payment action. Depending on this, payment will be captured instantly or in a delayed fashion.</description>
+            <store>
+                <option>
+                    <value>authorize_capture</value>
+                    <label lang="de">Autorisieren und erfassen</label>
+                    <label lang="en">Authorize and Capture</label>
+                </option>
+                <option>
+                    <value>authorize</value>
+                    <label lang="de">Nur autorisieren</label>
+                    <label lang="en">Authorize Only</label>
+                </option>
+            </store>
+        </element>
+    <!--
+        <element type="boolean" scope="shop">
+            <name>enable_widget_pdp</name>
+            <label lang="de">Aktiviere Widget auf Produktdetailseite</label>
+            <label lang="en">Enable Widget on product detail page</label>
+        </element>
+
+        <element type="boolean" scope="shop">
+            <name>enable_widget_cart</name>
+            <label lang="de">Aktiviere Widget auf Warenkorbseite</label>
+            <label lang="en">Enable Widget in Cart</label>
+        </element>
+-->
+        <element required="true" type="select" scope="shop">
+            <name>log_level</name>
+            <label lang="de">Logging</label>
+            <label lang="en">Logging</label>
+            <store>
+                <option>
+                    <value>error</value>
+                    <label lang="de">Nur Fehler loggen</label>
+                    <label lang="en">Log errors only</label>
+                </option>
+                <option>
+                    <value>all</value>
+                    <label lang="de">Alles loggen (zur Fehlersuche)</label>
+                    <label lang="en">Log everything (for debugging)</label>
+                </option>
+            </store>
+        </element>
+        <element type="boolean" scope="shop">
+            <name>display_errors</name>
+            <label lang="de">Fehler anzeigen</label>
+            <label lang="en">Display errors</label>
+            <description lang="de">Wenn diese Option aktiviert ist, wird die Kommunikationsfehlermeldung in der Storefront angezeigt werden.</description>
+            <description lang="en">If enabled, the communication error message will be displayed in the store front</description>
+        </element>
+
+
+
+
+    </elements>
+</config>

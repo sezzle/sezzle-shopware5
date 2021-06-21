@@ -1,13 +1,18 @@
 <?php
 
+use SezzlePayment\Components\Services\SettingsService;
+use SezzlePayment\SezzleBundle\GatewayRegion;
+use SezzlePayment\SezzleBundle\Services\ClientService;
+use SezzlePayment\SezzleBundle\Structs\AuthCredentials;
+use SezzlePayment\SezzleBundle\TransactionMode;
 use Shopware\Models\Order\Order;
-use Shopware\Models\Shop\Repository as ShopRepository;
-use Shopware\Models\Shop\Shop;
 use SezzlePayment\Components\Backend\CaptureService;
 use SezzlePayment\Components\Backend\RefundService;
 use SezzlePayment\Components\Backend\ReleaseService;
 
-class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_Application
+//TODO add subshop functionality
+
+class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_Application implements \Shopware\Components\CSRFWhitelistAware
 {
     /**
      * @var string
@@ -24,16 +29,14 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
      */
     public function captureOrderAction()
     {
-        $this->registerShopResource();
-
-        $orderUUID = $this->Request()->getParam('id');
+        $orderUUID       = $this->Request()->getParam('id');
         $amountToCapture = $this->Request()->getParam('amount');
-        $currency = $this->Request()->getParam('currency');
-        $isPartial = $this->Request()->getParam('isPartial') == "true";
+        $currency        = $this->Request()->getParam('currency');
+        $isPartial       = $this->Request()->getParam('isPartial') == "true";
 
         /** @var CaptureService $captureService */
         $captureService = $this->get('sezzle.backend.capture_service');
-        $viewParameter = $captureService->captureOrder($orderUUID, $amountToCapture, $currency, $isPartial);
+        $viewParameter  = $captureService->captureOrder($orderUUID, $amountToCapture, $currency, $isPartial);
 
         $this->View()->assign($viewParameter);
     }
@@ -43,11 +46,9 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
      */
     public function refundOrderAction()
     {
-        $this->registerShopResource();
-
-        $orderUUID = $this->Request()->getParam('id');
+        $orderUUID      = $this->Request()->getParam('id');
         $amountToRefund = $this->Request()->getParam('amount');
-        $currency = $this->Request()->getParam('currency');
+        $currency       = $this->Request()->getParam('currency');
 
         /** @var RefundService $refundService */
         $refundService = $this->get('sezzle.backend.refund_service');
@@ -61,39 +62,44 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
      */
     public function releaseOrderAction()
     {
-        $this->registerShopResource();
-
-        $orderUUID = $this->Request()->getParam('id');
+        $orderUUID       = $this->Request()->getParam('id');
         $amountToRelease = $this->Request()->getParam('amount');
-        $currency = $this->Request()->getParam('currency');
+        $currency        = $this->Request()->getParam('currency');
 
         /** @var ReleaseService $releaseService */
         $releaseService = $this->get('sezzle.backend.release_service');
-        $viewParameter = $releaseService->releaseOrder($orderUUID, $amountToRelease, $currency);
+        $viewParameter  = $releaseService->releaseOrder($orderUUID, $amountToRelease, $currency);
 
         $this->View()->assign($viewParameter);
     }
 
-    /**
-     * @throws Exception
-     */
-    private function registerShopResource()
+    public function validateCredentialsAction()
     {
-        $shopId = (int) $this->Request()->getParam('shopId');
-        /** @var ShopRepository $shopRepository */
-        $shopRepository = $this->get('models')->getRepository(Shop::class);
+        /** @var SettingsService $settingsService */
+        $settingsService = $this->get('sezzle.settings_service');
+        /** @var ClientService $settingsService */
+        $clientService = $this->get('sezzle.client_service');
 
-        $shop = $shopRepository->getActiveById($shopId);
-        if ($shop === null) {
-            $shop = $shopRepository->getActiveDefault();
+        $success = true;
+        try {
+            $clientService->configure([
+                'sandbox' => $settingsService->get('sandbox'),
+                'public_key' => $settingsService->get('public_key'),
+                'private_key' => $settingsService->get('private_key'),
+                'gateway_region' => $settingsService->get('gateway_region')
+            ]);
+        }catch(Exception $e){
+            $success = false;
         }
 
-        if ($this->container->has('shopware.components.shop_registration_service')) {
-            $this->get('shopware.components.shop_registration_service')->registerResources($shop);
-        } else {
-            $shop->registerResources();
-        }
+        /** @var Enlight_Controller_Plugins_Json_Bootstrap $jsonPlugin */
+        $jsonPlugin = $this->Front()->Plugins()->Json();
+        $jsonPlugin->setRenderer();
+        $this->view->assign('success', $success);
+    }
 
-        $this->get('sezzle.settings_service')->refreshDependencies();
+    public function getWhitelistedCSRFActions()
+    {
+        return ['validateCredentials'];
     }
 }

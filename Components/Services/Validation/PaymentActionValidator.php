@@ -2,6 +2,8 @@
 
 namespace SezzlePayment\Components\Services\Validation;
 
+use DateTime;
+use DateTimeZone;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
 use SezzlePayment\SezzleBundle\PaymentAction;
@@ -76,9 +78,9 @@ class PaymentActionValidator
         }
 
         $authExpiryDatetime = $orderModel->getAttribute()->getSezzleAuthExpiry();
-        $authExpiryDatetime = new \DateTime($authExpiryDatetime->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
+        $authExpiryDatetime = new DateTime($authExpiryDatetime->format('Y-m-d H:i:s'), new DateTimeZone('UTC'));
 
-        $currentDatetime = new \DateTime('now', new \DateTimeZone('UTC'));
+        $currentDatetime = new DateTime('now', new DateTimeZone('UTC'));
 
         if ($authExpiryDatetime->getTimestamp() < $currentDatetime->getTimestamp()) {
             return false;

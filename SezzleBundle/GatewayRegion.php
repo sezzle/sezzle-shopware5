@@ -4,7 +4,6 @@
 namespace SezzlePayment\SezzleBundle;
 
 
-use SezzlePayment\SezzleBundle\Components\GatewayRegionInterface;
 use SezzlePayment\SezzleBundle\Services\ClientService;
 use Shopware\Components\HttpClient\RequestException;
 
@@ -12,7 +11,7 @@ use Shopware\Components\HttpClient\RequestException;
  * Class GatewayRegion
  * @package SezzlePayment\SezzleBundle
  */
-class GatewayRegion implements GatewayRegionInterface
+class GatewayRegion
 {
     /**
      * @var ClientService
@@ -70,21 +69,4 @@ class GatewayRegion implements GatewayRegionInterface
         return self::$supportedGatewayRegions[0];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getRegion($settings = [])
-    {
-        $gatewayRegion = '';
-        foreach (self::$supportedGatewayRegions as $region) {
-            $settings['gateway_region'] = $region;
-            try {
-                $this->clientService->configure($settings);
-                return $region;
-            } catch (RequestException $e) {
-                continue;
-            }
-        }
-        return $gatewayRegion;
-    }
 }

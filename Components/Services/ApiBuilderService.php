@@ -8,7 +8,6 @@ use Shopware_Components_Snippet_Manager as SnippetManager;
 use SezzlePayment\Components\DependencyProvider;
 use SezzlePayment\Components\ApiBuilderInterface;
 use SezzlePayment\Components\ApiBuilderParameters;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 use SezzlePayment\SezzleBundle\Structs\CustomerOrder;
 use SezzlePayment\SezzleBundle\Structs\Order\Capture;
 use SezzlePayment\SezzleBundle\Structs\Session;
@@ -26,7 +25,7 @@ class ApiBuilderService implements ApiBuilderInterface
     protected $router;
 
     /**
-     * @var SettingsServiceInterface
+     * @var SettingsService
      */
     protected $settings;
 
@@ -78,13 +77,13 @@ class ApiBuilderService implements ApiBuilderInterface
     /**
      * ApiBuilderService constructor.
      * @param RouterInterface $router
-     * @param SettingsServiceInterface $settingsService
+     * @param SettingsService $settingsService
      * @param SnippetManager $snippetManager
      * @param DependencyProvider $dependencyProvider
      */
     public function __construct(
         RouterInterface $router,
-        SettingsServiceInterface $settingsService,
+        SettingsService $settingsService,
         SnippetManager $snippetManager,
         DependencyProvider $dependencyProvider
     ) {

@@ -61,7 +61,7 @@
         <service id="sezzle.settings_service"
                  class="SezzlePayment\Components\Services\SettingsService"
                  public="true">
-            <argument type="service" id="models"/>
+            <argument type="service" id="config"/>
             <argument type="service" id="sezzle.dependency_provider"/>
         </service>
 

@@ -5,14 +5,6 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-
-        <service id="sezzle.backend.gateway_region_service"
-                 class="SezzlePayment\Components\Backend\GatewayRegionService"
-                 public="true">
-            <argument type="service" id="sezzle.settings_service"/>
-            <argument type="service" id="sezzle.gateway_region"/>
-        </service>
-
         <service id="sezzle.backend.capture_service"
                  class="SezzlePayment\Components\Backend\CaptureService"
                  public="true">

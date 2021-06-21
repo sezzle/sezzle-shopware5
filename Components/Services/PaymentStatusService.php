@@ -2,6 +2,9 @@
 
 namespace SezzlePayment\Components\Services;
 
+use DateTime;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
@@ -26,8 +29,8 @@ class PaymentStatusService
     /**
      * @param string $parentPayment
      * @param int $paymentStateId
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function updatePaymentStatus($parentPayment, $paymentStateId)
     {
@@ -45,7 +48,7 @@ class PaymentStatusService
         if ($paymentStateId === Status::PAYMENT_STATE_COMPLETELY_PAID
             || $paymentStateId === Status::PAYMENT_STATE_PARTIALLY_PAID
         ) {
-            $orderModel->setClearedDate(new \DateTime());
+            $orderModel->setClearedDate(new DateTime());
         }
 
         $this->modelManager->flush($orderModel);

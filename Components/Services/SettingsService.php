@@ -2,26 +2,14 @@
 
 namespace SezzlePayment\Components\Services;
 
-use Doctrine\DBAL\Connection;
-use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Shop\DetachedShop;
 use SezzlePayment\Components\DependencyProvider;
-use SezzlePayment\Models\Settings;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
-use SezzlePayment\SezzleBundle\Components\SettingsTable;
+use Shopware\Models\Shop\Repository;
+use Shopware\Models\Shop\Shop;
+use Shopware_Components_Config;
 
-class SettingsService implements SettingsServiceInterface
+class SettingsService
 {
-    /**
-     * @var ModelManager
-     */
-    private $modelManager;
-
-    /**
-     * @var Connection
-     */
-    private $dbalConnection;
-
     /**
      * @var DetachedShop
      */
@@ -31,107 +19,111 @@ class SettingsService implements SettingsServiceInterface
      * @var DependencyProvider
      */
     private $dependencyProvider;
+    /**
+     * @var Shopware_Components_Config
+     */
+    private $configComponent;
+    /**
+     * @var mixed|object|null
+     */
+    private $cShop;
 
     /**
      * SettingsService constructor.
-     * @param ModelManager $modelManager
+     * @param Shopware_Components_Config $configComponent
      * @param DependencyProvider $dependencyProvider
      */
     public function __construct(
-        ModelManager $modelManager,
+        Shopware_Components_Config $configComponent,
         DependencyProvider $dependencyProvider
-    ) {
+    )
+    {
         $this->dependencyProvider = $dependencyProvider;
-
-        $this->modelManager = $modelManager;
-        $this->dbalConnection = $modelManager->getConnection();
-
-        $this->refreshDependencies();
+        $this->configComponent    = $configComponent;
+        $this->shop               = $this->dependencyProvider->getShop();
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function refreshDependencies()
-    {
-        $this->shop = $this->dependencyProvider->getShop();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSettings($shopId = null, $settingsType = SettingsTable::GENERAL)
-    {
-        //If this function is being called in the storefront, the shopId parameter is
-        //not required, because it's being provided during the DI.
-        $shopId = $shopId === null ? $this->shop->getId() : $shopId;
-
-        return $this->modelManager->getRepository(Settings\General::class)->findOneBy(
-            ['shopId' => $shopId]
-        );
-    }
-
-    /**
-     * {@inheritdoc}
+     * @param $key
+     * @param string $namespace
      *
-     * @throws \RuntimeException
+     * @return mixed|null
      */
-    public function get($column, $settingsType = SettingsTable::GENERAL)
+    public function get($key, $namespace = 'SezzlePayment')
     {
-        if ($this->shop === null) {
-            throw new \RuntimeException('Could not retrieve a single setting without a shop instance.');
+        return $this->configComponent->getByNamespace($namespace, $key);
+    }
+
+    public function setShop($shop = null)
+    {
+        if ($shop === null) {
+            $shop = $this->dependencyProvider->getMainShop();
+        } elseif (!is_object($shop)) {
+            /** @var Repository $shopRepository */
+            $shopRepository = Shopware()->Container()->get('models')->getRepository(Shop::class);
+            $shop           = $shopRepository->find($shop);
         }
-
-        $table = $this->getTableByType($settingsType);
-
-        return $this->dbalConnection->createQueryBuilder()
-            ->select($column)
-            ->from($table)
-            ->where('shop_id = :shopId')
-            ->setParameter('shopId', $this->shop->getId())
-            ->execute()->fetchColumn();
+        $this->cShop = $shop;
+        $this->configComponent->setShop($shop);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \RuntimeException
-     */
-    public function hasSettings($settingsType = SettingsTable::GENERAL)
-    {
-        if ($this->shop === null) {
-            return false;
-        }
 
-        $table = $this->getTableByType($settingsType);
 
-        return (bool) $this->dbalConnection->createQueryBuilder()
-            ->select('id IS NOT NULL')
-            ->from($table)
-            ->where('shop_id = :shopId')
-            ->setParameter('shopId', $this->shop->getId())
-            ->execute()->fetchColumn();
+
+    public function isActive(){
+        return true; //TODO depend on payment status
     }
 
-    /**
-     * A helper function that returns the proper table name by the given settings type.
-     *
-     * @param string $settingsType
-     *
-     * @throws \RuntimeException
-     *
-     * @return string
-     *
-     * @see SettingsTable
-     */
-    private function getTableByType($settingsType)
+    public function getMerchantUuid()
     {
-        switch ($settingsType) {
-            case SettingsTable::GENERAL:
-                return 'sezzle_settings_general';
-            default:
-                throw new \RuntimeException('The provided table ' . $settingsType . ' is not supported');
-                break;
-        }
+        return $this->get('merchant_uuid');
+    }
+
+    public function getPublicKey()
+    {
+        return $this->get('public_key');
+    }
+
+    public function getPrivateKey()
+    {
+        return $this->get('private_key');
+    }
+
+    public function isSandbox()
+    {
+        return (bool)$this->get('sandbox');
+    }
+
+    public function isTokenize()
+    {
+        return (bool)$this->get('tokenize');
+    }
+
+    public function getPaymentAction()
+    {
+        return $this->get('payment_action');
+    }
+
+    public function getLogLevel()
+    {
+        return $this->get('log_level');
+    }
+
+    public function isDisplayErrors()
+    {
+        return (bool)$this->get('display_errors');
+    }
+
+    public function getGatewayRegion()
+    {
+        return $this->get('gateway_region');
+    }
+
+    public function isEnableWidgetPdp(){
+        return (bool)$this->get('enable_widget_pdp');
+    }
+
+    public function isEnableWidgetCart(){
+        return (bool)$this->get('enable_widget_cart');
     }
 }
