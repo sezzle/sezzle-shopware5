@@ -83,8 +83,8 @@
         </element>
         <element type="boolean" scope="shop">
             <name>tokenize</name>
-            <label lang="de">Enable Tokenization</label>
-            <label lang="en">Aktiviere Tokenisierung</label>
+            <label lang="de">Aktiviere Tokenisierung</label>
+            <label lang="en">Enable Tokenization</label>
         </element>
         <element required="true" type="select" scope="shop">
             <name>payment_action</name>

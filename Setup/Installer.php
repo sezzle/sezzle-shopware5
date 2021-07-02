@@ -99,7 +99,7 @@ class Installer
                 'position' => 150,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Order Reference ID',
-                'helpText' => 'Sezzle Order Reference ID',
+                'readonly'=>true,
             ]);
         $this->attributeCrudService->update('s_order_attributes',
             'sezzle_order_uuid',
@@ -108,7 +108,7 @@ class Installer
                 'position' => 151,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Order UUID',
-                'helpText' => 'Sezzle Order UUID',
+                'readonly'=>true,
             ]);
         $this->attributeCrudService->update('s_order_attributes',
             'sezzle_auth_expiry',
@@ -117,7 +117,7 @@ class Installer
                 'position' => 152,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Payment Auth Expiry',
-                'helpText' => 'Sezzle Payment Auth Expiry',
+                'readonly'=>true,
             ]);
         $this->attributeCrudService->update('s_order_attributes',
             'sezzle_customer_uuid',
@@ -126,7 +126,7 @@ class Installer
                 'position' => 153,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID',
-                'helpText' => 'Sezzle Customer UUID',
+                'readonly'=>true,
             ]);
         $this->attributeCrudService->update('s_order_attributes',
             'sezzle_customer_uuid_expiry',
@@ -135,7 +135,7 @@ class Installer
                 'position' => 154,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID Expiry',
-                'helpText' => 'Sezzle Customer UUID Expiry',
+                'readonly'=>true,
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
@@ -145,7 +145,7 @@ class Installer
                 'position' => 155,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Authorized Amount',
-                'helpText' => 'Sezzle Authorized Amount',
+                'readonly'=>true,
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
@@ -155,7 +155,7 @@ class Installer
                 'position' => 156,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Captured Amount',
-                'helpText' => 'Sezzle Captured Amount',
+                'readonly'=>true,
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
@@ -165,7 +165,7 @@ class Installer
                 'position' => 157,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Refunded Amount',
-                'helpText' => 'Sezzle Refunded Amount',
+                'readonly'=>true,
             ]);
 
         $this->attributeCrudService->update('s_order_attributes',
@@ -175,7 +175,7 @@ class Installer
                 'position' => 158,
                 'displayInBackend' => true,
                 'label' => 'Sezzle Released Amount',
-                'helpText' => 'Sezzle Released Amount',
+                'readonly'=>true,
             ]);
     }
 
@@ -192,6 +192,7 @@ class Installer
                 'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID',
                 'helpText' => 'Sezzle Customer UUID',
+                'readonly'=>true,
             ]);
         $this->attributeCrudService->update('s_user_attributes',
             'sezzle_customer_uuid_expiry',
@@ -201,6 +202,7 @@ class Installer
                 'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID Expiry',
                 'helpText' => 'Sezzle Customer UUID Expiry',
+                'readonly'=>true,
             ]);
         $this->attributeCrudService->update('s_user_attributes',
             'sezzle_customer_uuid_status',
@@ -210,6 +212,7 @@ class Installer
                 'displayInBackend' => true,
                 'label' => 'Sezzle Customer UUID Status',
                 'helpText' => 'Sezzle Customer UUID Status',
+                'readonly'=>true,
             ]);
     }
 

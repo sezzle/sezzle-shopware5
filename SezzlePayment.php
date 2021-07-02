@@ -46,7 +46,14 @@ class SezzlePayment extends Plugin
         /**
          * @noinspection PhpParamsInspection
          */
-        (new Uninstaller($this->container->get('models')))->uninstall();
+        $uninstaller = new Uninstaller(
+            $this->container->get('models'),
+            $this->container->get('shopware_attribute.crud_service')
+        );
+        $uninstaller->uninstall($context->keepUserData());
+        if($this->isActive()) {
+            $context->scheduleClearCache(DeactivateContext::CACHE_LIST_ALL); //this is because ::deactivate() will not be called when uninstalling from active state
+        }
     }
 
     /**
@@ -54,6 +61,9 @@ class SezzlePayment extends Plugin
      */
     public function activate(ActivateContext $context)
     {
+        /**
+         * @noinspection PhpParamsInspection
+         */
         $paymentMethodProvider = new PaymentMethodProvider($this->container->get('models'));
         $paymentMethodProvider->setPaymentMethodActiveFlag(true);
         $context->scheduleClearCache(ActivateContext::CACHE_LIST_ALL);
