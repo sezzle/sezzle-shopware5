@@ -3,9 +3,9 @@
 namespace SezzlePayment\Components\Services;
 
 use DateTime;
+use DateTimeZone;
 use Doctrine\DBAL\Connection;
 use Exception;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 use SezzlePayment\SezzleBundle\PaymentType;
 use SezzlePayment\SezzleBundle\Resources\TokenizeResource;
 use SezzlePayment\SezzleBundle\Structs\Tokenize;
@@ -18,7 +18,7 @@ class UserDataService
     private $dbalConnection;
 
     /**
-     * @var SettingsServiceInterface
+     * @var SettingsService
      */
     private $settingsService;
 
@@ -30,12 +30,12 @@ class UserDataService
     /**
      * UserDataService constructor.
      * @param Connection $dbalConnection
-     * @param SettingsServiceInterface $settingsService
+     * @param SettingsService $settingsService
      * @param TokenizeResource $tokenizeResource
      */
     public function __construct(
         Connection $dbalConnection,
-        SettingsServiceInterface $settingsService,
+        SettingsService $settingsService,
         TokenizeResource $tokenizeResource
     )
     {
@@ -87,7 +87,7 @@ class UserDataService
      */
     public function isCustomerUuidValid($userId)
     {
-        $dateTimeNow = new DateTime('now', new \DateTimeZone('UTC'));
+        $dateTimeNow = new DateTime('now', new DateTimeZone('UTC'));
 
 
         $customerUuidExpiry = $this->getValueByKey($userId, 'customer_uuid_expiry');
@@ -97,7 +97,7 @@ class UserDataService
             return false;
         }
 
-        $customerUuidExpiry = new DateTime($customerUuidExpiry, new \DateTimeZone('UTC'));
+        $customerUuidExpiry = new DateTime($customerUuidExpiry, new DateTimeZone('UTC'));
 
         if ($customerUuidExpiry->getTimestamp() < $dateTimeNow->getTimestamp()) {
             $this->deleteTokenizeRecord($userId);

@@ -3,7 +3,6 @@
 namespace SezzlePayment\Components\Services;
 
 use Doctrine\DBAL\Connection;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 use SezzlePayment\SezzleBundle\PaymentType;
 
 class BasketDataService
@@ -14,18 +13,18 @@ class BasketDataService
     private $dbalConnection;
 
     /**
-     * @var SettingsServiceInterface
+     * @var SettingsService
      */
     private $settingsService;
 
     /**
      * BasketDataService constructor.
      * @param Connection $dbalConnection
-     * @param SettingsServiceInterface $settingsService
+     * @param SettingsService $settingsService
      */
     public function __construct(
         Connection $dbalConnection,
-        SettingsServiceInterface $settingsService
+        SettingsService $settingsService
     ) {
         $this->dbalConnection = $dbalConnection;
         $this->settingsService = $settingsService;
@@ -57,7 +56,6 @@ class BasketDataService
      */
     public function getValueByKey($basket, $key)
     {
-        echo "<pre>";
         $attribute = sprintf("sezzle_%s", $key);
         $basketId = function ($basket) {
             foreach ($basket['content'] as $lineItem) {

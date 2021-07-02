@@ -3,10 +3,8 @@
 namespace SezzlePayment\Components\Services;
 
 use Shopware\Components\Logger;
-use SezzlePayment\SezzleBundle\Components\LoggerServiceInterface;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 
-class LoggerService implements LoggerServiceInterface
+class LoggerService
 {
     /**
      * @var Logger
@@ -14,26 +12,23 @@ class LoggerService implements LoggerServiceInterface
     private $logger;
 
     /**
-     * @var SettingsServiceInterface
+     * @var SettingsService
      */
     private $settings;
 
-    public function __construct(Logger $baseLogger, SettingsServiceInterface $settings)
+    public function __construct(Logger $baseLogger, SettingsService $settings)
     {
-        $this->logger = $baseLogger;
+        $this->logger   = $baseLogger;
         $this->settings = $settings;
     }
 
     /**
      * @param string $message
+     * @param array $context
      */
     public function warning($message, array $context = [])
     {
-        if (!$this->settings->hasSettings()) {
-            return;
-        }
-
-        if ((int) $this->settings->get('log_level') === 1) {
+        if ($this->settings->getLogLevel() === 'all') {
             $finalMessage = 'Sezzle: ' . $message;
             $this->logger->warning($finalMessage, $context);
         }
@@ -41,21 +36,19 @@ class LoggerService implements LoggerServiceInterface
 
     /**
      * @param string $message
+     * @param array $context
      */
     public function notify($message, array $context = [])
     {
-        if (!$this->settings->hasSettings()) {
-            return;
-        }
-
-        if ((int) $this->settings->get('log_level') === 1) {
+        if ($this->settings->getLogLevel() === 'all') {
             $finalMessage = 'Sezzle: ' . $message;
-            $this->logger->notice($finalMessage, $context);
+            $this->logger->debug($finalMessage, $context);
         }
     }
 
     /**
      * @param string $message
+     * @param array $context
      */
     public function error($message, array $context = [])
     {

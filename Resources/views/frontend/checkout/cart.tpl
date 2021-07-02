@@ -3,6 +3,12 @@
 {*Sezzle Widget integration*}
 {block name='frontend_index_content'}
     {if $isWidgetActiveForCart && $widgetURL}
+        <script type="text/javascript">
+            document.sezzleConfig = {
+                targetXPath: '.entry--total .entry--value',
+                renderToPath: '.basket--footer'
+            }
+        </script>
         <script>
             console.log("Sezzle Widget rendering.");
             var script = document.createElement('script');

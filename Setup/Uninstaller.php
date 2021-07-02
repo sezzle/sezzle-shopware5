@@ -1,72 +1,46 @@
 <?php
-/**
- * (c) shopware AG <info@shopware.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace SezzlePayment\Setup;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Bundle\AttributeBundle\Service\CrudService;
 use Shopware\Components\Model\ModelManager;
 use SezzlePayment\Components\PaymentMethodProvider;
 
 class Uninstaller
 {
+
+    /**
+     * @var ModelManager
+     */
+    private $modelManager;
     /**
      * @var CrudService
      */
     private $attributeCrudService;
 
     /**
-     * @var ModelManager
-     */
-    private $modelManager;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
      * Uninstaller constructor.
-     * @param CrudService $attributeCrudService
      * @param ModelManager $modelManager
-     * @param Connection $connection
+     * @param CrudService $attributeCrudService
      */
-    public function __construct(CrudService $attributeCrudService, ModelManager $modelManager, Connection $connection)
+    public function __construct(
+        ModelManager $modelManager,
+        CrudService $attributeCrudService
+    )
     {
-        $this->attributeCrudService = $attributeCrudService;
         $this->modelManager = $modelManager;
-        $this->connection = $connection;
+        $this->attributeCrudService = $attributeCrudService;
     }
 
     /**
-     * @param bool $safeMode
      */
-    public function uninstall($safeMode)
-    {
-        $this->deactivatePayments();
-        $this->removeAttributes();
-
-        if (!$safeMode) {
-            $this->removeSettingsTables();
-        }
-    }
-
-    /**
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    private function deactivatePayments()
+    public function uninstall($keepUserData)
     {
         $paymentMethodProvider = new PaymentMethodProvider($this->modelManager);
         $paymentMethodProvider->setPaymentMethodActiveFlag(false);
-        $paymentMethodProvider->setPaymentMethodActiveFlag(
-            false
-        );
+        if(!$keepUserData) {
+            $this->removeAttributes();
+        }
     }
 
     /**
@@ -74,28 +48,32 @@ class Uninstaller
      */
     private function removeAttributes()
     {
-        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'sezzle_display_in_plus_iframe') !== null) {
-            $this->attributeCrudService->delete(
-                's_core_paymentmeans_attributes',
-                'sezzle_display_in_plus_iframe'
-            );
-        }
-        if ($this->attributeCrudService->get('s_core_paymentmeans_attributes', 'sezzle_iframe_payment_logo') !== null) {
-            $this->attributeCrudService->delete(
-                's_core_paymentmeans_attributes',
-                'sezzle_iframe_payment_logo'
-            );
-        }
-        $this->modelManager->generateAttributeModels(['s_core_paymentmeans_attributes']);
+        $this->attributeCrudService->delete('s_order_basket_attributes', 'sezzle_order_uuid');
+
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_payment_action');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_reference_id');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_order_uuid');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_auth_expiry');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_customer_uuid');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_customer_uuid_expiry');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_auth_amount');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_captured_amount');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_refunded_amount');
+        $this->attributeCrudService->delete('s_order_attributes', 'sezzle_released_amount');
+
+        $this->attributeCrudService->delete('s_user_attributes', 'sezzle_customer_uuid');
+        $this->attributeCrudService->delete('s_user_attributes', 'sezzle_customer_uuid_expiry');
+        $this->attributeCrudService->delete('s_user_attributes', 'sezzle_customer_uuid_status');
+
+        $this->modelManager->generateAttributeModels(
+            [
+                's_order_attributes',
+                's_user_attributes',
+                's_order_basket_attributes',
+            ]
+        );
+        $metaDataCache = Shopware()->Models()->getConfiguration()->getMetadataCacheImpl();
+        $metaDataCache->deleteAll();
     }
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    private function removeSettingsTables()
-    {
-        $sql = 'DROP TABLE IF EXISTS `sezzle_settings_general`;';
-
-        $this->connection->exec($sql);
-    }
 }

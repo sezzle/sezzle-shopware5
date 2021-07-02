@@ -4,16 +4,14 @@ namespace SezzlePayment\SezzleBundle\Services;
 
 use Exception;
 use RuntimeException;
-use SezzlePayment\Config;
+use SezzlePayment\Components\Services\LoggerService;
+use SezzlePayment\Components\Services\SettingsService;
 use SezzlePayment\SezzleBundle\GatewayRegion;
 use SezzlePayment\SezzleBundle\TransactionMode;
 use Shopware\Components\HttpClient\GuzzleFactory;
 use Shopware\Components\HttpClient\GuzzleHttpClient as GuzzleClient;
 use Shopware\Components\HttpClient\RequestException;
 use SezzlePayment\Components\DependencyProvider;
-use SezzlePayment\SezzleBundle\BaseURL;
-use SezzlePayment\SezzleBundle\Components\LoggerServiceInterface;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
 use SezzlePayment\SezzleBundle\RequestType;
 use SezzlePayment\SezzleBundle\Structs\AuthCredentials;
 use SezzlePayment\SezzleBundle\Structs\Token;
@@ -36,7 +34,7 @@ class ClientService
     private $tokenService;
 
     /**
-     * @var LoggerServiceInterface
+     * @var LoggerService
      */
     private $logger;
 
@@ -51,27 +49,29 @@ class ClientService
     private $shopId;
 
     /**
-     * @var SettingsServiceInterface
+     * @var SettingsService
      */
     private $settingsService;
 
+    /*
     private static $supportedGatewayRegions = [
         'US' => 'https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/sezzle-pay-over-time-no-interest@2x.png',
         'EU' => 'https://media.eu.sezzle.com/payment-method/assets/sezzle.png'
     ];
+    */
 
     /**
      * ClientService constructor.
-     * @param SettingsServiceInterface $settingsService
+     * @param SettingsService $settingsService
      * @param TokenService $tokenService
-     * @param LoggerServiceInterface $logger
+     * @param LoggerService $logger
      * @param GuzzleFactory $factory
      * @param DependencyProvider $dependencyProvider
      */
     public function __construct(
-        SettingsServiceInterface $settingsService,
+        SettingsService $settingsService,
         TokenService $tokenService,
-        LoggerServiceInterface $logger,
+        LoggerService $logger,
         GuzzleFactory $factory,
         DependencyProvider $dependencyProvider
     ) {
@@ -81,11 +81,6 @@ class ClientService
         $this->client = new GuzzleClient($factory);
 
         $shop = $dependencyProvider->getShop();
-
-        if ($shop === null || !$this->settingsService->hasSettings() || !$this->settingsService->get('active')) {
-            return;
-        }
-
         $this->shopId = $shop->getId();
 
         $gatewayRegion = $this->settingsService->get('gateway_region');

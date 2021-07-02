@@ -2,8 +2,6 @@
 
 namespace SezzlePayment\SezzleBundle\Structs\Tokenize;
 
-use DateTime;
-
 class Customer
 {
     /**

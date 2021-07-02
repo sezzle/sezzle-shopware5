@@ -2,6 +2,8 @@
 
 namespace SezzlePayment\Components\Services;
 
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
@@ -26,8 +28,8 @@ class OrderStatusService
     /**
      * @param string $orderUUID
      * @param int $orderState
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function updateOrderStatus($orderUUID, $orderState)
     {

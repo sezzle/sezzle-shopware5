@@ -6,6 +6,9 @@ use Enlight_Components_Session_Namespace as ShopwareSession;
 use Shopware\Components\Cart\PaymentTokenService;
 use Shopware\Components\DependencyInjection\Container as DIContainer;
 use Shopware\Models\Shop\DetachedShop;
+use Shopware\Models\Shop\Repository;
+use Shopware\Models\Shop\Shop;
+use Shopware_Components_Modules;
 
 class DependencyProvider
 {
@@ -27,8 +30,15 @@ class DependencyProvider
         if ($this->container->has('shop')) {
             return $this->container->get('shop');
         }
+        return $this->getMainShop();
+    }
 
-        return null;
+    public function getMainShop()
+    {
+        /** @var Repository $shopRepository */
+        $shopRepository = Shopware()->Container()->get('models')->getRepository(Shop::class);
+        /** @noinspection PhpParamsInspection */
+        return DetachedShop::createFromShop($shopRepository->findOneBy(['default' => 1]));
     }
 
     /**
@@ -39,7 +49,7 @@ class DependencyProvider
      */
     public function getModule($moduleName)
     {
-        /** @var \Shopware_Components_Modules $modules */
+        /** @var Shopware_Components_Modules $modules */
         $modules = $this->container->get('modules');
 
         return $modules->getModule($moduleName);
