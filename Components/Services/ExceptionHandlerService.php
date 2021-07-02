@@ -7,7 +7,6 @@ use GuzzleHttp\Exception\ClientException;
 use Shopware\Components\HttpClient\RequestException;
 use SezzlePayment\Components\Exception\SezzleApiException;
 use SezzlePayment\Components\ExceptionHandlerServiceInterface;
-use SezzlePayment\SezzleBundle\Components\LoggerServiceInterface;
 use SezzlePayment\SezzleBundle\Structs\ErrorResponse;
 
 class ExceptionHandlerService implements ExceptionHandlerServiceInterface
@@ -16,15 +15,15 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface
     const LOG_MESSAGE = 'Could not %s due to a communication failure';
 
     /**
-     * @var LoggerServiceInterface
+     * @var LoggerService
      */
     private $loggerService;
 
     /**
      * ExceptionHandlerService constructor.
-     * @param LoggerServiceInterface $loggerService
+     * @param LoggerService $loggerService
      */
-    public function __construct(LoggerServiceInterface $loggerService)
+    public function __construct(LoggerService$loggerService)
     {
         $this->loggerService = $loggerService;
     }

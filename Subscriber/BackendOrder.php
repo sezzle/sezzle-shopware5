@@ -3,6 +3,8 @@
 namespace SezzlePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
+use Enlight_Event_EventArgs;
+use Shopware_Controllers_Backend_Order;
 
 class BackendOrder implements SubscriberInterface
 {
@@ -29,12 +31,12 @@ class BackendOrder implements SubscriberInterface
     }
 
     /**
-     * @param \Enlight_Event_EventArgs $args
+     * @param Enlight_Event_EventArgs $args
      */
-    public function onOrderPostDispatch(\Enlight_Event_EventArgs $args)
+    public function onOrderPostDispatch(Enlight_Event_EventArgs $args)
     {
-        /** @var \Shopware_Controllers_Backend_Order $controller */
-        $controller = $args->getSubject();
+        /** @var Shopware_Controllers_Backend_Order $controller */
+        $controller = $args->get('subject');
 
         $view = $controller->View();
         $request = $controller->Request();

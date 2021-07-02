@@ -2,7 +2,7 @@
 
 namespace SezzlePayment\Components;
 
-use Doctrine\DBAL\Connection;
+use Exception;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Payment\Payment;
 
@@ -12,6 +12,8 @@ class PaymentMethodProvider
      * The technical name of the sezzle payment method.
      */
     const SEZZLE_PAYMENT_METHOD_NAME = 'Sezzle';
+    const SEZZLE_LOGO = 'https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png'; //TODO check if this is valid for all time (use local?)
+    const SEZZLE_ADDITIONAL_DESCRIPTION = ''; //'Pay later with 0% interest'; //TODO german (add translation?)
 
     /**
      * @var ModelManager
@@ -21,7 +23,7 @@ class PaymentMethodProvider
     /**
      * @param ModelManager $modelManager
      */
-    public function __construct(ModelManager $modelManager = null)
+    public function __construct(ModelManager $modelManager)
     {
         $this->modelManager = $modelManager;
     }
@@ -43,48 +45,85 @@ class PaymentMethodProvider
 
     /**
      * @param bool $active
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @see PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME
      */
     public function setPaymentMethodActiveFlag($active)
     {
-        $paymentMethod = $this->getPaymentMethodModel();
-        if ($paymentMethod) {
-            $paymentMethod->setActive($active);
+        try {
+            $paymentMethod = $this->getPaymentMethodModel();
+            if ($paymentMethod) {
+                $paymentMethod->setActive($active);
+                $this->modelManager->persist($paymentMethod);
+                $this->modelManager->flush($paymentMethod);
+            }
+        }catch (Exception $e){
 
-            $this->modelManager->persist($paymentMethod);
-            $this->modelManager->flush($paymentMethod);
         }
     }
 
     /**
-     * @param Connection $connection
      * @return bool
      * @see PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME
      *
      */
-    public function getPaymentMethodActiveFlag(Connection $connection)
+    public function getPaymentMethodActiveFlag()
     {
         $sql = 'SELECT `active` FROM s_core_paymentmeans WHERE `name`=:paymentName';
 
-        return (bool) $connection->fetchColumn($sql, [
+        return (bool)$this->modelManager->getConnection()->fetchColumn($sql, [
             ':paymentName' => self::SEZZLE_PAYMENT_METHOD_NAME,
         ]);
     }
 
     /**
-     * @param Connection $connection
      * @return int
      * @see PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME
      *
      */
-    public function getPaymentId(Connection $connection)
+    public function getPaymentId()
     {
         $sql = 'SELECT `id` FROM s_core_paymentmeans WHERE `name`=:paymentName';
 
-        return (int) $connection->fetchColumn($sql, [
+        return (int)$this->modelManager->getConnection()->fetchColumn($sql, [
             ':paymentName' => self::SEZZLE_PAYMENT_METHOD_NAME,
         ]);
+    }
+
+    public function createPaymentMethod()
+    {
+        if ($this->getPaymentId()) {
+            return;
+        }
+
+        $payment = new Payment();
+        $payment->setActive(false);
+        $payment->setPosition(-100);
+        $payment->setName(PaymentMethodProvider::SEZZLE_PAYMENT_METHOD_NAME);
+        $payment->setDescription('Sezzle');
+        $payment->setAdditionalDescription($this->getAdditionalDescription());
+        $payment->setAction('Sezzle');
+
+        $this->modelManager->persist($payment);
+        $this->modelManager->flush($payment);
+
+    }
+
+
+    /**
+     * @return string
+     */
+    /*
+    private function getUnifiedPaymentLogo()
+    {
+        return '<img src="' . self::SEZZLE_LOGO . '" alt="Logo Sezzle" class="sezzle-payment-logo" />';
+    }
+    */
+
+    /**
+     * @return string
+     */
+    private function getAdditionalDescription()
+    {
+        return self::SEZZLE_ADDITIONAL_DESCRIPTION;
     }
 }

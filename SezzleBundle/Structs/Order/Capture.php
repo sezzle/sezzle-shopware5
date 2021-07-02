@@ -4,8 +4,6 @@
 namespace SezzlePayment\SezzleBundle\Structs\Order;
 
 
-use SezzlePayment\SezzleBundle\Structs\Session;
-use SezzlePayment\SezzleBundle\Structs\Session\Order;
 use SezzlePayment\SezzleBundle\Structs\Session\Order\Amount;
 
 /**

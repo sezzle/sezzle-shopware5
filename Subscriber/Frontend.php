@@ -6,7 +6,7 @@ use Enlight\Event\SubscriberInterface;
 use Enlight_Controller_ActionEventArgs;
 use Enlight_Event_EventArgs;
 use Enlight_View_Default;
-use SezzlePayment\SezzleBundle\Components\SettingsServiceInterface;
+use SezzlePayment\Components\Services\SettingsService;
 use SezzlePayment\SezzleBundle\GatewayRegion;
 
 class Frontend implements SubscriberInterface
@@ -16,17 +16,17 @@ class Frontend implements SubscriberInterface
      */
     private $pluginDir;
     /**
-     * @var SettingsServiceInterface
+     * @var SettingsService
      */
     private $settingsService;
 
     /**
      * @param string $pluginDir
-     * @param SettingsServiceInterface $settingsService
+     * @param SettingsService $settingsService
      */
     public function __construct(
         $pluginDir,
-        SettingsServiceInterface $settingsService
+        SettingsService $settingsService
     ) {
         $this->pluginDir = $pluginDir;
         $this->settingsService = $settingsService;
@@ -45,33 +45,21 @@ class Frontend implements SubscriberInterface
 
     public function onPostDispatchSecure(Enlight_Controller_ActionEventArgs $args)
     {
-        if (!$this->settingsService->hasSettings()) {
-            return;
-        }
-
-        $active = (bool)$this->settingsService->get('active');
-        if (!$active) {
-            return;
-        }
-
-        $isWidgetActiveForPDP = (bool)$this->settingsService->get('enable_widget_pdp');
-        $isWidgetActiveForCart = (bool)$this->settingsService->get('enable_widget_cart');
-        $merchantUUID = $this->settingsService->get('merchant_uuid');
-        $gatewayRegion = $this->settingsService->get('gateway_region');
-        $widgetURL = sprintf(
-            "https://widget.%s/v1/javascript/price-widget?uuid=%s",
-            GatewayRegion::getSezzleDomain($gatewayRegion),
-            $merchantUUID
-        );
-
-        /** @var Enlight_View_Default $view */
-        $view = $args->getSubject()->View();
-
-        //Assign shop specific and configurable values to the view.
-        // $view->assign('merchantUUID', $merchantUUID);
-        $view->assign('isWidgetActiveForPDP', $isWidgetActiveForPDP);
-        $view->assign('isWidgetActiveForCart', $isWidgetActiveForCart);
-        $view->assign('widgetURL', $widgetURL);
+//        if (!$this->settingsService->isActive()) {
+//            return;
+//        }
+//
+//        $widgetURL = sprintf(
+//            "https://widget.%s/v1/javascript/price-widget?uuid=%s",
+//            GatewayRegion::getSezzleDomain($this->settingsService->getGatewayRegion()),
+//            $this->settingsService->getMerchantUuid()
+//        );
+//
+//        /** @var Enlight_View_Default $view */
+//        $view = $args->getSubject()->View();
+//        $view->assign('isWidgetActiveForPDP', $this->settingsService->isEnableWidgetPdp());
+//        $view->assign('isWidgetActiveForCart', $this->settingsService->isEnableWidgetCart());
+//        $view->assign('widgetURL', $widgetURL);
     }
 
     /**

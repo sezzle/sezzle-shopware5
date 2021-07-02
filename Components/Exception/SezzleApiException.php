@@ -2,7 +2,9 @@
 
 namespace SezzlePayment\Components\Exception;
 
-class SezzleApiException extends \Exception
+use Exception;
+
+class SezzleApiException extends Exception
 {
     /**
      * @var string

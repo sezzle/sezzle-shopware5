@@ -2,8 +2,6 @@
 
 namespace SezzlePayment\SezzleBundle\Structs;
 
-use DateTime;
-
 class Token
 {
     /**
