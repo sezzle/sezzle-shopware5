@@ -115,7 +115,7 @@
         <element type="boolean" scope="shop">
             <name>enable_widget_cart</name>
             <label lang="de">Aktiviere Widget auf Warenkorbseite</label>
-            <label lang="en">Enable Widget in Cart page</label>
+            <label lang="en">Enable Widget in Cart</label>
         </element>
 
         <element required="true" type="select" scope="shop">
