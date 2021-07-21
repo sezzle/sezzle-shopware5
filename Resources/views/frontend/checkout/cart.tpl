@@ -5,8 +5,8 @@
     {if $isWidgetActiveForCart && $widgetURL}
         <script type="text/javascript">
             document.sezzleConfig = {
-                targetXPath: '.entry--total .entry--value',
-                renderToPath: '.basket--footer'
+                targetXPath: '.entry--total/.entry--value',
+                renderToPath: '../../LI-4'
             }
         </script>
         <script>
