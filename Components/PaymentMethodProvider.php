@@ -54,7 +54,7 @@ class PaymentMethodProvider
             $paymentMethod = $this->getPaymentMethodModel();
             if ($paymentMethod) {
                 $paymentMethod->setActive($active);
-                $this->connectShippingMethods();
+                $active ? $this->linkShippingMethods() : $this->unlinkShippingMethods();
                 $this->modelManager->persist($paymentMethod);
                 $this->modelManager->flush($paymentMethod);
             }
@@ -130,32 +130,48 @@ class PaymentMethodProvider
     }
 
     /**
-     * Connect to all shipping methods
+     * Link to all shipping methods
      */
-    public function connectShippingMethods()
+    public function linkShippingMethods()
     {
         try {
             $paymentMethod = $this->getPaymentMethodModel();
             $dispatchRepository = $this->modelManager->getRepository(Dispatch::class);
+
             /** @var Dispatch[] $methods */
             $methods = $dispatchRepository->findAll();
 
             foreach ($methods as $method) {
-                foreach ($method->getPayments() as $payment) {
-                    if ($payment->getId() === $paymentMethod->getId()) {
-                        //cancel if connection already exists
-                        return;
-                    }
-                }
-            }
-
-            foreach ($methods as $method) {
-                foreach ($method->getPayments() as $payment) {
-                    if ($payment->getId() === $paymentMethod->getId()) {
-                        continue 2;
-                    }
+                if ($method->getPayments()->contains($paymentMethod)) {
+                    continue;
                 }
                 $method->getPayments()->add($paymentMethod);
+                $this->modelManager->persist($method);
+                $this->modelManager->flush($method);
+            }
+
+        } catch (Exception $e) {
+
+        }
+    }
+
+    /**
+     * Unlink to all shipping methods
+     */
+    public function unlinkShippingMethods()
+    {
+        try {
+            $paymentMethod = $this->getPaymentMethodModel();
+            $dispatchRepository = $this->modelManager->getRepository(Dispatch::class);
+
+            /** @var Dispatch[] $methods */
+            $methods = $dispatchRepository->findAll();
+
+            foreach ($methods as $method) {
+                if (!$method->getPayments()->contains($paymentMethod)) {
+                    continue;
+                }
+                $method->getPayments()->removeElement($paymentMethod);
                 $this->modelManager->persist($method);
                 $this->modelManager->flush($method);
             }
