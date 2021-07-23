@@ -2,6 +2,7 @@
 
 namespace SezzlePayment\Components\Services;
 
+use Exception;
 use Shopware\Models\Shop\DetachedShop;
 use SezzlePayment\Components\DependencyProvider;
 use Shopware\Models\Shop\Repository;
@@ -65,6 +66,27 @@ class SettingsService
         }
         $this->cShop = $shop;
         $this->configComponent->setShop($shop);
+    }
+
+    public function getLanguage()
+    {
+        $supportedLanguages = [
+            'en' => 'en-GB',
+            'de' => 'de-DE',
+            'fr' => 'fr-FR',
+        ];
+        try {
+            $shopLocale = Shopware()->Shop()->getLocale()->getLocale();
+
+            foreach ($supportedLanguages as $shortCode => $longCode) {
+                if (stripos($shopLocale, $shortCode) === 0) {
+                    return $longCode;
+                }
+            }
+        } catch (Exception $e) {
+
+        }
+        return 'de-DE';
     }
 
 

@@ -6,7 +6,8 @@
             var sezzleCron = function(){
                 document.sezzleConfig = {
                     targetXPath: '.entry--total .entry--value',
-                    renderToPath: '.payment_logo_Sezzle'
+                    renderToPath: '.payment_logo_Sezzle',
+                    language: '{$sezzleWidgetLanguage}',
                 }
                 var element = document.querySelector('.payment_logo_Sezzle');
                 if(!element){
