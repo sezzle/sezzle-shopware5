@@ -5,17 +5,18 @@
     {if $isWidgetActiveForCart && $widgetURL}
         <script type="text/javascript">
             document.sezzleConfig = {
-                targetXPath: '.entry--total .entry--value',
-                renderToPath: '.basket--footer'
+                'configGroups': [
+                    {
+                        targetXPath: '.entry--total/.entry--value',
+                        renderToPath: '../../LI-4'
+                    }
+                ]
             }
-        </script>
-        <script>
-            console.log("Sezzle Widget rendering.");
+
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = '{$widgetURL}';
             document.body.append(script);
-            console.log("Sezzle Widget rendered.");
         </script>
     {/if}
     {$smarty.block.parent}
