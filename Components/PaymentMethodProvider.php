@@ -4,6 +4,7 @@ namespace SezzlePayment\Components;
 
 use Exception;
 use Shopware\Components\Model\ModelManager;
+use Shopware\Models\Dispatch\Dispatch;
 use Shopware\Models\Payment\Payment;
 
 class PaymentMethodProvider
@@ -53,10 +54,11 @@ class PaymentMethodProvider
             $paymentMethod = $this->getPaymentMethodModel();
             if ($paymentMethod) {
                 $paymentMethod->setActive($active);
+                $this->connectShippingMethods();
                 $this->modelManager->persist($paymentMethod);
                 $this->modelManager->flush($paymentMethod);
             }
-        }catch (Exception $e){
+        } catch (Exception $e) {
 
         }
     }
@@ -125,5 +127,41 @@ class PaymentMethodProvider
     private function getAdditionalDescription()
     {
         return self::SEZZLE_ADDITIONAL_DESCRIPTION;
+    }
+
+    /**
+     * Connect to all shipping methods
+     */
+    public function connectShippingMethods()
+    {
+        try {
+            $paymentMethod = $this->getPaymentMethodModel();
+            $dispatchRepository = $this->modelManager->getRepository(Dispatch::class);
+            /** @var Dispatch[] $methods */
+            $methods = $dispatchRepository->findAll();
+
+            foreach ($methods as $method) {
+                foreach ($method->getPayments() as $payment) {
+                    if ($payment->getId() === $paymentMethod->getId()) {
+                        //cancel if connection already exists
+                        return;
+                    }
+                }
+            }
+
+            foreach ($methods as $method) {
+                foreach ($method->getPayments() as $payment) {
+                    if ($payment->getId() === $paymentMethod->getId()) {
+                        continue 2;
+                    }
+                }
+                $method->getPayments()->add($paymentMethod);
+                $this->modelManager->persist($method);
+                $this->modelManager->flush($method);
+            }
+
+        } catch (Exception $e) {
+
+        }
     }
 }
