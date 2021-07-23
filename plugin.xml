@@ -11,7 +11,7 @@
     <author>Sezzle</author>
     <license>proprietary</license>
 
-    <compatibility minVersion="5.6.0"/>
+    <compatibility minVersion="5.4.0"/>
     <changelog version="1.0.1">
         <changes>Adding widgets to product detail, cart and payment selection pages</changes>
         <changes lang="de">Widgets auf Artikeldetailseite, wagen und Zahlartauswahl hinzugefügt</changes>

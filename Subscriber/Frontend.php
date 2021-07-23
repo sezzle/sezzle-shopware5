@@ -60,6 +60,7 @@ class Frontend implements SubscriberInterface
         $view->assign('isWidgetActiveForPDP', $this->settingsService->isEnableWidgetPdp());
         $view->assign('isWidgetActiveForCart', $this->settingsService->isEnableWidgetCart());
         $view->assign('widgetURL', $widgetURL);
+        $view->assign('sezzleWidgetLanguage', $this->settingsService->getLanguage());
     }
 
     /**

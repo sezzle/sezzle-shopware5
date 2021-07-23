@@ -5,6 +5,7 @@
     {if $isWidgetActiveForCart && $widgetURL}
         <script type="text/javascript">
             document.sezzleConfig = {
+                language: '{$sezzleWidgetLanguage}',
                 'configGroups': [
                     {
                         targetXPath: '.entry--total/.entry--value',

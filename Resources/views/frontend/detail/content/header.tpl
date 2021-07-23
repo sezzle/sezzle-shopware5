@@ -5,6 +5,7 @@
     {if $isWidgetActiveForPDP && $widgetURL}
         <script type="text/javascript">
             document.sezzleConfig = {
+                language: '{$sezzleWidgetLanguage}',
                 'configGroups': [
                     {
                         targetXPath: '.price--content',
