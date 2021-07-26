@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/config.xsd">
     <elements>
-        <element required="true" type="select" scope="shop">
+        <element required="false" type="text" scope="shop">
             <name>gateway_region</name>
             <label lang="de">Region</label>
             <label lang="en">Region</label>
-            <store>
-                <option>
-                    <value>EU</value>
-                    <label lang="de">EU</label>
-                    <label lang="en">EU</label>
-                </option>
-                <option>
-                    <value>US</value>
-                    <label lang="de">US</label>
-                    <label lang="en">US</label>
-                </option>
-            </store>
+            <value/>
+            <options>
+                <hidden>1</hidden>
+            </options>
         </element>
         <element required="true" type="text" scope="shop">
             <name>merchant_uuid</name>
@@ -48,6 +40,9 @@
                 <handler>
                     <![CDATA[
                     function(button) {
+                      const publicKey = button.up('panel').down('[elementName=public_key]').getValue();
+                      const privateKey = button.up('panel').down('[elementName=private_key]').getValue();
+                      const sandbox = button.up('panel').down('[elementName=sandbox]').getValue();
                       const buttonDomElement = Ext.getElementById(button.btnInnerEl.id);
                       const lang = (buttonDomElement.innerHTML === 'Validate credentials'?'en':'de');
                       const showWarning = function(){
@@ -62,6 +57,12 @@
 
                       Ext.Ajax.request({
                         url: window.location.protocol+'//'+window.location.host+window.location.pathname.replace('backend','backend/Sezzle/validateCredentials'),
+                        headers: { 'Content-Type': 'application/json' },
+                        jsonData: {
+                            public_key: publicKey,
+                            private_key: privateKey,
+                            sandbox: sandbox
+                        },
                         success: function (response) {
                           let data = JSON.parse(response.responseText);
                           if(data.success){

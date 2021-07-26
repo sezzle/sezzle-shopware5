@@ -1,6 +1,5 @@
 <?php
 
-
 namespace SezzlePayment\SezzleBundle;
 
 
@@ -67,6 +66,25 @@ class GatewayRegion
     public static function defaultRegion()
     {
         return self::$supportedGatewayRegions[0];
+    }
+
+    /**
+     * @param array $settings
+     * @return string
+     */
+    public function getRegion($settings = [])
+    {
+        $gatewayRegion = '';
+        foreach (self::$supportedGatewayRegions as $region) {
+            $settings['gateway_region'] = $region;
+            try {
+                $this->clientService->configure($settings);
+                return $region;
+            } catch (RequestException $e) {
+                continue;
+            }
+        }
+        return $gatewayRegion;
     }
 
 }
