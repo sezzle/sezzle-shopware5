@@ -45,21 +45,22 @@ class Frontend implements SubscriberInterface
 
     public function onPostDispatchSecure(Enlight_Controller_ActionEventArgs $args)
     {
-//        if (!$this->settingsService->isActive()) {
-//            return;
-//        }
-//
-//        $widgetURL = sprintf(
-//            "https://widget.%s/v1/javascript/price-widget?uuid=%s",
-//            GatewayRegion::getSezzleDomain($this->settingsService->getGatewayRegion()),
-//            $this->settingsService->getMerchantUuid()
-//        );
-//
-//        /** @var Enlight_View_Default $view */
-//        $view = $args->getSubject()->View();
-//        $view->assign('isWidgetActiveForPDP', $this->settingsService->isEnableWidgetPdp());
-//        $view->assign('isWidgetActiveForCart', $this->settingsService->isEnableWidgetCart());
-//        $view->assign('widgetURL', $widgetURL);
+        if (!$this->settingsService->isActive()) {
+            return;
+        }
+
+        $widgetURL = sprintf(
+            "https://widget.%s/v1/javascript/price-widget?uuid=%s",
+            GatewayRegion::getSezzleDomain($this->settingsService->getGatewayRegion()),
+            $this->settingsService->getMerchantUuid()
+        );
+
+        /** @var Enlight_View_Default $view */
+        $view = $args->getSubject()->View();
+        $view->assign('isWidgetActiveForPDP', $this->settingsService->isEnableWidgetPdp());
+        $view->assign('isWidgetActiveForCart', $this->settingsService->isEnableWidgetCart());
+        $view->assign('widgetURL', $widgetURL);
+        $view->assign('sezzleWidgetLanguage', $this->settingsService->getLanguage());
     }
 
     /**

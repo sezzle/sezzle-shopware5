@@ -105,7 +105,7 @@
                 </option>
             </store>
         </element>
-    <!--
+
         <element type="boolean" scope="shop">
             <name>enable_widget_pdp</name>
             <label lang="de">Aktiviere Widget auf Produktdetailseite</label>
@@ -117,7 +117,7 @@
             <label lang="de">Aktiviere Widget auf Warenkorbseite</label>
             <label lang="en">Enable Widget in Cart</label>
         </element>
--->
+
         <element required="true" type="select" scope="shop">
             <name>log_level</name>
             <label lang="de">Logging</label>
