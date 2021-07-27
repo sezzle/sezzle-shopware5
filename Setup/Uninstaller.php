@@ -33,6 +33,7 @@ class Uninstaller
     }
 
     /**
+     * @param $keepUserData
      */
     public function uninstall($keepUserData)
     {
