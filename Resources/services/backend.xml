@@ -40,5 +40,12 @@
             <argument type="service" id="models"/>
             <argument type="service" id="sezzle.payment_validator"/>
         </service>
+
+        <service id="sezzle.backend.gateway_region_service"
+                 class="SezzlePayment\Components\Backend\GatewayRegionService"
+                 public="true">
+            <argument type="service" id="sezzle.settings_service"/>
+            <argument type="service" id="sezzle.gateway_region"/>
+        </service>
     </services>
 </container>

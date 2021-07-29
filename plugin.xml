@@ -5,13 +5,21 @@
     <label lang="en">Sezzle</label>
     <label lang="de">Sezzle</label>
 
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <copyright>(c) Sezzle 2021</copyright>
     <link>https://sezzle.com</link>
     <author>Sezzle</author>
     <license>proprietary</license>
 
     <compatibility minVersion="5.4.0"/>
+    <changelog version="1.0.2">
+        <changes>Gateway region auto-detection</changes>
+        <changes lang="de">Automatische Erkennung der Gateway-Region</changes>
+        <changes>Auto link and unlink to all shipping methods on plugin activate and uninstall</changes>
+        <changes lang="de">Automatisches Verknüpfen und Aufheben der Verknüpfung mit allen Versandmethoden beim Aktivieren und Deinstallieren des Plugins</changes>
+        <changes>Validate credentials button action fix</changes>
+        <changes lang="de">Korrektur der Aktion für die Schaltfläche "Anmeldeinformationen validieren"</changes>
+    </changelog>
     <changelog version="1.0.1">
         <changes>Adding widgets to product detail, cart and payment selection pages</changes>
         <changes lang="de">Widgets auf Artikeldetailseite, wagen und Zahlartauswahl hinzugefügt</changes>

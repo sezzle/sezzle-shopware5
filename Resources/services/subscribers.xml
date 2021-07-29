@@ -6,16 +6,24 @@
 
     <services>
 
-        <service id="sezzle.subscriber.templates" class="SezzlePayment\Subscriber\BackendOrder">
+        <service id="sezzle.subscriber.templates" class="SezzlePayment\Subscriber\Backend\Order">
             <argument>%sezzle.plugin_dir%</argument>
             <tag name="shopware.event_subscriber"/>
         </service>
 
         <service id="sezzle.subscriber.frontend"
-                 class="SezzlePayment\Subscriber\Frontend"
+                 class="SezzlePayment\Subscriber\Frontend\Widget"
                  public="true">
             <argument>%sezzle.plugin_dir%</argument>
             <argument type="service" id="sezzle.settings_service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="sezzle.subscriber.backend.config" class="SezzlePayment\Subscriber\Backend\Config">
+            <argument type="service" id="sezzle.components.config_reader"/>
+            <argument type="service" id="sezzle.backend.gateway_region_service"/>
+            <argument type="service" id="sezzle.components.config_setter"/>
+            <argument type="service" id="pluginlogger"/>
             <tag name="shopware.event_subscriber"/>
         </service>
     </services>

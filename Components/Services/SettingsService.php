@@ -20,14 +20,11 @@ class SettingsService
      * @var DependencyProvider
      */
     private $dependencyProvider;
+
     /**
      * @var Shopware_Components_Config
      */
     private $configComponent;
-    /**
-     * @var mixed|object|null
-     */
-    private $cShop;
 
     /**
      * SettingsService constructor.
@@ -37,37 +34,35 @@ class SettingsService
     public function __construct(
         Shopware_Components_Config $configComponent,
         DependencyProvider $dependencyProvider
-    )
-    {
+    ) {
         $this->dependencyProvider = $dependencyProvider;
-        $this->configComponent    = $configComponent;
-        $this->shop               = $this->dependencyProvider->getShop();
+        $this->configComponent = $configComponent;
+        $this->shop = $this->dependencyProvider->getShop();
     }
 
     /**
-     * @param $key
+     * Get config value by name and namespace
+     *
+     * @param string $key
      * @param string $namespace
      *
      * @return mixed|null
      */
     public function get($key, $namespace = 'SezzlePayment')
     {
-        return $this->configComponent->getByNamespace($namespace, $key);
-    }
-
-    public function setShop($shop = null)
-    {
-        if ($shop === null) {
-            $shop = $this->dependencyProvider->getMainShop();
-        } elseif (!is_object($shop)) {
-            /** @var Repository $shopRepository */
-            $shopRepository = Shopware()->Container()->get('models')->getRepository(Shop::class);
-            $shop           = $shopRepository->find($shop);
+        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName($namespace,
+            $this->shop);
+        if (!is_array($config) || empty($config)) {
+            return false;
         }
-        $this->cShop = $shop;
-        $this->configComponent->setShop($shop);
+        return $config[$key];
     }
 
+    /**
+     * Get store language
+     *
+     * @return string
+     */
     public function getLanguage()
     {
         $supportedLanguages = [
@@ -89,10 +84,8 @@ class SettingsService
         return 'de-DE';
     }
 
-
-
-
-    public function isActive(){
+    public function isActive()
+    {
         return true; //TODO depend on payment status
     }
 
@@ -141,11 +134,13 @@ class SettingsService
         return $this->get('gateway_region');
     }
 
-    public function isEnableWidgetPdp(){
+    public function isEnableWidgetPdp()
+    {
         return (bool)$this->get('enable_widget_pdp');
     }
 
-    public function isEnableWidgetCart(){
+    public function isEnableWidgetCart()
+    {
         return (bool)$this->get('enable_widget_cart');
     }
 }

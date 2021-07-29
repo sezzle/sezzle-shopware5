@@ -78,5 +78,16 @@
             <argument type="service" id="sezzle.settings_service"/>
             <argument type="service" id="sezzle.tokenize_resource"/>
         </service>
+
+        <service id="sezzle.components.config_reader"
+                 class="SezzlePayment\Components\ConfigReader"
+                 public="true">
+            <argument type="service" id="shopware.plugin.cached_config_reader"/>
+        </service>
+
+        <service id="sezzle.components.config_setter"
+                 class="SezzlePayment\Components\ConfigSetter"
+                 public="true">
+        </service>
     </services>
 </container>

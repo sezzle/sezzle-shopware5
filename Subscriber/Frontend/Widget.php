@@ -1,6 +1,6 @@
 <?php
 
-namespace SezzlePayment\Subscriber;
+namespace SezzlePayment\Subscriber\Frontend;
 
 use Enlight\Event\SubscriberInterface;
 use Enlight_Controller_ActionEventArgs;
@@ -9,7 +9,7 @@ use Enlight_View_Default;
 use SezzlePayment\Components\Services\SettingsService;
 use SezzlePayment\SezzleBundle\GatewayRegion;
 
-class Frontend implements SubscriberInterface
+class Widget implements SubscriberInterface
 {
     /**
      * @var string

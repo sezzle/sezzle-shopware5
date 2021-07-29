@@ -83,8 +83,8 @@ class ClientService
         $shop = $dependencyProvider->getShop();
         $this->shopId = $shop->getId();
 
-        $gatewayRegion = $this->settingsService->get('gateway_region');
-        $apiMode = (bool)$this->settingsService->get('sandbox')
+        $gatewayRegion = $this->settingsService->getGatewayRegion();
+        $apiMode = (bool)$this->settingsService->isSandbox()
             ? TransactionMode::SANDBOX
             : TransactionMode::LIVE;
         $this->baseUrl = GatewayRegion::getGatewayUrl($apiMode, 'v2', $gatewayRegion);
@@ -128,10 +128,10 @@ class ClientService
     {
         if (!$this->getHeader('Authorization') && $tokenRequired) {
             $this->configure([
-                'sandbox' => $this->settingsService->get('sandbox'),
-                'public_key' => $this->settingsService->get('public_key'),
-                'private_key' => $this->settingsService->get('private_key'),
-                'gateway_region' => $this->settingsService->get('gateway_region')
+                'sandbox' => $this->settingsService->isSandbox(),
+                'public_key' => $this->settingsService->getPublicKey(),
+                'private_key' => $this->settingsService->getPrivateKey(),
+                'gateway_region' => $this->settingsService->getGatewayRegion()
             ]);
         }
 
@@ -177,14 +177,6 @@ class ClientService
     public function setHeader($key, $value)
     {
         $this->headers[$key] = $value;
-    }
-
-    /**
-     * @param string $partnerId
-     */
-    public function setPartnerAttributionId($partnerId)
-    {
-        $this->setHeader('PayPal-Partner-Attribution-Id', $partnerId);
     }
 
     /**
