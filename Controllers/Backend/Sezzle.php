@@ -89,11 +89,7 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
             "sandbox" => (bool)$this->Request()->getParam('sandbox')
         ];
 
-        $success = true;
-        $gatewayRegion = $gatewayRegionService->get($settings);
-        if (!$gatewayRegion) {
-            $success = false;
-        }
+        $success = !!$gatewayRegionService->get($settings);
 
         /** @var Enlight_Controller_Plugins_Json_Bootstrap $jsonPlugin */
         $jsonPlugin = $this->Front()->Plugins()->Json();

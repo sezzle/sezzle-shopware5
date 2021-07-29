@@ -69,12 +69,13 @@ class GatewayRegion
     }
 
     /**
+     * Get gateway region
+     *
      * @param array $settings
      * @return string
      */
     public function getRegion($settings = [])
     {
-        $gatewayRegion = '';
         foreach (self::$supportedGatewayRegions as $region) {
             $settings['gateway_region'] = $region;
             try {
@@ -84,7 +85,6 @@ class GatewayRegion
                 continue;
             }
         }
-        return $gatewayRegion;
+        return '';
     }
-
 }
