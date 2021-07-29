@@ -1,12 +1,12 @@
 <?php
 
-namespace SezzlePayment\Subscriber;
+namespace SezzlePayment\Subscriber\Backend;
 
 use Enlight\Event\SubscriberInterface;
 use Enlight_Event_EventArgs;
 use Shopware_Controllers_Backend_Order;
 
-class BackendOrder implements SubscriberInterface
+class Order implements SubscriberInterface
 {
     /**
      * @var string
@@ -20,6 +20,7 @@ class BackendOrder implements SubscriberInterface
     {
         $this->pluginDirectory = $pluginDirectory;
     }
+
     /**
      * {@inheritdoc}
      */
