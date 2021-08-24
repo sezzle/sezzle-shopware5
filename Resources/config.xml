@@ -7,7 +7,7 @@
             <label lang="en">Region</label>
             <value/>
             <options>
-                <hidden>1</hidden>
+                <readOnly>1</readOnly>
             </options>
         </element>
         <element required="true" type="text" scope="shop">
