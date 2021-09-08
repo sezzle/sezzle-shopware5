@@ -1,11 +1,5 @@
 <?php
 
-use SezzlePayment\Components\Backend\GatewayRegionService;
-use SezzlePayment\Components\Services\SettingsService;
-use SezzlePayment\SezzleBundle\GatewayRegion;
-use SezzlePayment\SezzleBundle\Services\ClientService;
-use SezzlePayment\SezzleBundle\Structs\AuthCredentials;
-use SezzlePayment\SezzleBundle\TransactionMode;
 use Shopware\Components\CSRFWhitelistAware;
 use Shopware\Models\Order\Order;
 use SezzlePayment\Components\Backend\CaptureService;
@@ -73,28 +67,6 @@ class Shopware_Controllers_Backend_Sezzle extends Shopware_Controllers_Backend_A
         $viewParameter = $releaseService->releaseOrder($orderUUID, $amountToRelease, $currency);
 
         $this->View()->assign($viewParameter);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function validateCredentialsAction()
-    {
-        /** @var GatewayRegionService $gatewayRegionService */
-        $gatewayRegionService = $this->get('sezzle.backend.gateway_region_service');
-
-        $settings = [
-            "public_key" => $this->Request()->getParam('public_key'),
-            "private_key" => $this->Request()->getParam('private_key'),
-            "sandbox" => (bool)$this->Request()->getParam('sandbox')
-        ];
-
-        $success = !!$gatewayRegionService->get($settings);
-
-        /** @var Enlight_Controller_Plugins_Json_Bootstrap $jsonPlugin */
-        $jsonPlugin = $this->Front()->Plugins()->Json();
-        $jsonPlugin->setRenderer();
-        $this->view->assign('success', $success);
     }
 
     public function getWhitelistedCSRFActions()
