@@ -5,6 +5,7 @@
             <name>gateway_region</name>
             <label lang="de">Region</label>
             <label lang="en">Region</label>
+            <value>EU</value>
             <store>
                 <option>
                     <value>EU</value>
@@ -69,12 +70,14 @@
             <name>enable_widget_pdp</name>
             <label lang="de">Aktiviere Widget auf Produktdetailseite</label>
             <label lang="en">Enable Widget on product detail page</label>
+            <value>1</value>
         </element>
 
         <element type="boolean" scope="shop">
             <name>enable_widget_cart</name>
             <label lang="de">Aktiviere Widget auf Warenkorbseite</label>
             <label lang="en">Enable Widget in Cart</label>
+            <value>1</value>
         </element>
 
         <element required="true" type="select" scope="shop">

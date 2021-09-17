@@ -57,9 +57,9 @@ class Widget implements SubscriberInterface
 
         /** @var Enlight_View_Default $view */
         $view = $args->getSubject()->View();
-        $view->assign('isWidgetActiveForPDP', $this->settingsService->isEnableWidgetPdp());
-        $view->assign('isWidgetActiveForCart', $this->settingsService->isEnableWidgetCart());
-        $view->assign('widgetURL', $widgetURL);
+        $view->assign('isSezzleWidgetActiveForPDP', $this->settingsService->isEnableWidgetPdp());
+        $view->assign('isSezzleWidgetActiveForCart', $this->settingsService->isEnableWidgetCart());
+        $view->assign('sezzleWidgetURL', $widgetURL);
         $view->assign('sezzleWidgetLanguage', $this->settingsService->getLanguage());
     }
 
