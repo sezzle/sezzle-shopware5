@@ -51,7 +51,7 @@ function renderInstallmentWidget(checkoutTotal, merchantLocale, currencySymbol){
     var language = document.querySelector('html').lang.substring(0,2).toLowerCase() || navigator.language.substring(0,2) || 'en';
 
     // sets payment plan based on given param
-    var interval = merchantLocale === 'US' ? 14 : 30;
+    var interval = merchantLocale === 'EU' ? 30 : 14;
 
     // handles translations
     var translation = {
@@ -640,3 +640,4 @@ function renderInstallmentWidget(checkoutTotal, merchantLocale, currencySymbol){
         }
     }
 }
+
