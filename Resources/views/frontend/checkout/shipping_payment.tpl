@@ -9,6 +9,7 @@
                     renderToPath: '.payment_logo_Sezzle',
                     language: '{$sezzleWidgetLanguage}',
                 }
+                document.sezzleMerchantRegion = {$sezzleMerchantRegion|json_encode};
                 var element = document.querySelector('.payment_logo_Sezzle');
                 if(!element){
                     return;
@@ -22,7 +23,7 @@
                 if(typeof sezzleCheckoutRender === 'undefined') {
                     var script = document.createElement('script');
                     script.type = 'text/javascript';
-                    script.src = '{link file='frontend/_public/src/js/checkout-widget.js'}';
+                    script.src = '{link file='frontend/_public/src/js/installment-widget.js'}';
                     document.body.append(script);
                 }else{
                     sezzleCheckoutRender();

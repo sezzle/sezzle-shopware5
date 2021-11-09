@@ -25,7 +25,7 @@
 
 // handles initial render, then watches checkout total for change event, updates installment amounts
 var sezzleCheckoutRender = function(){
-    var merchantLocale = "DE" // "['US', 'CA', 'IN', 'GU', 'PR', 'VI', 'AS', 'MP']" serves bi-weekly product, else serves monthly
+    var merchantLocale = document.sezzleMerchantRegion || 'EU';
     var currencySymbol = ""; // if not provided, it will attempt to detect the currency symbol from the price text. If site uses charset="ISO-8859-1", use String.fromCharCode() - param is HTML hex char code integer
     var checkoutTotal = document.querySelector('.entry--total .entry--value'); // Shopify
     // var checkoutTotal = document.querySelector('.order-total').querySelector('.woocommerce-Price-amount'); // WooCommerce
@@ -47,13 +47,11 @@ var sezzleCheckoutRender = function(){
 };
 sezzleCheckoutRender();
 
-function renderInstallmentWidget(checkoutTotal, serviceRegion, currencySymbol){
+function renderInstallmentWidget(checkoutTotal, merchantLocale, currencySymbol){
     var language = document.querySelector('html').lang.substring(0,2).toLowerCase() || navigator.language.substring(0,2) || 'en';
-    var merchantLocale = serviceRegion || document.querySelector('html').lang.split('-')[1] || "US";
 
     // sets payment plan based on given param
-    var biWeeklyLocales = ['US', 'CA', 'IN', 'GU', 'PR', 'VI', 'AS', 'MP'];
-    var interval = biWeeklyLocales.indexOf(merchantLocale) > -1 ? 14 : 30;
+    var interval = merchantLocale === 'EU' ? 30 : 14;
 
     // handles translations
     var translation = {
@@ -478,7 +476,7 @@ function renderInstallmentWidget(checkoutTotal, serviceRegion, currencySymbol){
                 }
             }
             if (includeComma) {
-                formattedPrice.replace(',', '.');
+                formattedPrice = formattedPrice.replace(',', '.');
             }
             return parseFloat(formattedPrice);
         }
@@ -642,3 +640,4 @@ function renderInstallmentWidget(checkoutTotal, serviceRegion, currencySymbol){
         }
     }
 }
+
