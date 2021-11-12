@@ -61,6 +61,7 @@ class Widget implements SubscriberInterface
         $view->assign('isSezzleWidgetActiveForCart', $this->settingsService->isEnableWidgetCart());
         $view->assign('sezzleWidgetURL', $widgetURL);
         $view->assign('sezzleWidgetLanguage', $this->settingsService->getLanguage());
+        $view->assign('sezzleMerchantRegion', $this->settingsService->getGatewayRegion()?:'EU');
     }
 
     /**
