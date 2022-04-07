@@ -200,9 +200,11 @@ class ClientService
     }
 
     /**
-     * Get Sezzle Module Version
+     * Get Sezzle Plugin Version
+     *
+     * return string
      */
-    private function getVersion()
+    private function getSezzleVersion()
     {
         try {
             if (!file_exists(dirname(__FILE__, 3) . '/plugin.xml')) {
@@ -217,6 +219,8 @@ class ClientService
     }
 
     /**
+     * Gets platform data
+     *
      * @return string[]
      */
     private function getPlatformData()
@@ -224,7 +228,7 @@ class ClientService
         return [
             'id' => 'Shopware',
             'version' => $this->releaseStruct->getVersion(),
-            'plugin_version' => $this->getVersion()
+            'plugin_version' => $this->getSezzleVersion()
         ];
     }
 
