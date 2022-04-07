@@ -5,13 +5,17 @@
     <label lang="en">Sezzle</label>
     <label lang="de">Sezzle</label>
 
-    <version>1.0.3</version>
-    <copyright>(c) Sezzle 2021</copyright>
+    <version>1.0.4</version>
+    <copyright>(c) Sezzle 2022</copyright>
     <link>https://sezzle.com</link>
     <author>Sezzle</author>
     <license>proprietary</license>
 
     <compatibility minVersion="5.4.0"/>
+    <changelog version="1.0.4">
+        <changes>Sending platform data(platform name, version and sezzle version) to Sezzle</changes>
+        <changes lang="de">Senden von Plattformdaten (Plattformname, Version und Sezzle-Version) an Sezzle</changes>
+    </changelog>
     <changelog version="1.0.3">
         <changes>New widget placements</changes>
         <changes lang="de">Neue Widget-Platzierung</changes>

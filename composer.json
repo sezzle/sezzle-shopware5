@@ -3,7 +3,7 @@
     "type": "shopware5-plugin",
     "description": "Sezzle Payment Plugin for Shopware 5",
     "license": "Apache-2.0",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "keywords": ["sezzle", "shopware", "plugin", "payment", "gateway"],
     "extra": {
         "installer-name": "Sezzle"
