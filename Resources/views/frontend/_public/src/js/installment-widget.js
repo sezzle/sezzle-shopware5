@@ -478,7 +478,7 @@ function renderInstallmentWidget(checkoutTotal, serviceRegion, currencySymbol){
                 }
             }
             if (includeComma) {
-                formattedPrice.replace(',', '.');
+                formattedPrice = formattedPrice.replace(',', '.');
             }
             return parseFloat(formattedPrice);
         }
