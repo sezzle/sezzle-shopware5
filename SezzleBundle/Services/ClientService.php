@@ -15,6 +15,7 @@ use SezzlePayment\Components\DependencyProvider;
 use SezzlePayment\SezzleBundle\RequestType;
 use SezzlePayment\SezzleBundle\Structs\AuthCredentials;
 use SezzlePayment\SezzleBundle\Structs\Token;
+use Shopware\Components\ShopwareReleaseStruct;
 
 class ClientService
 {
@@ -53,6 +54,11 @@ class ClientService
      */
     private $settingsService;
 
+    /**
+     * @var ShopwareReleaseStruct
+     */
+    private $releaseStruct;
+
     /*
     private static $supportedGatewayRegions = [
         'US' => 'https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/sezzle-pay-over-time-no-interest@2x.png',
@@ -67,17 +73,21 @@ class ClientService
      * @param LoggerService $logger
      * @param GuzzleFactory $factory
      * @param DependencyProvider $dependencyProvider
+     * @param ShopwareReleaseStruct $releaseStruct
      */
     public function __construct(
-        SettingsService $settingsService,
-        TokenService $tokenService,
-        LoggerService $logger,
-        GuzzleFactory $factory,
-        DependencyProvider $dependencyProvider
-    ) {
+        SettingsService       $settingsService,
+        TokenService          $tokenService,
+        LoggerService         $logger,
+        GuzzleFactory         $factory,
+        DependencyProvider    $dependencyProvider,
+        ShopwareReleaseStruct $releaseStruct
+    )
+    {
         $this->settingsService = $settingsService;
         $this->tokenService = $tokenService;
         $this->logger = $logger;
+        $this->releaseStruct = $releaseStruct;
         $this->client = new GuzzleClient($factory);
 
         $shop = $dependencyProvider->getShop();
@@ -190,7 +200,40 @@ class ClientService
     }
 
     /**
-     * Creates the authentication header for the PayPal API.
+     * Get Sezzle Plugin Version
+     *
+     * return string
+     */
+    private function getSezzleVersion()
+    {
+        try {
+            if (!file_exists(dirname(__FILE__, 3) . '/plugin.xml')) {
+                return '';
+            }
+
+            $contents = simplexml_load_file(dirname(__FILE__, 3) . '/plugin.xml');
+            return is_object($contents) ? (string)$contents->version : '';
+        } catch (Exception $e) {
+            return '';
+        }
+    }
+
+    /**
+     * Gets platform data
+     *
+     * @return string[]
+     */
+    private function getPlatformData()
+    {
+        return [
+            'id' => 'Shopware',
+            'version' => $this->releaseStruct->getVersion(),
+            'plugin_version' => $this->getSezzleVersion()
+        ];
+    }
+
+    /**
+     * Creates the authentication header for the Sezzle API.
      * If there is no cached token yet, it will be generated on the fly.
      *
      * @param AuthCredentials $credentials
@@ -203,6 +246,7 @@ class ClientService
             /** @var Token $cachedToken */
             $token = $this->tokenService->getToken($this, $credentials, $this->shopId);
             $this->setHeader('Authorization', 'Bearer ' . $token->getToken());
+            $this->setHeader('Sezzle-Platform', base64_encode(json_encode($this->getPlatformData())));
         } catch (RequestException $requestException) {
             $this->logger->error('Could not create authentication - request exception', [
                 'payload' => $requestException->getBody(),

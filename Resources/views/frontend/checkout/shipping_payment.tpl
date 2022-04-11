@@ -8,8 +8,8 @@
                     targetXPath: '.entry--total .entry--value',
                     renderToPath: '.payment_logo_Sezzle',
                     language: '{$sezzleWidgetLanguage}',
+                    sezzleMerchantRegion: '{$sezzleMerchantRegion}'
                 }
-                document.sezzleMerchantRegion = {$sezzleMerchantRegion|json_encode};
                 var element = document.querySelector('.payment_logo_Sezzle');
                 if(!element){
                     return;

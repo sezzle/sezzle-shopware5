@@ -49,6 +49,7 @@ class Widget implements SubscriberInterface
             return;
         }
 
+
         $widgetURL = sprintf(
             "https://widget.%s/v1/javascript/price-widget?uuid=%s",
             GatewayRegion::getSezzleDomain($this->settingsService->getGatewayRegion()),
