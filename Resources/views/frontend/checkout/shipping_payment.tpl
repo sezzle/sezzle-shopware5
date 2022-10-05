@@ -23,7 +23,7 @@
                 if(typeof sezzleCheckoutRender === 'undefined') {
                     var script = document.createElement('script');
                     script.type = 'text/javascript';
-                    script.src = '{link file='frontend/_public/src/js/installment-widget.js'}';
+                    script.src = 'https://checkout-sdk.sezzle.com/installment-widget.min.js';
                     document.body.append(script);
                 }else{
                     sezzleCheckoutRender();
