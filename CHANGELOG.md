@@ -6,6 +6,20 @@
 
 # Sezzle Plugin Changelog
 
+## Version 1.0.5
+
+_Thr 20 Oct 2022_
+
+### Supported Editions & Versions
+
+Tested and verified in clean installations of Shopware 5:
+
+- Shopware 5 version 5.6.8 and later.
+
+### Highlights
+
+- Serving installment widget from Sezzle CDN JS.
+
 ## Version 1.0.4
 
 _Fri 08 Apr 2022_
