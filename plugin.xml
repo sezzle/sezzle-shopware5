@@ -5,13 +5,17 @@
     <label lang="en">Sezzle</label>
     <label lang="de">Sezzle</label>
 
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <copyright>(c) Sezzle 2022</copyright>
     <link>https://sezzle.com</link>
     <author>Sezzle</author>
     <license>proprietary</license>
 
     <compatibility minVersion="5.4.0"/>
+    <changelog version="1.0.5">
+        <changes>Serving installment widget from Sezzle CDN JS</changes>
+        <changes lang="de">Servierendes Ratenzahlungs-Widget von Sezzle CDN JS</changes>
+    </changelog>
     <changelog version="1.0.4">
         <changes>Sending platform data(platform name, version and sezzle version) to Sezzle</changes>
         <changes lang="de">Senden von Plattformdaten (Plattformname, Version und Sezzle-Version) an Sezzle</changes>
